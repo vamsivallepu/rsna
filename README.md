@@ -11,9 +11,10 @@ public dependencies are kept locally and are excluded from version control.
 2. Build fixed soft targets from three independent public report-label sources.
 3. Establish a six-slot frozen RadImageNet baseline, then adapt official DINOv2
    features using only the 4,349 pseudo-labelled studies on Kaggle GPU.
-4. Train leakage-safe five-fold attention heads and score all 58 expert studies
-   exactly once out of fold. The first verified DINOv2 run reached **0.7976** macro
-   OOF AUC, up from **0.6943** for the frozen RadImageNet attention baseline.
+4. Train five-fold attention heads and score all 58 expert studies exactly once out
+   of fold. The first verified DINOv2 run reached **0.7976** macro OOF AUC, up from
+   **0.6943** for frozen RadImageNet. A paired normalized-report purge closed the only
+   expert/pseudo twin path and established a **0.7968** honest cached-token baseline.
 5. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

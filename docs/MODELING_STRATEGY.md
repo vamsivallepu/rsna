@@ -125,6 +125,14 @@ internal baseline, but the result remains below the roughly 0.9+ public-performa
 range; the next experiments should improve image coverage and representation rather
 than tune target-specific choices against 58 labels.
 
+A subsequent report-group audit found 52 normalized duplicate groups covering 223
+studies, including one expert report shared by four pseudo rows. A paired cached-head
+experiment removed those four rows only from the affected validation fold. The replay
+arm scored 0.797796 and the purged arm 0.796788; the `-0.001008` delta had a paired
+study-bootstrap 95% interval of `[-0.003610, 0.001324]`. The effect is negligible, but
+the purge is now a permanent validation guardrail and 0.796788 is the honest cached-token
+baseline for subsequent ablations.
+
 ## Experiment ladder
 
 Changes graduate only after repeated OOF evidence and runtime accounting. The

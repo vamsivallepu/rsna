@@ -15,6 +15,7 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | B02 | validated | L2-normalized mean-pooled ridge on B01 cache | 0.7053 five-fold expert OOF | Rejected as next direction; frozen global representation is limiting |
 | B03 | validated | Pseudo-only adapted DINOv2-small, direct untouched expert gate | 0.7851916 macro AUC | Representation promoted to fold-head evaluation |
 | B04 | validated | Adapted DINO tokens plus five fold-specific query heads | 0.7976172 expert OOF | Current image baseline; report-group purge not yet applied |
+| P0 | validated | Paired replay and report-group-purged DINO fold heads | 0.7967883 purged expert OOF | Honest cached-token baseline for P1; purge effect was negligible |
 
 ### B04 target-wise OOF AUC
 
@@ -32,11 +33,11 @@ three positions per slot, three pseudo-only adaptation epochs, and 30 head epoch
 The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validator is
 [`scripts/validate_dino_adaptation_outputs.py`](../scripts/validate_dino_adaptation_outputs.py).
 
-## Active run
+## Latest validated run
 
 ### P0 — paired report-group purge audit
 
-- **Status:** running
+- **Status:** validated
 - **Hypothesis:** duplicate normalized reports allow pseudo-labelled twins of a held
   expert study into its fold-head training set; purging them gives a more honest OOF
   estimate and may change generalization.
@@ -52,13 +53,22 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   report-hash overlap in P0-B; finite predictions; metrics independently recomputed.
 - **Raw artifact location:** `outputs/experiments/P0-report-group-purged-dino-oof/`
   (local and intentionally ignored by Git).
-- **Result:** pending.
+- **Result:** P0-A replay `0.7977963`; P0-B purged `0.7967883`; paired delta
+  `-0.0010081`. The 5,000-sample paired study-bootstrap 95% interval was
+  `[-0.0036101, 0.0013239]`, with probability of a positive delta `0.1946`.
+- **Runtime:** 455.1 seconds on four local CPU threads.
+- **Independent validation:** all 58 OOF rows per arm, saved-head prediction replay,
+  zero P0-B hash overlap, and every source/output hash passed.
+- **Tracked result:** [`experiments/results/P0.json`](../experiments/results/P0.json).
+- **Decision:** the possible leakage is closed, but removing four twins has no
+  meaningful measured effect. Use P0-B as the honest baseline and proceed to P1-A;
+  no DICOM or DINO feature recaching is required.
 
 ## Queued next runs
 
 | ID | Status | Run | Dependency |
 |---|---|---|---|
-| P1-A | queued | Agreement-weight versus raw uncertainty-weight supervision | Validated P0 runner and purge contract |
+| P1-A | **next** | Agreement-weight versus raw uncertainty-weight supervision | Validated P0 runner and purge contract |
 | P1-B | queued | Query/head pooling controls | P1-A or P0 winner |
 | P1-C | queued | BCE versus asymmetric/ranking/consistency objectives | P1-B winner |
 | P1-D | queued | Repeated-seed regularization confirmation | Best P1 candidate |
@@ -74,3 +84,6 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-01:** Inserted P0 before architecture work after finding normalized report
   duplicates crossing the expert/pseudo boundary. P0 reuses tokens and does not repeat
   DICOM caching.
+- **2026-09-01:** P0 independently validated at 0.796788 purged OOF. The paired
+  `-0.001008` delta was inconclusive, so the purge becomes a permanent validation
+  guardrail and P1-A remains next.

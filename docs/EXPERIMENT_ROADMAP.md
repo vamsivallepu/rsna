@@ -45,18 +45,18 @@ or hyperparameter may be selected on those 58 labels.
 The IDs and order are stable. Sub-experiments may be added beneath an item, but a
 later expensive stage advances only after its prerequisites pass.
 
-| Order | ID | Experiment | Compute / cache | Promotion gate |
-|---:|---|---|---|---|
-| 0 | **P0** | Validation hardening: paired replay of the current DINO head and report-group-purged OOF training | Local CPU; existing token cache | Exact audit, all 58 rows OOF, no report twin in a held-out fold's training set, independently reproduced metrics |
-| 1 | **P1** | Cached-token head and objective ablations | Local CPU; existing token cache | Improve purged macro AUC or show stable target gains without a material regression |
-| 2 | **P2** | Strong compact convolutional baseline: CoAtNet-RMLP2-style model at about 384 px with fuller physical slice coverage | Kaggle GPU; new pixel cache | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
-| 3 | **P3** | DINOv2-small at 336 px with fuller coverage, LoRA/last-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse P2 pixel cache when compatible | Clear validation gain over P0/P2 with stable targets and acceptable runtime |
-| 4 | **P4** | Five end-to-end folds for only the winning P2/P3 configuration | Kaggle GPU; winning cache | Fold-safe representation training and repeatable pooled OOF improvement |
-| 5 | **P5** | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
-| 6 | **P6** | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Kaggle GPU | Dataset agreement/license verified and ROI pretraining improves held-out pseudo groups |
-| 7 | **P7** | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
-| 8 | **P8** | Noisy-student relabelling and a rank ensemble of genuinely diverse finalists | Kaggle GPU | Each member independently clears validation; ensemble diversity is measured |
-| 9 | **P9** | OrthoDiffusion or compact 3D specialist for complementary targets | Kaggle GPU; high cost | Pursue only if 2.5D finalists plateau and licensing/runtime are acceptable |
+| Order | ID | State | Experiment | Compute / cache | Promotion gate |
+|---:|---|---|---|---|---|
+| 0 | **P0** | validated | Validation hardening: paired replay of the current DINO head and report-group-purged OOF training | Local CPU; existing token cache | Passed: all 58 rows OOF, zero purged overlap, saved-head and hash validation |
+| 1 | **P1** | **next** | Cached-token head and objective ablations | Local CPU; existing token cache | Improve purged macro AUC or show stable target gains without a material regression |
+| 2 | **P2** | queued | Strong compact convolutional baseline: CoAtNet-RMLP2-style model at about 384 px with fuller physical slice coverage | Kaggle GPU; new pixel cache | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
+| 3 | **P3** | queued | DINOv2-small at 336 px with fuller coverage, LoRA/last-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse P2 pixel cache when compatible | Clear validation gain over P0/P2 with stable targets and acceptable runtime |
+| 4 | **P4** | queued | Five end-to-end folds for only the winning P2/P3 configuration | Kaggle GPU; winning cache | Fold-safe representation training and repeatable pooled OOF improvement |
+| 5 | **P5** | queued | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
+| 6 | **P6** | queued | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Kaggle GPU | Dataset agreement/license verified and ROI pretraining improves held-out pseudo groups |
+| 7 | **P7** | queued | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
+| 8 | **P8** | queued | Noisy-student relabelling and a rank ensemble of genuinely diverse finalists | Kaggle GPU | Each member independently clears validation; ensemble diversity is measured |
+| 9 | **P9** | queued | OrthoDiffusion or compact 3D specialist for complementary targets | Kaggle GPU; high cost | Pursue only if 2.5D finalists plateau and licensing/runtime are acceptable |
 
 ### P0 — report-group-purged DINO OOF
 
@@ -74,6 +74,11 @@ same folds, optimizer, epochs, and per-fold seeds:
 
 The paired replay separates purge effects from changes in local random-number state.
 This is a head-only experiment; the DICOM and DINO encoders are not rerun.
+
+**Validated result:** P0-A scored 0.797796 and P0-B scored 0.796788. The
+`-0.001008` paired delta had a 5,000-sample study-bootstrap 95% interval of
+`[-0.003610, 0.001324]`. The leakage path is now closed, but its measured effect is
+negligible and statistically inconclusive. P0-B is the comparison baseline for P1.
 
 ### P1 — cached-token ablation matrix
 

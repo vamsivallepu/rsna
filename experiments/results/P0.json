@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P0",
+  "status": "validated",
+  "date": "2026-09-01",
+  "description": "Paired cached-DINO head replay versus fold-wise report-group purge",
+  "code_commit": "3e0ae79b2646cb8bea241409f50cce2d4d446640",
+  "raw_artifact_path": "outputs/experiments/P0-report-group-purged-dino-oof",
+  "raw_manifest_sha256": "58b66e76a91537d2f9f4ed8677c9588aa0c8e7392e6731016cd38e841073fcfc",
+  "validated": true,
+  "validation": {
+    "saved_heads_reproduced_predictions": true,
+    "source_and_output_hashes_verified": true,
+    "expert_oof_rows_per_arm": 58,
+    "report_hash_overlap_in_purged_folds": 0
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "torch": "2.9.1+cu128",
+    "device": "cpu",
+    "threads": 4
+  },
+  "config": {
+    "seed": 20260831,
+    "folds": 5,
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.001,
+    "report_normalization": "NFKC casefold then retain Unicode alphanumeric characters"
+  },
+  "data_audit": {
+    "studies": 4407,
+    "expert_studies": 58,
+    "pseudo_studies": 4349,
+    "duplicate_report_groups": 52,
+    "studies_in_duplicate_groups": 223,
+    "cross_expert_pseudo_groups": 1,
+    "expert_expert_duplicate_groups": 0,
+    "excluded_pseudo_studies": 4,
+    "affected_fold": 2,
+    "token_shape": [4407, 6, 3, 768]
+  },
+  "results": {
+    "p0_a_replay_macro_auc": 0.797796332926579,
+    "p0_b_purged_macro_auc": 0.7967882566762247,
+    "macro_delta_p0_b_minus_p0_a": -0.0010080762503543728,
+    "target_auc": {
+      "ACL": {"p0_a": 0.7659313725490196, "p0_b": 0.7647058823529411, "delta": -0.001225490196078427},
+      "MCL": {"p0_a": 0.7165532879818595, "p0_b": 0.7188208616780045, "delta": 0.0022675736961450532},
+      "Medial Meniscus": {"p0_a": 0.7920673076923076, "p0_b": 0.783653846153846, "delta": -0.008413461538461564},
+      "Lateral Meniscus": {"p0_a": 0.7527950310559006, "p0_b": 0.746583850931677, "delta": -0.006211180124223614},
+      "Medial OA": {"p0_a": 0.9209302325581394, "p0_b": 0.9193798449612403, "delta": -0.0015503875968991832},
+      "Lateral OA": {"p0_a": 0.8143133462282399, "p0_b": 0.8143133462282399, "delta": 0.0},
+      "PF OA": {"p0_a": 0.7799227799227799, "p0_b": 0.7837837837837838, "delta": 0.0038610038610038533},
+      "Effusion": {"p0_a": 0.8770186335403727, "p0_b": 0.8745341614906832, "delta": -0.00248447204968949},
+      "Synovitis": {"p0_a": 0.6821983273596176, "p0_b": 0.6833930704898447, "delta": 0.0011947431302270495},
+      "Baker's": {"p0_a": 0.8695652173913043, "p0_b": 0.8659420289855072, "delta": -0.0036231884057971175},
+      "Contusion": {"p0_a": 0.8272604588394061, "p0_b": 0.8299595141700405, "delta": 0.0026990553306344145},
+      "Fracture": {"p0_a": 0.775, "p0_b": 0.7763888888888889, "delta": 0.001388888888888884}
+    },
+    "paired_study_bootstrap": {
+      "valid_repeats": 5000,
+      "mean_delta": -0.0010074096221721056,
+      "median_delta": -0.0009486541771995909,
+      "ci_2_5": -0.003610110454335994,
+      "ci_97_5": 0.0013238684782558242,
+      "probability_delta_gt_zero": 0.1946
+    }
+  },
+  "elapsed_seconds": 455.0921230316162,
+  "source_sha256": {
+    "dino_token_features.npy": "8887dcbce2078820017212a39fb0772dc1267ebc42ad811dc5e334bfb1450ab7",
+    "dino_window_mask.npy": "009b3f434a543da43760984cb8ff007a0de844fc229214c9c571c464b7e3cf96",
+    "training_targets.csv": "ca63cfff863c87286e07a8059fee88f86ff8b3f4b640a98078d62113f6b93f2a",
+    "dino_pseudo_adapted_model.pt": "bce607bec36b63983668b32e7a0e693eccc70b3540ab34c7c8ed78a55548365c",
+    "train.csv": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33"
+  },
+  "decision": "Use P0-B as the honest cached-token baseline. The purge effect is negligible and statistically inconclusive; proceed to P1-A without recaching DICOM."
+}
