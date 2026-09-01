@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P1-A",
+  "status": "repeat",
+  "date": "2026-09-01",
+  "description": "Fixed consensus targets with raw Steven not-addressed confidence weights",
+  "code_commit": "f854306cb0f0277804808043930e9e03bd48f8a0",
+  "raw_artifact_path": "outputs/experiments/P1-A-raw-not-addressed-weights",
+  "raw_manifest_sha256": "217048a7af2e3f26912e7e8a13d0bd4c7dd15b7d45770286e9d2badb811c5dc0",
+  "validated": true,
+  "validation": {
+    "saved_heads_reproduced_predictions": true,
+    "paired_bootstrap_recomputed": true,
+    "source_and_output_hashes_verified": true,
+    "expert_oof_rows": 58,
+    "report_hash_overlap_in_training": 0
+  },
+  "config": {
+    "seed": 20260831,
+    "folds": 5,
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.001,
+    "weight_formula": "gold=2.0; pseudo=2*abs(raw_steven_v1_probability-0.5)",
+    "targets_changed": false,
+    "report_group_purge": true
+  },
+  "data_audit": {
+    "studies": 4407,
+    "expert_studies": 58,
+    "pseudo_studies": 4349,
+    "zero_weight_pseudo_cell_fraction": 0.25394726757108915,
+    "excluded_pseudo_studies": 4,
+    "token_shape": [4407, 6, 3, 768]
+  },
+  "results": {
+    "p0_b_baseline_macro_auc": 0.7967882566762247,
+    "p1_a_macro_auc": 0.8001968882842948,
+    "macro_delta_p1_a_minus_p0_b": 0.003408631608070145,
+    "target_auc": {
+      "ACL": {"p0_b": 0.7647058823529411, "p1_a": 0.7769607843137255, "delta": 0.012254901960784381},
+      "MCL": {"p0_b": 0.7188208616780045, "p1_a": 0.7437641723356009, "delta": 0.024943310657596363},
+      "Medial Meniscus": {"p0_b": 0.783653846153846, "p1_a": 0.7776442307692308, "delta": -0.006009615384615197},
+      "Lateral Meniscus": {"p0_b": 0.746583850931677, "p1_a": 0.7329192546583851, "delta": -0.013664596273291862},
+      "Medial OA": {"p0_b": 0.9193798449612403, "p1_a": 0.9085271317829458, "delta": -0.010852713178294504},
+      "Lateral OA": {"p0_b": 0.8143133462282399, "p1_a": 0.7988394584139265, "delta": -0.01547388781431347},
+      "PF OA": {"p0_b": 0.7837837837837838, "p1_a": 0.7760617760617761, "delta": -0.007722007722007707},
+      "Effusion": {"p0_b": 0.8745341614906832, "p1_a": 0.8857142857142857, "delta": 0.011180124223602483},
+      "Synovitis": {"p0_b": 0.6833930704898447, "p1_a": 0.7502986857825569, "delta": 0.06690561529271222},
+      "Baker's": {"p0_b": 0.8659420289855072, "p1_a": 0.8478260869565217, "delta": -0.018115942028985477},
+      "Contusion": {"p0_b": 0.8299595141700405, "p1_a": 0.8218623481781376, "delta": -0.00809716599190291},
+      "Fracture": {"p0_b": 0.7763888888888889, "p1_a": 0.7819444444444444, "delta": 0.005555555555555536}
+    },
+    "paired_study_bootstrap": {
+      "valid_repeats": 5000,
+      "mean_delta": 0.003489479962946641,
+      "median_delta": 0.00366661210883501,
+      "ci_2_5": -0.010394851011392973,
+      "ci_97_5": 0.0157913239992659,
+      "probability_delta_gt_zero": 0.7094
+    }
+  },
+  "not_addressed_fraction_by_target": {
+    "ACL": 0.08323752586801564,
+    "MCL": 0.1004828696252012,
+    "Medial Meniscus": 0.055415037939756266,
+    "Lateral Meniscus": 0.09933318004138883,
+    "Medial OA": 0.20234536675097722,
+    "Lateral OA": 0.24580363301908484,
+    "PF OA": 0.17222349965509312,
+    "Effusion": 0.09887330420786387,
+    "Synovitis": 0.8388135203495056,
+    "Baker's": 0.4812600597838584,
+    "Contusion": 0.24028512301678548,
+    "Fracture": 0.4292940905955392
+  },
+  "elapsed_seconds": 371.0141689777374,
+  "source_sha256": {
+    "dino_token_features.npy": "8887dcbce2078820017212a39fb0772dc1267ebc42ad811dc5e334bfb1450ab7",
+    "dino_window_mask.npy": "009b3f434a543da43760984cb8ff007a0de844fc229214c9c571c464b7e3cf96",
+    "training_targets.csv": "ca63cfff863c87286e07a8059fee88f86ff8b3f4b640a98078d62113f6b93f2a",
+    "dino_pseudo_adapted_model.pt": "bce607bec36b63983668b32e7a0e693eccc70b3540ab34c7c8ed78a55548365c",
+    "train.csv": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33",
+    "llm_labels_full.csv": "96444cd3c7d396bae4a71454317d9cbe0689759b5278b30939781e04d0774537",
+    "P0_manifest.json": "58b66e76a91537d2f9f4ed8677c9588aa0c8e7392e6731016cd38e841073fcfc"
+  },
+  "decision": "Do not promote. The 0.0034 macro gain is inside a wide interval and is dominated by Synovitis while seven targets decline. Retain P0-B as baseline, proceed to P1-B, and revisit this weighting only in repeated-seed confirmation."
+}

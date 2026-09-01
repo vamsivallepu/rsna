@@ -48,7 +48,7 @@ later expensive stage advances only after its prerequisites pass.
 | Order | ID | State | Experiment | Compute / cache | Promotion gate |
 |---:|---|---|---|---|---|
 | 0 | **P0** | validated | Validation hardening: paired replay of the current DINO head and report-group-purged OOF training | Local CPU; existing token cache | Passed: all 58 rows OOF, zero purged overlap, saved-head and hash validation |
-| 1 | **P1** | **next** | Cached-token head and objective ablations | Local CPU; existing token cache | Improve purged macro AUC or show stable target gains without a material regression |
+| 1 | **P1** | in progress | Cached-token head and objective ablations | Local CPU; existing token cache | Improve purged macro AUC or show stable target gains without a material regression |
 | 2 | **P2** | queued | Strong compact convolutional baseline: CoAtNet-RMLP2-style model at about 384 px with fuller physical slice coverage | Kaggle GPU; new pixel cache | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
 | 3 | **P3** | queued | DINOv2-small at 336 px with fuller coverage, LoRA/last-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse P2 pixel cache when compatible | Clear validation gain over P0/P2 with stable targets and acceptable runtime |
 | 4 | **P4** | queued | Five end-to-end folds for only the winning P2/P3 configuration | Kaggle GPU; winning cache | Fold-safe representation training and repeatable pooled OOF improvement |
@@ -96,6 +96,11 @@ Run in this order and change one dimension at a time:
    the best candidate. Do not tune target-specific settings.
 
 Only a P1 winner is allowed to influence the expensive P2/P3 notebook.
+
+**P1-A result:** raw not-addressed weighting scored 0.800197 versus the 0.796788
+P0-B baseline (`+0.003409`; paired 95% interval `[-0.010395, 0.015791]`). The
+change is inconclusive and driven by Synovitis (`+0.0669`) while seven targets
+declined. It is not promoted; P0-B remains the baseline and P1-B is next.
 
 ### P2–P4 — high-value image models
 

@@ -133,6 +133,12 @@ study-bootstrap 95% interval of `[-0.003610, 0.001324]`. The effect is negligibl
 the purge is now a permanent validation guardrail and 0.796788 is the honest cached-token
 baseline for subsequent ablations.
 
+The first cached-label-weight ablation applied Steven v1's documented
+`2*abs(p-0.5)` confidence while leaving consensus targets unchanged. It reached
+0.800197 (`+0.003409`), but its paired 95% interval crossed zero and the improvement
+was dominated by Synovitis while seven targets declined. It is not promoted; the
+purged 0.796788 configuration remains the comparison baseline.
+
 ## Experiment ladder
 
 Changes graduate only after repeated OOF evidence and runtime accounting. The
