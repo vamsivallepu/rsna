@@ -85,8 +85,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   predictions, bootstraps, fold purges, and source/output hashes independently passed.
 - **Tracked result:** [`experiments/results/P1-A.json`](../experiments/results/P1-A.json).
 - **Decision:** do not promote or use target-specific weighting. Keep P0-B as the
-  comparison baseline and revisit P1-A only during repeated-seed confirmation if
-  later candidates support the same global change. P1-B has since completed.
+  comparison baseline. P1-D has since frozen a global-regularization-only scope, so
+  P1-A is retained for a later diversity audit rather than repeated during P1-D.
 
 ## Queued next runs
 
@@ -95,7 +95,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-A | repeat | Agreement weight versus documented raw `2*abs(p-0.5)` not-addressed confidence; targets unchanged | +0.0034, wide interval, one-target dominated; no promotion |
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
-| P1-D | **next** | Global regularization and repeated-seed confirmation | P0-B primary; P1-A/P1-C retained only as secondary repeat candidates |
+| P1-D | **running** | Factor-at-a-time global regularization and matched repeated-seed confirmation | P0-B primary; frozen promotion rule closes P1 |
 | P2 | queued | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 decision and versioned pixel-cache notebook |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
@@ -132,6 +132,28 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   statistically persuasive; the predeclared ranking/consistency gate therefore fails.
   Keep ASL OOF predictions only for a later diversity audit and advance P1-D with
   P0-B as the primary configuration.
+
+## Active run
+
+### P1-D — global regularization and repeated-seed confirmation
+
+- **Status:** implementation and smoke validation.
+- **Primary-seed screen:** dropout `0.10`/`0.30` at the default weight decay and
+  weight decay `3e-4`/`3e-3` at the default dropout; one factor changes per arm.
+- **Default:** P0-B weighted BCE, target-query head, dropout `0.20`, weight decay
+  `1e-3`, and seed `20260831`.
+- **Confirmation:** the highest primary-seed macro candidate is paired with the
+  default at training seeds `20260901` and `20260902`; expert fold assignment stays
+  fixed to seed `20260831`.
+- **Constants:** current agreement weights, report-group purge, adapted initialization,
+  30 epochs, AdamW `lr=2e-4`, batch size 256, and the existing token cache.
+- **Promotion gate:** positive mean three-seed delta; at least two seed wins; positive
+  seed-ensemble delta; at least eight nonnegative target deltas; worst target delta
+  above `-0.02`; bootstrap probability of positive delta at least `0.80`. All required.
+- **Scope:** no P1-A/P1-C combination and no target-specific settings. P1-D closes
+  cached-token tuning and hands either the promoted arm or unchanged P0-B to P2.
+- **Raw artifact location:**
+  `outputs/experiments/P1-D-regularization-seed-confirmation/`.
 
 ## Previous completed run
 

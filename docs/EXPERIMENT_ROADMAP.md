@@ -100,8 +100,19 @@ Run in this order and change one dimension at a time:
    pairwise ranking or consistency only if this simpler objective is stable and promising.
    Primary references: [ICCV 2021 paper](https://openaccess.thecvf.com/content/ICCV2021/html/Ridnik_Asymmetric_Loss_for_Multi-Label_Classification_ICCV_2021_paper.html)
    and [official implementation](https://github.com/Alibaba-MIIL/ASL).
-4. **P1-D regularization:** global dropout/weight decay and two repeated seeds for
-   the best candidate. Do not tune target-specific settings.
+4. **P1-D regularization:** close the cached-token phase with a factor-at-a-time
+   primary-seed screen around P0-B: dropout `0.10` and `0.30` at weight decay
+   `1e-3`, plus weight decay `3e-4` and `3e-3` at dropout `0.20`. The default is
+   dropout `0.20`, weight decay `1e-3`. Select the highest primary-seed macro arm
+   using the declared order for ties, then pair it against the default at training
+   seeds `20260901` and `20260902`; retain the original expert folds. Do not tune
+   target-specific settings.
+
+   Promotion requires every frozen condition: positive mean macro delta across the
+   three seeds, positive delta in at least two seeds, a positive three-seed ensemble
+   delta, at least eight nonnegative target deltas, worst target delta above `-0.02`,
+   and paired-bootstrap probability of a positive ensemble delta at least `0.80`.
+   Whether it promotes or not, P1-D closes P1 and hands a frozen configuration to P2.
 
 Only a P1 winner is allowed to influence the expensive P2/P3 notebook.
 
@@ -121,8 +132,9 @@ remains the P1-C baseline.
 positive delta `0.6932`). Eight targets improved, but Fracture declined by 0.03611.
 The candidate is stable but inconclusive and fails the predeclared target-stability
 gate, so it is not promoted and ranking/consistency losses are not attempted. P1-D
-is next with P0-B as the primary configuration; P1-A and P1-C may enter only its
-matched repeated-seed audit, not become target-specific tuning branches.
+uses P0-B as the primary configuration. The now-frozen P1-D scope does not combine
+or repeat P1-A/P1-C; their OOF predictions remain available only for a later diversity
+audit, not as target-specific tuning branches.
 
 ### P2–P4 — high-value image models
 
