@@ -18,6 +18,7 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P0 | validated | Paired replay and report-group-purged DINO fold heads | 0.7967883 purged expert OOF | Honest cached-token baseline for P1; purge effect was negligible |
 | P1-A | repeat | Raw Steven `2*abs(p-0.5)` pseudo-cell confidence weights | 0.8001969 purged expert OOF | Do not promote: +0.0034 is inconclusive and driven by Synovitis |
 | P1-B | validated | Shared attention, masked mean, and masked max controls | Best control 0.7946578 purged expert OOF | No control promoted; retain P0-B target queries |
+| P1-C | validated | Official-default asymmetric loss with fixed soft labels | 0.8000455 purged expert OOF | Do not promote; positive point estimate is inconclusive and Fracture declined |
 
 ### B04 target-wise OOF AUC
 
@@ -93,18 +94,18 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 |---|---|---|---|
 | P1-A | repeat | Agreement weight versus documented raw `2*abs(p-0.5)` not-addressed confidence; targets unchanged | +0.0034, wide interval, one-target dominated; no promotion |
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
-| P1-C | **next** | BCE versus asymmetric/ranking/consistency objectives | P0-B target-query head remains baseline |
-| P1-D | queued | Repeated-seed regularization confirmation | Best P1 candidate |
+| P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
+| P1-D | **next** | Global regularization and repeated-seed confirmation | P0-B primary; P1-A/P1-C retained only as secondary repeat candidates |
 | P2 | queued | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 decision and versioned pixel-cache notebook |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
-## Active run
+## Latest completed run
 
 ### P1-C — asymmetric focal objective
 
-- **Status:** implementation and smoke validation.
+- **Status:** independently validated; no objective change promoted.
 - **Baseline:** P0-B target-query head with weighted BCE at 0.7967883.
 - **Candidate:** the official multi-label ASL defaults: `gamma_neg=4`,
   `gamma_pos=1`, and probability clip `0.05`, with gradients retained through the
@@ -117,8 +118,22 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Gate:** ranking or consistency loss is attempted only if ASL is finite, target-stable,
   and promising versus P0-B. Otherwise P1-C stops after ASL.
 - **Raw artifact location:** `outputs/experiments/P1-C-asymmetric-focal-loss/`.
+- **Result:** P1-C `0.8000455` versus P0-B `0.7967883`, delta `+0.0032573`.
+  The independently recomputed 5,000-sample paired 95% interval is
+  `[-0.0089623, 0.0156402]`; probability of positive delta is `0.6932`.
+- **Target pattern:** eight of 12 targets improved, led by MCL `+0.02494`,
+  Contusion `+0.02024`, and Effusion `+0.01615`; four declined, with Fracture
+  falling `-0.03611` and Lateral Meniscus `-0.01366`.
+- **Runtime and validation:** 384.7 seconds on four CPU threads; the float64 identity
+  contract differed from weighted BCE by only `2.22e-16`; all five saved heads,
+  predictions, purges, bootstrap values, and source/output hashes independently passed.
+- **Tracked result:** [`experiments/results/P1-C.json`](../experiments/results/P1-C.json).
+- **Decision:** do not promote ASL. It is stable but not sufficiently target-stable or
+  statistically persuasive; the predeclared ranking/consistency gate therefore fails.
+  Keep ASL OOF predictions only for a later diversity audit and advance P1-D with
+  P0-B as the primary configuration.
 
-## Latest completed run
+## Previous completed run
 
 ### P1-B — query and pooling controls
 
@@ -164,3 +179,6 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-01:** All P1-B controls underperformed P0-B. Shared attention and mean
   pooling were slightly worse; max pooling was much less stable. Target-specific
   query attention remains baseline and P1-C becomes next.
+- **2026-09-01:** P1-C ASL independently validated at 0.800046 (`+0.003257`),
+  but its interval crosses zero and Fracture declined by 0.03611. ASL is not promoted,
+  ranking/consistency is skipped under the frozen gate, and P1-D becomes next.

@@ -145,6 +145,14 @@ attention scored 0.794658, masked mean 0.794122, and masked max 0.780986 versus
 purges, and hashes passed. This suggests diagnosis-specific spatial weighting is
 useful, while max pooling is too unstable for these 18 window tokens.
 
+The P1-C objective ablation extended the official asymmetric loss continuously to
+the fixed soft targets and retained the existing agreement weights. It scored
+0.800046 (`+0.003257` versus weighted BCE), but the paired 95% interval
+`[-0.008962, 0.015640]` crossed zero and Fracture declined by 0.03611. The loss was
+numerically and operationally stable, yet it failed the predeclared target-stability
+gate. It is not promoted, and ranking/consistency variants are skipped to avoid
+objective overfitting on 58 expert rows. Weighted BCE remains the primary baseline.
+
 ## Experiment ladder
 
 Changes graduate only after repeated OOF evidence and runtime accounting. The

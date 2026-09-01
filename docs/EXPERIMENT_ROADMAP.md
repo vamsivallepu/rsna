@@ -114,7 +114,15 @@ declined. It was not promoted; P0-B remained the baseline for P1-B.
 `[-0.007557, 0.002770]`), masked mean 0.794122 (`-0.002666`, interval
 `[-0.009680, 0.003682]`), and masked max 0.780986 (`-0.015802`, interval
 `[-0.036439, 0.006588]`). No control is promoted. Target-specific query attention
-remains the P1-C baseline, and P1-C is next.
+remains the P1-C baseline.
+
+**P1-C result:** asymmetric loss scored 0.800046 versus P0-B's 0.796788
+(`+0.003257`; paired 95% interval `[-0.008962, 0.015640]`; probability of a
+positive delta `0.6932`). Eight targets improved, but Fracture declined by 0.03611.
+The candidate is stable but inconclusive and fails the predeclared target-stability
+gate, so it is not promoted and ranking/consistency losses are not attempted. P1-D
+is next with P0-B as the primary configuration; P1-A and P1-C may enter only its
+matched repeated-seed audit, not become target-specific tuning branches.
 
 ### P2–P4 — high-value image models
 

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P1-C",
+  "status": "validated",
+  "date": "2026-09-01",
+  "description": "Official-default asymmetric loss extended continuously to fixed soft labels",
+  "code_commit": "5559d04869cfa35dfa785dc0a9fe361848f06e3b",
+  "raw_artifact_path": "outputs/experiments/P1-C-asymmetric-focal-loss",
+  "raw_manifest_sha256": "cf9bb20da24f33286d7e3cbf74055bcafbe764e0878933210d1498a7cb5e8dd6",
+  "validated": true,
+  "validation": {
+    "loss_contract_recomputed": true,
+    "saved_heads_reproduced_predictions": true,
+    "paired_bootstrap_recomputed": true,
+    "source_and_output_hashes_verified": true,
+    "expert_oof_rows": 58,
+    "report_hash_overlap_in_training": 0
+  },
+  "config": {
+    "seed": 20260831,
+    "folds": 5,
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.001,
+    "objective": "soft-label asymmetric loss",
+    "gamma_neg": 4.0,
+    "gamma_pos": 1.0,
+    "probability_clip": 0.05,
+    "focal_weight_gradient_detached": false,
+    "label_weights": "current three-source agreement weights",
+    "report_group_purge": true
+  },
+  "loss_contract": {
+    "gamma_zero_clip_zero_matches_weighted_bce": true,
+    "identity_max_abs_error": 2.220446049250313e-16,
+    "default_loss_and_gradient_finite": true
+  },
+  "data_audit": {
+    "studies": 4407,
+    "expert_studies": 58,
+    "pseudo_studies": 4349,
+    "excluded_pseudo_studies": 4,
+    "token_shape": [4407, 6, 3, 768]
+  },
+  "baseline": {
+    "id": "P0-B target-query head with weighted BCE",
+    "macro_auc": 0.7967882566762247
+  },
+  "result": {
+    "macro_auc": 0.8000455220311573,
+    "delta": 0.003257265354932648,
+    "bootstrap_ci_95": [-0.008962280660993133, 0.015640166738827538],
+    "probability_delta_gt_zero": 0.6932,
+    "targets_improved": 8,
+    "targets_declined": 4,
+    "target_auc": {
+      "ACL": {"auc": 0.7794117647058824, "delta": 0.014705882352941235},
+      "MCL": {"auc": 0.743764172335601, "delta": 0.024943310657596474},
+      "Medial Meniscus": {"auc": 0.796875, "delta": 0.013221153846153966},
+      "Lateral Meniscus": {"auc": 0.7329192546583851, "delta": -0.013664596273291862},
+      "Medial OA": {"auc": 0.9131782945736434, "delta": -0.006201550387596844},
+      "Lateral OA": {"auc": 0.8123791102514507, "delta": -0.0019342359767892114},
+      "PF OA": {"auc": 0.7927927927927928, "delta": 0.009009009009009028},
+      "Effusion": {"auc": 0.8906832298136647, "delta": 0.016149068322981464},
+      "Synovitis": {"auc": 0.6893667861409796, "delta": 0.005973715651134914},
+      "Baker's": {"auc": 0.858695652173913, "delta": -0.007246376811594235},
+      "Contusion": {"auc": 0.8502024291497976, "delta": 0.020242914979757054},
+      "Fracture": {"auc": 0.7402777777777778, "delta": -0.036111111111111094}
+    }
+  },
+  "elapsed_seconds": 384.7389578819275,
+  "source_sha256": {
+    "dino_token_features.npy": "8887dcbce2078820017212a39fb0772dc1267ebc42ad811dc5e334bfb1450ab7",
+    "dino_window_mask.npy": "009b3f434a543da43760984cb8ff007a0de844fc229214c9c571c464b7e3cf96",
+    "training_targets.csv": "ca63cfff863c87286e07a8059fee88f86ff8b3f4b640a98078d62113f6b93f2a",
+    "dino_pseudo_adapted_model.pt": "bce607bec36b63983668b32e7a0e693eccc70b3540ab34c7c8ed78a55548365c",
+    "dino_feature_studies.csv": "efc63afee30345f94a916f98ba6b30f266fccfe2976b8475fa86653b2c510513",
+    "train.csv": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33",
+    "P0_manifest.json": "58b66e76a91537d2f9f4ed8677c9588aa0c8e7392e6731016cd38e841073fcfc",
+    "P0_B_oof_predictions.csv": "6511feefaf8eddd6a1c776bbb2374164909dc0375ddacdc9832a1fdc486067d7"
+  },
+  "decision": "Do not promote ASL over weighted BCE. The point estimate is positive and eight targets improve, but the paired interval crosses zero, bootstrap support is weak, and Fracture declines materially. Do not add ranking or consistency loss under the predeclared gate. Retain the predictions only as a possible future ensemble-diversity candidate; P0-B remains the primary baseline for P1-D."
+}
