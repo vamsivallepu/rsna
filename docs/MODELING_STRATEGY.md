@@ -127,27 +127,13 @@ than tune target-specific choices against 58 labels.
 
 ## Experiment ladder
 
-Changes graduate only after repeated OOF evidence and runtime accounting.
-
-1. **Complete:** frozen RadImageNet baseline establishing extraction runtime, failure
-   rate, slot coverage, and expert OOF AUC.
-2. **Next:** geometry and coverage ablations: 130/150 mm crops, additional positions,
-   central versus broader volume sampling, and physical order versus instance-number
-   fallback.
-3. **Planned:** teacher ablations: mean versus rank supervision, unanimity masking,
-   label smoothing, and student-teacher blending. Keep all choices global rather than
-   target-tuned.
-4. **In progress:** backbone comparison at identical geometry. DINOv2-small at 224
-   pixels is complete; DINOv2-base and a compact convolutional encoder remain.
-5. **Initial adaptation complete:** the first DINOv2 run unfroze its final two blocks.
-   Repeat fine-tuning only after cheap token/head and geometry experiments identify a
-   robust configuration.
-6. **Planned:** five folds and 336/392 pixels only for configurations that clear the
-   cheap ablation gate.
-7. **Planned:** rank-average genuinely diverse backbones/geometry; do not ensemble many
-   near-duplicates merely because public LB noise rewards them.
-8. **Planned:** maintain a smaller slice/window count and single compact backbone for
-   the separate runtime-aware prize.
+Changes graduate only after repeated OOF evidence and runtime accounting. The
+canonical, compaction-safe execution order is now maintained in
+[`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md); completed and failed runs are
+recorded in [`EXPERIMENT_LOG.md`](EXPERIMENT_LOG.md). In short: harden validation,
+finish cheap cached-token ablations, compare a high-coverage compact CoAtNet with a
+higher-resolution DINOv2-small model, pay for five end-to-end folds only for the
+winner, and then test licensed foundation/auxiliary data and diverse ensembles.
 
 ## Validation guardrails
 

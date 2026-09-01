@@ -1,0 +1,76 @@
+# Experiment log
+
+Last updated: 2026-09-01
+
+This is the durable run and decision record. The ordered plan and acceptance rules
+live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
+`queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
+
+## Baseline registry
+
+| ID | Status | Experiment | Validation result | Decision |
+|---|---|---|---:|---|
+| B00 | validated | Fixed three-report-model arithmetic-mean teacher | 0.894811 macro AUC on 58 expert rows | Use as fixed pseudo-label source; not an image inference model |
+| B01 | validated | Frozen RadImageNet ResNet-50, six-slot attention head | 0.6943 five-fold expert OOF | Superseded; established extraction and geometry baseline |
+| B02 | validated | L2-normalized mean-pooled ridge on B01 cache | 0.7053 five-fold expert OOF | Rejected as next direction; frozen global representation is limiting |
+| B03 | validated | Pseudo-only adapted DINOv2-small, direct untouched expert gate | 0.7851916 macro AUC | Representation promoted to fold-head evaluation |
+| B04 | validated | Adapted DINO tokens plus five fold-specific query heads | 0.7976172 expert OOF | Current image baseline; report-group purge not yet applied |
+
+### B04 target-wise OOF AUC
+
+| Target | AUC | Target | AUC |
+|---|---:|---|---:|
+| ACL | 0.768382 | MCL | 0.714286 |
+| Medial Meniscus | 0.786058 | Lateral Meniscus | 0.751553 |
+| Medial OA | 0.919380 | Lateral OA | 0.814313 |
+| PF OA | 0.779923 | Effusion | 0.875776 |
+| Synovitis | 0.685783 | Baker's | 0.869565 |
+| Contusion | 0.828610 | Fracture | 0.777778 |
+
+B04 used seed `20260831`, 224 px images, 130 mm crops, six acquisition slots,
+three positions per slot, three pseudo-only adaptation epochs, and 30 head epochs.
+The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validator is
+[`scripts/validate_dino_adaptation_outputs.py`](../scripts/validate_dino_adaptation_outputs.py).
+
+## Active run
+
+### P0 — paired report-group purge audit
+
+- **Status:** running
+- **Hypothesis:** duplicate normalized reports allow pseudo-labelled twins of a held
+  expert study into its fold-head training set; purging them gives a more honest OOF
+  estimate and may change generalization.
+- **Parent:** B04.
+- **Data audit:** Unicode-alphanumeric normalized report hashes produce 52 duplicate
+  groups containing 223 studies. One group contains one expert study and four pseudo
+  studies. No expert-expert duplicate group was found in the current metadata.
+- **Arms:** P0-A paired baseline replay and P0-B fold-wise report-twin purge.
+- **Constants:** original five expert folds, adapted-head initialization, 30 epochs,
+  weighted BCE, AdamW `lr=2e-4`, `weight_decay=1e-3`, batch size 256, matched per-fold
+  seeds, and the existing DINO token cache.
+- **Success checks:** every expert row predicted exactly once; zero training/validation
+  report-hash overlap in P0-B; finite predictions; metrics independently recomputed.
+- **Raw artifact location:** `outputs/experiments/P0-report-group-purged-dino-oof/`
+  (local and intentionally ignored by Git).
+- **Result:** pending.
+
+## Queued next runs
+
+| ID | Status | Run | Dependency |
+|---|---|---|---|
+| P1-A | queued | Agreement-weight versus raw uncertainty-weight supervision | Validated P0 runner and purge contract |
+| P1-B | queued | Query/head pooling controls | P1-A or P0 winner |
+| P1-C | queued | BCE versus asymmetric/ranking/consistency objectives | P1-B winner |
+| P1-D | queued | Repeated-seed regularization confirmation | Best P1 candidate |
+| P2 | queued | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 decision and versioned pixel-cache notebook |
+| P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
+| P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
+| P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
+
+## Decision history
+
+- **2026-09-01:** Made the roadmap and this log canonical so ordering, assumptions,
+  failures, and results do not depend on conversation retention.
+- **2026-09-01:** Inserted P0 before architecture work after finding normalized report
+  duplicates crossing the expert/pseudo boundary. P0 reuses tokens and does not repeat
+  DICOM caching.

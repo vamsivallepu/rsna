@@ -14,8 +14,9 @@ public dependencies are kept locally and are excluded from version control.
 4. Train leakage-safe five-fold attention heads and score all 58 expert studies
    exactly once out of fold. The first verified DINOv2 run reached **0.7976** macro
    OOF AUC, up from **0.6943** for the frozen RadImageNet attention baseline.
-5. Promote only repeatable OOF improvements through the experiment ladder in
-   [`docs/MODELING_STRATEGY.md`](docs/MODELING_STRATEGY.md).
+5. Promote only repeatable OOF improvements through the canonical ordered roadmap in
+   [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
+   in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
 
 ## Key artifacts
 
@@ -25,6 +26,10 @@ public dependencies are kept locally and are excluded from version control.
   [`docs/KAGGLE_NOTEBOOK_WORKFLOW.md`](docs/KAGGLE_NOTEBOOK_WORKFLOW.md)
 - Evidence, validation contract, and experiment ladder:
   [`docs/MODELING_STRATEGY.md`](docs/MODELING_STRATEGY.md)
+- Canonical ordered experiment queue and promotion gates:
+  [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md)
+- Durable baseline, run, result, and decision history:
+  [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md)
 - Reproducible notebook builders: [`scripts/`](scripts/)
 - Kaggle-ready private notebook bundles: [`kaggle/`](kaggle/)
 
