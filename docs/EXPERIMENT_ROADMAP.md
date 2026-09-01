@@ -88,8 +88,11 @@ Run in this order and change one dimension at a time:
    raw confidence `2*abs(p-0.5)`, where raw `0.5` means the report did not address
    that finding and receives zero loss weight. Keep the fixed consensus targets
    unchanged. The Steven v4 synovitis repair is already present; do not apply it again.
-2. **P1-B head:** current target-query attention versus shared attention plus
-   target-specific output, and mean/max/query pooling controls.
+2. **P1-B head:** current target-query attention versus three predeclared controls:
+   one shared attention query plus target-specific output, masked mean pooling, and
+   masked max pooling. Every control inherits the adapted projection, slot/position
+   embeddings, target weights, and bias; the shared query starts as the mean of the
+   12 adapted target queries. All other training settings remain fixed to P0-B.
 3. **P1-C objective:** weighted BCE versus asymmetric focal loss; add pairwise ranking
    or consistency only if the simpler objective is stable.
 4. **P1-D regularization:** global dropout/weight decay and two repeated seeds for

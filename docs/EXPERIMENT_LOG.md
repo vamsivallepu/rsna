@@ -99,6 +99,24 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
+## Active run
+
+### P1-B — query and pooling controls
+
+- **Status:** implementation and smoke validation.
+- **Baseline:** P0-B target-specific query attention at 0.7967883.
+- **P1-B1:** one shared attention query, target-specific output.
+- **P1-B2:** masked mean pooling, target-specific output.
+- **P1-B3:** masked max pooling, target-specific output.
+- **Initialization:** load the adapted projection, slot/position embeddings, target
+  weights, and target bias for all controls; initialize the shared query as the mean
+  of the 12 adapted target queries.
+- **Constants:** current agreement label weights, report-group-purged folds, 30 epochs,
+  weighted BCE, AdamW `lr=2e-4`, `weight_decay=1e-3`, batch size 256, and matched seeds.
+- **Promotion rule:** observed macro alone does not select a head. Require target
+  stability and paired uncertainty; a small winner advances only to repeated-seed P1-D.
+- **Raw artifact location:** `outputs/experiments/P1-B-head-pooling-controls/`.
+
 ## Decision history
 
 - **2026-09-01:** Made the roadmap and this log canonical so ordering, assumptions,
