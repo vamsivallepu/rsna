@@ -84,9 +84,10 @@ negligible and statistically inconclusive. P0-B is the comparison baseline for P
 
 Run in this order and change one dimension at a time:
 
-1. **P1-A label weights:** current agreement weights versus raw uncertainty weights
-   from the fixed report teacher. The Steven v4 synovitis repair is already present;
-   do not apply it again.
+1. **P1-A label weights:** current agreement weights versus Steven v1's documented
+   raw confidence `2*abs(p-0.5)`, where raw `0.5` means the report did not address
+   that finding and receives zero loss weight. Keep the fixed consensus targets
+   unchanged. The Steven v4 synovitis repair is already present; do not apply it again.
 2. **P1-B head:** current target-query attention versus shared attention plus
    target-specific output, and mean/max/query pooling controls.
 3. **P1-C objective:** weighted BCE versus asymmetric focal loss; add pairwise ranking

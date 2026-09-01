@@ -58,9 +58,9 @@ python3 scripts/download_representative_sample.py
 The ignored sample tree also holds dependencies used to execute the modeling
 notebooks locally without the full MRI archive:
 
-- `data/sample/public_weak_labels/`: 3.0 MB containing the three public LLM
-  sources plus the multilingual NLI audit scores. The source Kaggle datasets are
-  CC0.
+- `data/sample/public_weak_labels/`: the three public LLM sources, Steven's raw
+  v1 labels used only for the P1-A `2*abs(p-0.5)` confidence ablation, and the
+  multilingual NLI audit scores. The source Kaggle datasets are CC0.
 - `data/sample/models/ResNet50.pt`: the 94 MB RadImageNet ResNet-50 checkpoint
   from `marwanmath/resnet-50-radimagenet-marwan` (CC BY-NC-SA 4.0).
 - `data/sample/models/dinov2-small/`: the official Kaggle-hosted Meta

@@ -68,7 +68,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 | ID | Status | Run | Dependency |
 |---|---|---|---|
-| P1-A | **next** | Agreement-weight versus raw uncertainty-weight supervision | Validated P0 runner and purge contract |
+| P1-A | **next** | Agreement weight versus documented raw `2*abs(p-0.5)` not-addressed confidence; targets unchanged | Validated P0 runner and purge contract |
 | P1-B | queued | Query/head pooling controls | P1-A or P0 winner |
 | P1-C | queued | BCE versus asymmetric/ranking/consistency objectives | P1-B winner |
 | P1-D | queued | Repeated-seed regularization confirmation | Best P1 candidate |
