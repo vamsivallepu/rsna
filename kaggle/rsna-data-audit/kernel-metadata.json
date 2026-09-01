@@ -1,0 +1,16 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-abnormality-detection-data-audit",
+  "title": "RSNA Knee Abnormality Detection - Data Audit",
+  "code_file": "rsna-data-audit.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "false",
+  "enable_tpu": "false",
+  "enable_internet": "false",
+  "machine_shape": "",
+  "dataset_sources": [],
+  "competition_sources": ["rsna-knee-abnormality-detection"],
+  "kernel_sources": [],
+  "model_sources": []
+}

@@ -1,0 +1,95 @@
+# RSNA/Kaggle competition data is licensed separately and must not be
+# redistributed through this source repository. Keep only its documentation.
+data/*
+!data/README.md
+
+# Generated notebook builds and experiment outputs
+output/
+outputs/
+artifacts/
+checkpoints/
+logs/
+wandb/
+mlruns/
+lightning_logs/
+
+# Feature, pixel, and model caches
+cache/
+caches/
+cached_data/
+.cache/
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.joblib
+*.pkl
+
+# Medical imaging and large dataset formats
+*.dcm
+*.dicom
+*.nii
+*.nii.gz
+*.h5
+*.hdf5
+*.parquet
+*.feather
+
+# Downloaded archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+
+# Python environments, bytecode, packaging, and test caches
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.deps/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter transient state
+.ipynb_checkpoints/
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+.kaggle/
+kaggle.json
+credentials*.json
+auth.json
+*.pem
+*.key
+*.token
+
+# Editor and operating-system files
+/.agents/
+/.codex/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~

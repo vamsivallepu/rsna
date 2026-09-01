@@ -1,0 +1,118 @@
+# Kaggle notebook workflow
+
+## Current remote notebooks
+
+| Purpose | Kaggle notebook | Accelerator | State |
+|---|---|---|---|
+| Full metadata/DICOM audit | [rsna-knee-abnormality-detection-data-audit](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-abnormality-detection-data-audit) | CPU | Version 2 verified complete |
+| Report weak supervision | [rsna-knee-report-weak-supervision](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-report-weak-supervision) | CPU | Version 1 verified complete; outputs downloaded and byte-checked |
+| 2.5D image baseline | [rsna-knee-2-5d-radimagenet-baseline](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-2-5d-radimagenet-baseline) | Nvidia Tesla T4 | Version 3 verified complete; 4,407/4,407 usable, macro OOF AUC 0.6943 |
+| DINOv2 pseudo adaptation | [rsna-knee-dinov2-pseudo-adaptation](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-dinov2-pseudo-adaptation) | Nvidia Tesla T4 | Version 1 verified complete; 4,407/4,407 usable, direct expert AUC 0.7852, fold-head OOF AUC 0.7976 |
+
+All notebooks are private with internet disabled. The verified competition mount is
+`/kaggle/input/competitions/rsna-knee-abnormality-detection`.
+
+The successful remote run loaded all 4,407 training studies and 24,371 series,
+confirmed 58 fully labeled and 4,349 unlabeled studies, and decoded all six
+selected complete MRI series. The downloaded remote audit is under
+`outputs/kaggle/rsna-data-audit/`.
+
+The verified report-teacher run generated fixed-consensus soft targets for all
+4,407 studies. Its remote `training_targets.csv` exactly matches the locally
+verified artifact (SHA-256
+`ca63cfff863c87286e07a8059fee88f86ff8b3f4b640a98078d62113f6b93f2a`).
+
+The verified DINOv2 run cached all 4,407 studies in 128.1 minutes with zero
+failures and 18 valid windows per study, then completed all three pseudo-only
+backbone-adaptation epochs and five fold-safe head fits. The downloaded model,
+feature cache, masks, predictions, metrics, and teacher targets passed the local
+integrity checker. The untouched-expert direct macro AUC is **0.7852** and the
+five-fold head OOF macro AUC is **0.7976**.
+
+The 116.2 MiB adapted token cache is retained in the downloaded outputs and can be
+reused for head-only experiments without decoding DICOM again. The 11.12 GiB pixel
+cache was temporary and is not in the notebook outputs, so changes to image geometry
+or backbone adaptation currently require rebuilding it. Before the next such run,
+publish the deterministic pixel cache as a private Kaggle Dataset if its storage and
+attachment costs are preferable to another roughly 128-minute preprocessing pass.
+
+## Local and deployment artifacts
+
+- Executed local notebook: `output/jupyter-notebook/rsna-data-exploration.ipynb`
+- Clean Kaggle source: `kaggle/rsna-data-audit/rsna-data-audit.ipynb`
+- Kaggle metadata: `kaggle/rsna-data-audit/kernel-metadata.json`
+- Reproducible builder: `scripts/build_kaggle_notebook.py`
+
+- Executed local teacher notebook: `output/jupyter-notebook/rsna-report-weak-supervision.ipynb`
+- Clean teacher source and metadata: `kaggle/rsna-report-weak-supervision/`
+- Teacher builder: `scripts/build_report_weak_supervision_notebook.py`
+- Local public-label audit helper: `scripts/audit_public_weak_labels.py`
+
+- Executed local image smoke notebook: `output/jupyter-notebook/rsna-2p5d-gpu-baseline.ipynb`
+- Clean GPU source and metadata: `kaggle/rsna-2p5d-gpu-baseline/`
+- GPU notebook builder: `scripts/build_gpu_baseline_notebook.py`
+
+- Executed local DINO smoke notebook: `output/jupyter-notebook/rsna-dinov2-pseudo-adaptation.ipynb`
+- Clean DINO source and metadata: `kaggle/rsna-dinov2-pseudo-adaptation/`
+- DINO notebook builder: `scripts/build_dino_adaptation_notebook.py`
+- Downloaded verified DINO outputs: `outputs/kaggle/rsna-dinov2-pseudo-adaptation/`
+- Full-output integrity checker: `scripts/validate_gpu_baseline_outputs.py`
+- DINO full-output integrity checker: `scripts/validate_dino_adaptation_outputs.py`
+- Reconnect-safe Kaggle log monitor: `scripts/follow_kaggle_milestones.py`
+
+The local notebook is executed against the representative DICOM sample. The
+clean deployment notebook uses the same UIDs and loader against Kaggle's full
+mounted competition source.
+
+## Update and run
+
+Rebuild both notebook forms after changing the builder:
+
+```bash
+python3 scripts/build_kaggle_notebook.py
+python3 scripts/build_kaggle_notebook.py \
+  --output kaggle/rsna-data-audit/rsna-data-audit.ipynb
+```
+
+Run locally before uploading:
+
+```bash
+jupyter nbconvert --execute --to notebook --inplace \
+  --ExecutePreprocessor.timeout=600 \
+  output/jupyter-notebook/rsna-data-exploration.ipynb
+```
+
+Upload a new private version; Kaggle automatically starts execution:
+
+```bash
+kaggle kernels push -p kaggle/rsna-data-audit -t 1200
+```
+
+Inspect the remote run:
+
+```bash
+kaggle kernels status \
+  vallepuvamsikrishna/rsna-knee-abnormality-detection-data-audit
+kaggle kernels logs \
+  vallepuvamsikrishna/rsna-knee-abnormality-detection-data-audit
+kaggle kernels output \
+  vallepuvamsikrishna/rsna-knee-abnormality-detection-data-audit \
+  -p outputs/kaggle/rsna-data-audit
+```
+
+## GPU policy
+
+The data-audit and report-teacher notebooks are CPU-only. Both image-model notebooks
+use GPU. Their exact DICOM preprocessing, checkpoint load, feature extraction,
+attention-head forward pass, backward pass, and optimizer update must pass locally
+before each new remote GPU version is launched.
+
+The image notebook prefers the successful output of the report-teacher notebook when
+attached. It also has a deterministic fallback that rebuilds the same fixed three-LLM
+mean contract directly from the three public source datasets, so GPU execution does not
+depend on Kaggle CPU-queue timing.
+
+The DINO notebook attaches Kaggle's official Meta DINOv2-small model source and never
+uses third-party competition-trained weights. Backbone adaptation uses only the 4,349
+pseudo-labelled rows; the 58 expert studies remain untouched until direct evaluation or
+fold-safe head fitting.
