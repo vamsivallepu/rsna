@@ -153,6 +153,15 @@ numerically and operationally stable, yet it failed the predeclared target-stabi
 gate. It is not promoted, and ranking/consistency variants are skipped to avoid
 objective overfitting on 58 expert rows. Weighted BCE remains the primary baseline.
 
+P1-D closed cached-token tuning with a factor-at-a-time dropout/weight-decay screen
+and matched repeats at two additional training seeds. Dropout `0.10` and `0.30`
+were slightly worse than the default. Weight decay `3e-4` and `3e-3` preserved the
+primary-seed AUC exactly; the declared `3e-4` confirmation arm then tied default on
+all 12 targets at all three seeds and in the seed ensemble. Independent replay of
+40 heads passed. P1 therefore promotes no change: weighted BCE, dropout `0.20`,
+weight decay `1e-3`, and the target-query head remain frozen for the P2 comparison.
+Further head tuning is lower value than improving pixel coverage and representation.
+
 ## Experiment ladder
 
 Changes graduate only after repeated OOF evidence and runtime accounting. The

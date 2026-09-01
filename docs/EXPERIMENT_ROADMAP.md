@@ -48,8 +48,8 @@ later expensive stage advances only after its prerequisites pass.
 | Order | ID | State | Experiment | Compute / cache | Promotion gate |
 |---:|---|---|---|---|---|
 | 0 | **P0** | validated | Validation hardening: paired replay of the current DINO head and report-group-purged OOF training | Local CPU; existing token cache | Passed: all 58 rows OOF, zero purged overlap, saved-head and hash validation |
-| 1 | **P1** | in progress | Cached-token head and objective ablations | Local CPU; existing token cache | Improve purged macro AUC or show stable target gains without a material regression |
-| 2 | **P2** | queued | Strong compact convolutional baseline: CoAtNet-RMLP2-style model at about 384 px with fuller physical slice coverage | Kaggle GPU; new pixel cache | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
+| 1 | **P1** | validated | Cached-token head and objective ablations | Local CPU; existing token cache | Closed after P1-D; no change promoted over P0-B |
+| 2 | **P2** | **next** | Strong compact convolutional baseline: CoAtNet-RMLP2-style model at about 384 px with fuller physical slice coverage | Kaggle GPU; new pixel cache | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
 | 3 | **P3** | queued | DINOv2-small at 336 px with fuller coverage, LoRA/last-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse P2 pixel cache when compatible | Clear validation gain over P0/P2 with stable targets and acceptable runtime |
 | 4 | **P4** | queued | Five end-to-end folds for only the winning P2/P3 configuration | Kaggle GPU; winning cache | Fold-safe representation training and repeatable pooled OOF improvement |
 | 5 | **P5** | queued | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
@@ -114,7 +114,8 @@ Run in this order and change one dimension at a time:
    and paired-bootstrap probability of a positive ensemble delta at least `0.80`.
    Whether it promotes or not, P1-D closes P1 and hands a frozen configuration to P2.
 
-Only a P1 winner is allowed to influence the expensive P2/P3 notebook.
+Only a promoted P1 change may influence the expensive P2/P3 notebook. Because no
+change passed, P0-B supplies the frozen head/loss reference for their comparisons.
 
 **P1-A result:** raw not-addressed weighting scored 0.800197 versus the 0.796788
 P0-B baseline (`+0.003409`; paired 95% interval `[-0.010395, 0.015791]`). The
@@ -135,6 +136,14 @@ gate, so it is not promoted and ranking/consistency losses are not attempted. P1
 uses P0-B as the primary configuration. The now-frozen P1-D scope does not combine
 or repeat P1-A/P1-C; their OOF predictions remain available only for a later diversity
 audit, not as target-specific tuning branches.
+
+**P1-D result:** the primary-seed screen scored 0.795970 for dropout `0.10`,
+0.796559 for dropout `0.30`, and exactly 0.796788 for both weight decay `3e-4`
+and `3e-3`, versus P0-B's 0.796788. The declared tie order selected `3e-4` for
+confirmation. At seeds `20260831`, `20260901`, and `20260902`, candidate-minus-default
+macro deltas were exactly `0.0`, and every target AUC also tied in the three-seed
+ensemble (`0.798224` for both). No arm passes the frozen promotion gate. Retain
+P0-B's dropout `0.20` and weight decay `1e-3`, close P1, and proceed to P2.
 
 ### P2–P4 — high-value image models
 

@@ -19,6 +19,7 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P1-A | repeat | Raw Steven `2*abs(p-0.5)` pseudo-cell confidence weights | 0.8001969 purged expert OOF | Do not promote: +0.0034 is inconclusive and driven by Synovitis |
 | P1-B | validated | Shared attention, masked mean, and masked max controls | Best control 0.7946578 purged expert OOF | No control promoted; retain P0-B target queries |
 | P1-C | validated | Official-default asymmetric loss with fixed soft labels | 0.8000455 purged expert OOF | Do not promote; positive point estimate is inconclusive and Fracture declined |
+| P1-D | validated | Global regularization screen and matched repeated seeds | Three-seed candidate/default ensemble both 0.7982239 | No regularization promoted; P1 closed with P0-B configuration |
 
 ### B04 target-wise OOF AUC
 
@@ -36,7 +37,7 @@ three positions per slot, three pseudo-only adaptation epochs, and 30 head epoch
 The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validator is
 [`scripts/validate_dino_adaptation_outputs.py`](../scripts/validate_dino_adaptation_outputs.py).
 
-## Latest validated run
+## Earlier validated runs
 
 ### P0 — paired report-group purge audit
 
@@ -92,16 +93,16 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 | ID | Status | Run | Dependency |
 |---|---|---|---|
-| P1-A | repeat | Agreement weight versus documented raw `2*abs(p-0.5)` not-addressed confidence; targets unchanged | +0.0034, wide interval, one-target dominated; no promotion |
+| P1-A | rejected | Agreement weight versus documented raw `2*abs(p-0.5)` not-addressed confidence; targets unchanged | +0.0034, wide interval, one-target dominated; retained only for diversity audit |
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
-| P1-D | **running** | Factor-at-a-time global regularization and matched repeated-seed confirmation | P0-B primary; frozen promotion rule closes P1 |
-| P2 | queued | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 decision and versioned pixel-cache notebook |
+| P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
+| P2 | **next** | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 complete; define and version the pixel-cache contract first |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
-## Latest completed run
+## Previous completed run
 
 ### P1-C — asymmetric focal objective
 
@@ -133,11 +134,11 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   Keep ASL OOF predictions only for a later diversity audit and advance P1-D with
   P0-B as the primary configuration.
 
-## Active run
+## Latest completed run
 
 ### P1-D — global regularization and repeated-seed confirmation
 
-- **Status:** implementation and smoke validation.
+- **Status:** independently validated; no regularization arm promoted; P1 closed.
 - **Primary-seed screen:** dropout `0.10`/`0.30` at the default weight decay and
   weight decay `3e-4`/`3e-3` at the default dropout; one factor changes per arm.
 - **Default:** P0-B weighted BCE, target-query head, dropout `0.20`, weight decay
@@ -154,6 +155,18 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   cached-token tuning and hands either the promoted arm or unchanged P0-B to P2.
 - **Raw artifact location:**
   `outputs/experiments/P1-D-regularization-seed-confirmation/`.
+- **Screen result:** dropout `0.10` scored `0.7959703` (`-0.0008180`) and dropout
+  `0.30` scored `0.7965593` (`-0.0002290`). Weight decay `3e-4` and `3e-3`
+  both tied P0-B exactly at `0.7967883`; declared ordering selected `3e-4`.
+- **Seed confirmation:** candidate-minus-default macro deltas were exactly zero at
+  all three seeds. Default/candidate seed-ensemble macro AUC was `0.7982239` for
+  both, every target AUC tied, and the paired interval was `[0.0, 0.0]`.
+- **Runtime and validation:** 2,145.7 seconds on four CPU threads; all 40 heads,
+  eight trained-run OOF files, four purges, metrics, ensemble, bootstrap, and every
+  source/output hash independently reproduced.
+- **Tracked result:** [`experiments/results/P1-D.json`](../experiments/results/P1-D.json).
+- **Decision:** promote nothing. Retain dropout `0.20`, weight decay `1e-3`, weighted
+  BCE, and the P0-B target-query head. P1 is closed and P2 is next.
 
 ## Previous completed run
 
@@ -204,3 +217,6 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-01:** P1-C ASL independently validated at 0.800046 (`+0.003257`),
   but its interval crosses zero and Fracture declined by 0.03611. ASL is not promoted,
   ranking/consistency is skipped under the frozen gate, and P1-D becomes next.
+- **2026-09-01:** P1-D screened four global regularization arms and confirmed the
+  selected lower-weight-decay arm at two additional seeds. It tied the default on
+  every target and seed; no arm is promoted, P1 closes with P0-B, and P2 becomes next.

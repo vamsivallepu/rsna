@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P1-D",
+  "status": "validated",
+  "date": "2026-09-01",
+  "description": "Factor-at-a-time global regularization screen with matched repeated-seed confirmation",
+  "code_commit": "76eb1661b3dbb95c963f62fcd9a200fc870eb1f2",
+  "raw_artifact_path": "outputs/experiments/P1-D-regularization-seed-confirmation",
+  "raw_manifest_sha256": "0f5dd2a463e59c038df345e660c221f22719cbfa0d83a89d7e5a0d1355dab707",
+  "validated": true,
+  "validation": {
+    "trained_runs": 8,
+    "saved_heads_reproduced_predictions": 40,
+    "paired_bootstrap_recomputed": true,
+    "source_and_output_hashes_verified": true,
+    "expert_oof_rows_per_run": 58,
+    "report_hash_overlap_in_training": 0
+  },
+  "config": {
+    "fold_seed": 20260831,
+    "repeat_training_seeds": [20260901, 20260902],
+    "folds": 5,
+    "epochs": 30,
+    "batch_size": 256,
+    "learning_rate": 0.0002,
+    "objective": "weighted BCE",
+    "default": {"dropout": 0.2, "weight_decay": 0.001},
+    "screen": {
+      "dropout_0_10": {"dropout": 0.1, "weight_decay": 0.001},
+      "dropout_0_30": {"dropout": 0.3, "weight_decay": 0.001},
+      "weight_decay_3e_4": {"dropout": 0.2, "weight_decay": 0.0003},
+      "weight_decay_3e_3": {"dropout": 0.2, "weight_decay": 0.003}
+    },
+    "fixed_expert_folds_across_seeds": true,
+    "label_weights": "current three-source agreement weights",
+    "report_group_purge": true
+  },
+  "data_audit": {
+    "studies": 4407,
+    "expert_studies": 58,
+    "pseudo_studies": 4349,
+    "excluded_pseudo_studies": 4,
+    "token_shape": [4407, 6, 3, 768]
+  },
+  "primary_seed_screen": {
+    "baseline_macro_auc": 0.7967882566762247,
+    "results": {
+      "dropout_0_10": {"macro_auc": 0.795970274553993, "delta": -0.0008179821222316086, "nonnegative_targets": 8, "worst_target_delta": -0.006802721088435382},
+      "dropout_0_30": {"macro_auc": 0.7965592797473008, "delta": -0.0002289769289238741, "nonnegative_targets": 8, "worst_target_delta": -0.0038610038610038533},
+      "weight_decay_3e_4": {"macro_auc": 0.7967882566762247, "delta": 0.0, "nonnegative_targets": 12, "worst_target_delta": 0.0},
+      "weight_decay_3e_3": {"macro_auc": 0.7967882566762247, "delta": 0.0, "nonnegative_targets": 12, "worst_target_delta": 0.0}
+    },
+    "selected_configuration": "weight_decay_3e_4",
+    "selection_note": "Both weight-decay arms tied the baseline exactly; the declared order selected weight_decay_3e_4."
+  },
+  "confirmation": {
+    "per_seed": {
+      "20260831": {"default_macro_auc": 0.7967882566762247, "candidate_macro_auc": 0.7967882566762247, "delta": 0.0},
+      "20260901": {"default_macro_auc": 0.7991584282172969, "candidate_macro_auc": 0.7991584282172969, "delta": 0.0},
+      "20260902": {"default_macro_auc": 0.7978522643072606, "candidate_macro_auc": 0.7978522643072606, "delta": 0.0}
+    },
+    "mean_seed_macro_delta": 0.0,
+    "default_seed_ensemble_macro_auc": 0.7982238549925408,
+    "candidate_seed_ensemble_macro_auc": 0.7982238549925408,
+    "ensemble_macro_delta": 0.0,
+    "bootstrap_ci_95": [0.0, 0.0],
+    "probability_delta_gt_zero": 0.0,
+    "nonnegative_targets": 12,
+    "worst_target_delta": 0.0,
+    "target_auc": {
+      "ACL": 0.7732843137254902,
+      "MCL": 0.7210884353741497,
+      "Medial Meniscus": 0.7836538461538463,
+      "Lateral Meniscus": 0.746583850931677,
+      "Medial OA": 0.9224806201550386,
+      "Lateral OA": 0.8123791102514506,
+      "PF OA": 0.7773487773487774,
+      "Effusion": 0.8745341614906832,
+      "Synovitis": 0.6857825567502986,
+      "Baker's": 0.8641304347826088,
+      "Contusion": 0.8313090418353576,
+      "Fracture": 0.7861111111111111
+    },
+    "promotion_criteria": {
+      "mean_seed_delta_positive": false,
+      "seed_wins_at_least_2_of_3": false,
+      "ensemble_delta_positive": false,
+      "nonnegative_targets_at_least_8_of_12": true,
+      "worst_target_delta_above_minus_0_02": true,
+      "bootstrap_probability_at_least_0_80": false
+    },
+    "promoted": false
+  },
+  "elapsed_seconds": 2145.7142436504364,
+  "source_sha256": {
+    "dino_token_features.npy": "8887dcbce2078820017212a39fb0772dc1267ebc42ad811dc5e334bfb1450ab7",
+    "dino_window_mask.npy": "009b3f434a543da43760984cb8ff007a0de844fc229214c9c571c464b7e3cf96",
+    "training_targets.csv": "ca63cfff863c87286e07a8059fee88f86ff8b3f4b640a98078d62113f6b93f2a",
+    "dino_pseudo_adapted_model.pt": "bce607bec36b63983668b32e7a0e693eccc70b3540ab34c7c8ed78a55548365c",
+    "dino_feature_studies.csv": "efc63afee30345f94a916f98ba6b30f266fccfe2976b8475fa86653b2c510513",
+    "train.csv": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33",
+    "P0_manifest.json": "58b66e76a91537d2f9f4ed8677c9588aa0c8e7392e6731016cd38e841073fcfc",
+    "P0_B_oof_predictions.csv": "6511feefaf8eddd6a1c776bbb2374164909dc0375ddacdc9832a1fdc486067d7"
+  },
+  "decision": "Promote no regularization arm. Dropout changes were slightly worse, and both weight-decay changes preserved every target ranking exactly across all three seeds. Retain P0-B dropout 0.20 and weight decay 1e-3, close P1, and proceed to P2."
+}
