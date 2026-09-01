@@ -93,8 +93,13 @@ Run in this order and change one dimension at a time:
    masked max pooling. Every control inherits the adapted projection, slot/position
    embeddings, target weights, and bias; the shared query starts as the mean of the
    12 adapted target queries. All other training settings remain fixed to P0-B.
-3. **P1-C objective:** weighted BCE versus asymmetric focal loss; add pairwise ranking
-   or consistency only if the simpler objective is stable.
+3. **P1-C objective:** weighted BCE versus the official multi-label asymmetric loss
+   defaults (`gamma_neg=4`, `gamma_pos=1`, probability clip `0.05`). Extend its
+   positive and negative terms continuously to the fixed soft targets, retain gradients
+   through the focal factor, and apply the current agreement weights afterward. Add
+   pairwise ranking or consistency only if this simpler objective is stable and promising.
+   Primary references: [ICCV 2021 paper](https://openaccess.thecvf.com/content/ICCV2021/html/Ridnik_Asymmetric_Loss_for_Multi-Label_Classification_ICCV_2021_paper.html)
+   and [official implementation](https://github.com/Alibaba-MIIL/ASL).
 4. **P1-D regularization:** global dropout/weight decay and two repeated seeds for
    the best candidate. Do not tune target-specific settings.
 

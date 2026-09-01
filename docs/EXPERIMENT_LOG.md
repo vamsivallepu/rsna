@@ -100,6 +100,24 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
+## Active run
+
+### P1-C — asymmetric focal objective
+
+- **Status:** implementation and smoke validation.
+- **Baseline:** P0-B target-query head with weighted BCE at 0.7967883.
+- **Candidate:** the official multi-label ASL defaults: `gamma_neg=4`,
+  `gamma_pos=1`, and probability clip `0.05`, with gradients retained through the
+  focal factor.
+- **Soft-label contract:** interpolate the positive and negative ASL terms using the
+  fixed consensus `y` and `1-y`, then multiply by the unchanged agreement weight.
+  A built-in identity test must prove `gamma_neg=gamma_pos=clip=0` equals weighted BCE.
+- **Constants:** target-query architecture, adapted initialization, purged folds,
+  30 epochs, AdamW `lr=2e-4`, `weight_decay=1e-3`, batch size 256, and matched seeds.
+- **Gate:** ranking or consistency loss is attempted only if ASL is finite, target-stable,
+  and promising versus P0-B. Otherwise P1-C stops after ASL.
+- **Raw artifact location:** `outputs/experiments/P1-C-asymmetric-focal-loss/`.
+
 ## Latest completed run
 
 ### P1-B — query and pooling controls
