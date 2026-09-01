@@ -17,6 +17,7 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | B04 | validated | Adapted DINO tokens plus five fold-specific query heads | 0.7976172 expert OOF | Current image baseline; report-group purge not yet applied |
 | P0 | validated | Paired replay and report-group-purged DINO fold heads | 0.7967883 purged expert OOF | Honest cached-token baseline for P1; purge effect was negligible |
 | P1-A | repeat | Raw Steven `2*abs(p-0.5)` pseudo-cell confidence weights | 0.8001969 purged expert OOF | Do not promote: +0.0034 is inconclusive and driven by Synovitis |
+| P1-B | validated | Shared attention, masked mean, and masked max controls | Best control 0.7946578 purged expert OOF | No control promoted; retain P0-B target queries |
 
 ### B04 target-wise OOF AUC
 
@@ -83,27 +84,27 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   predictions, bootstraps, fold purges, and source/output hashes independently passed.
 - **Tracked result:** [`experiments/results/P1-A.json`](../experiments/results/P1-A.json).
 - **Decision:** do not promote or use target-specific weighting. Keep P0-B as the
-  comparison baseline, run P1-B next, and revisit P1-A only during repeated-seed
-  confirmation if later candidates support the same global change.
+  comparison baseline and revisit P1-A only during repeated-seed confirmation if
+  later candidates support the same global change. P1-B has since completed.
 
 ## Queued next runs
 
 | ID | Status | Run | Dependency |
 |---|---|---|---|
 | P1-A | repeat | Agreement weight versus documented raw `2*abs(p-0.5)` not-addressed confidence; targets unchanged | +0.0034, wide interval, one-target dominated; no promotion |
-| P1-B | **next** | Query/head pooling controls | P0-B remains the baseline |
-| P1-C | queued | BCE versus asymmetric/ranking/consistency objectives | P1-B winner |
+| P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
+| P1-C | **next** | BCE versus asymmetric/ranking/consistency objectives | P0-B target-query head remains baseline |
 | P1-D | queued | Repeated-seed regularization confirmation | Best P1 candidate |
 | P2 | queued | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 decision and versioned pixel-cache notebook |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
-## Active run
+## Latest completed run
 
 ### P1-B — query and pooling controls
 
-- **Status:** implementation and smoke validation.
+- **Status:** independently validated; no control promoted.
 - **Baseline:** P0-B target-specific query attention at 0.7967883.
 - **P1-B1:** one shared attention query, target-specific output.
 - **P1-B2:** masked mean pooling, target-specific output.
@@ -116,6 +117,18 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Promotion rule:** observed macro alone does not select a head. Require target
   stability and paired uncertainty; a small winner advances only to repeated-seed P1-D.
 - **Raw artifact location:** `outputs/experiments/P1-B-head-pooling-controls/`.
+- **Results:** shared attention `0.7946578` (`-0.0021305`, paired 95% interval
+  `[-0.0075572, 0.0027704]`); masked mean `0.7941219` (`-0.0026663`, interval
+  `[-0.0096801, 0.0036816]`); masked max `0.7809864` (`-0.0158019`, interval
+  `[-0.0364390, 0.0065878]`).
+- **Target pattern:** shared and mean improved Effusion by `+0.0224` and `+0.0248`
+  respectively, but lost enough ordering on OA, meniscus, Baker's, and/or Fracture
+  to reduce macro AUC. Max pooling produced large, unstable target swings.
+- **Runtime and validation:** 1,118.0 seconds on four CPU threads; all 15 heads,
+  predictions, three 5,000-sample bootstraps, fold purges, and hashes independently passed.
+- **Tracked result:** [`experiments/results/P1-B.json`](../experiments/results/P1-B.json).
+- **Decision:** target-specific query attention remains the baseline. Advance no
+  P1-B control; P1-C objective ablations are next.
 
 ## Decision history
 
@@ -130,3 +143,6 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-01:** P1-A independently validated at 0.800197 (`+0.003409`), but the
   interval crosses zero and the gain is driven by Synovitis. It is not promoted;
   P0-B remains baseline and P1-B becomes next.
+- **2026-09-01:** All P1-B controls underperformed P0-B. Shared attention and mean
+  pooling were slightly worse; max pooling was much less stable. Target-specific
+  query attention remains baseline and P1-C becomes next.

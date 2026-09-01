@@ -139,6 +139,12 @@ The first cached-label-weight ablation applied Steven v1's documented
 was dominated by Synovitis while seven targets declined. It is not promoted; the
 purged 0.796788 configuration remains the comparison baseline.
 
+The P1-B head controls also retained the current target-query baseline. Shared
+attention scored 0.794658, masked mean 0.794122, and masked max 0.780986 versus
+0.796788 for target-specific attention. Independent head replay, bootstraps, fold
+purges, and hashes passed. This suggests diagnosis-specific spatial weighting is
+useful, while max pooling is too unstable for these 18 window tokens.
+
 ## Experiment ladder
 
 Changes graduate only after repeated OOF evidence and runtime accounting. The

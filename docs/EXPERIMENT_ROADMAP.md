@@ -103,7 +103,13 @@ Only a P1 winner is allowed to influence the expensive P2/P3 notebook.
 **P1-A result:** raw not-addressed weighting scored 0.800197 versus the 0.796788
 P0-B baseline (`+0.003409`; paired 95% interval `[-0.010395, 0.015791]`). The
 change is inconclusive and driven by Synovitis (`+0.0669`) while seven targets
-declined. It is not promoted; P0-B remains the baseline and P1-B is next.
+declined. It was not promoted; P0-B remained the baseline for P1-B.
+
+**P1-B result:** shared attention scored 0.794658 (`-0.002130`, interval
+`[-0.007557, 0.002770]`), masked mean 0.794122 (`-0.002666`, interval
+`[-0.009680, 0.003682]`), and masked max 0.780986 (`-0.015802`, interval
+`[-0.036439, 0.006588]`). No control is promoted. Target-specific query attention
+remains the P1-C baseline, and P1-C is next.
 
 ### P2–P4 — high-value image models
 
