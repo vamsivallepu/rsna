@@ -98,7 +98,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
 | P2 | **validated / promoted** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | OOF 0.891125 versus P0-B 0.796788; integrity, uncertainty, and runtime gates passed |
-| P2-SUB | **local smoke passed** | Five-head P2 hidden-test inference and `submission.csv` | Exact source hashes and five-head mean independently validated; Kaggle canary run next |
+| P2-SUB | **submitted / pending** | Five-head P2 hidden-test inference and `submission.csv` | Canary v1 validated; code-competition submission `55965846` is pending |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
@@ -185,10 +185,16 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   both T4s, with mean utilization 97.27% and 96.65%.
 - **Submission path:** `P2-SUBMISSION-v1` is frozen in
   [`P2_SUBMISSION_PROTOCOL.md`](P2_SUBMISSION_PROTOCOL.md). Its local representative
-  DICOM smoke and independent five-head-mean validator passed; the private Kaggle
-  three-study canary run is next, followed by the notebook-only hidden-test submission.
-- **Next action:** run and validate the P2 submission canary, submit that notebook
-  version, and record the first actual leaderboard score before starting P3.
+  DICOM smoke and independent five-head-mean validator passed. Private Kaggle canary
+  version 1 then processed all three visible test studies in `0.51` minutes with
+  non-constant predictions for every target. Its `submission.csv` SHA-256 is
+  `6addb8b64dc7c5ccc09c709ee560700f9fd94bcb37b4e9a1e4bcd5f5b9e137d0`, and the
+  downloaded artifact bundle passed the independent validator.
+- **Leaderboard submission:** notebook version 1 from Git commit `8a4f410` was
+  submitted to the code competition as reference `55965846`; initial status is
+  `PENDING` with four daily submissions remaining.
+- **Next action:** wait for hidden-test execution and scoring, then record the first
+  actual leaderboard score before starting P3.
 
 ## Previous completed run
 
