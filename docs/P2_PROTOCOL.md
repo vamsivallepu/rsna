@@ -94,6 +94,8 @@ kernel versions and verifies both manifests before training.
   fixed-shape autotuning, fused AdamW, two loader workers per rank, pinned asynchronous
   transfers, and no per-step GPU-to-CPU scalar synchronization. The two independent
   cache-part SHA-256 streams are read concurrently while still validating every byte.
+  Deterministic validation and feature extraction batch two studies on each rank
+  (global inference batch four); the selected windows and their order are unchanged.
   Per-GPU utilization, memory, power, and temperature are logged every 60 seconds.
   These are execution-only changes; labels, study order within each global batch,
   windows, effective batch, optimizer updates, epoch selection, folds, and decision

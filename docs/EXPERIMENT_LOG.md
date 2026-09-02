@@ -150,7 +150,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Execution revision `ddp_t4_v3`:** true two-process NCCL DDP, `no_sync()` during
   gradient accumulation, channels-last fp16, fused AdamW, fixed-shape cuDNN autotuning,
   no per-step scalar synchronization, two loader workers per rank, parallel full-file
-  cache hashing, and two-GPU feature sharding. The global study batch, accumulation,
+  cache hashing, two-study-per-rank inference, and two-GPU feature sharding. The global
+  training study batch, accumulation,
   sampling, labels, loss, optimizer schedule, validation, and expert gates remain fixed.
 - **DDP speed-gate incidents:** remote smoke v1 initialized both NCCL ranks but failed
   on the first accumulated update because PyTorch 2.10's static reducer is incompatible

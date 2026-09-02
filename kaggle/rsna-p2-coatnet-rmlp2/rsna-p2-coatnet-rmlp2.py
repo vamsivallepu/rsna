@@ -77,7 +77,8 @@ REP_EPOCHS = 8
 HEAD_EPOCHS = 30
 GLOBAL_STUDY_BATCH = 2
 GRAD_ACCUM = 4
-GLOBAL_EVAL_STUDY_BATCH = 2
+EVAL_BATCH_PER_RANK = 2
+GLOBAL_EVAL_STUDY_BATCH = 4
 WORKERS_PER_RANK = 2
 BACKBONE_LR = 3e-5
 HEAD_LR = 1e-3
@@ -423,6 +424,7 @@ def worker_main() -> int:
     k_train = K_TRAIN if FULL_RUN else 1
     k_eval = K_EVAL if FULL_RUN else 1
     grad_accum = GRAD_ACCUM if FULL_RUN else 1
+    eval_batch_per_rank = EVAL_BATCH_PER_RANK if FULL_RUN else 1
     workers = WORKERS_PER_RANK if FULL_RUN else 0
 
     train_path = find_named_file("train.csv", 100_000)
@@ -677,7 +679,10 @@ def worker_main() -> int:
     def validation_loss(indices: np.ndarray) -> float:
         sync_model_buffers()
         local_indices = indices[rank::world_size]
-        loader = make_loader(StudyDataset(local_indices, k_eval, False))
+        loader = make_loader(
+            StudyDataset(local_indices, k_eval, False),
+            batch_size=eval_batch_per_rank,
+        )
         model.eval()
         totals = torch.zeros(2, dtype=torch.float64, device=device)
         for batch in loader:
@@ -774,13 +779,18 @@ def worker_main() -> int:
         train_loss = float(
             (global_epoch_totals[0] / global_epoch_totals[1].clamp_min(1.0)).item()
         )
+        validation_started = time.time()
         valid_loss = validation_loss(pseudo_valid_indices)
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        validation_seconds = time.time() - validation_started
         row = {
             "epoch": epoch + 1,
             "train_loss": train_loss,
             "pseudo_valid_weighted_bce": valid_loss,
             "elapsed_minutes": (time.time() - training_started) / 60.0,
             "training_seconds": epoch_training_seconds,
+            "validation_seconds": validation_seconds,
         }
         if is_primary:
             history.append(row)
@@ -816,6 +826,8 @@ def worker_main() -> int:
                     / smoke_global_steps
                 ),
                 "pseudo_valid_weighted_bce": history[-1]["pseudo_valid_weighted_bce"],
+                "validation_seconds": history[-1]["validation_seconds"],
+                "eval_study_batch_per_rank": eval_batch_per_rank,
                 "peak_memory_mib_by_rank": [
                     float(value.item()) for value in gathered_memory
                 ],
@@ -872,7 +884,8 @@ def worker_main() -> int:
     mask_shard = np.zeros((len(local_feature_indices), k_eval), dtype=np.uint8)
     position_shard = np.full((len(local_feature_indices), k_eval), -1, dtype=np.int16)
     feature_loader = make_loader(
-        StudyDataset(local_feature_indices, k_eval, False), batch_size=1
+        StudyDataset(local_feature_indices, k_eval, False),
+        batch_size=eval_batch_per_rank,
     )
     model.eval()
     with torch.inference_mode():
