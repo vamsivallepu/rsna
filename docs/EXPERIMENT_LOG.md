@@ -106,8 +106,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ### P2 — wide-coverage CoAtNet-RMLP2
 
-- **Status:** running; protocol frozen and both cache partitions relaunched as private
-  Kaggle version 2 jobs from source commit `d0ce2c7`, with no CLI runtime limit.
+- **Status:** running; both version 2 cache partitions completed and passed their
+  self-validation; P2 GPU training is ready to launch from source commit `d0ce2c7`.
 - **Hypothesis:** denser physical volume coverage and a strong 384 px compact
   convolution/attention backbone will recover spatially sparse abnormalities missed
   by the current 224 px/18-window DINO representation.
@@ -132,6 +132,13 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   CLI `--timeout 1200` and received `CANCEL_ACKNOWLEDGED` near 20 minutes. A stopped
   at 400/2,204 (17.3 min) and B at 400/2,203 (15.9 min), both with zero failures and
   no traceback. Those partial outputs are not reused. Version 2 omits `--timeout`.
+- **Version 2 cache result:** all 4,407 studies cached with zero failures. Part A
+  completed 2,204 studies in 95.85 minutes with pixel SHA-256
+  `a79c740be3da78f0e9a396a31f66214148a9897cacf96ad4c8a6ac2b0ffc1335`; part B
+  completed 2,203 studies in 77.04 minutes with pixel SHA-256
+  `520b08734af7e86a05e8562efbedab261747aeadf78038bc26080f2ba354e5bf`.
+  Both manifests report the frozen cache signature
+  `0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3`.
 - **Next action:** wait for both `P2_CACHE_COMPLETE` markers, validate their matching
   manifests/hashes, then launch the pinned-cache GPU notebook.
 
@@ -263,3 +270,5 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-02:** Diagnosed both version 1 cache cancellations as the accidental
   1,200-second CLI runtime limit, not a cache failure. Relaunched identical version 2
   jobs without `--timeout`; both reached authoritative `RUNNING` state.
+- **2026-09-02:** Both version 2 cache jobs reached `COMPLETE`: 4,407/4,407 studies,
+  zero failures, matching contract signatures, and finalized per-part pixel hashes.
