@@ -106,8 +106,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ### P2 — wide-coverage CoAtNet-RMLP2
 
-- **Status:** running; protocol frozen, cache and training notebook construction in
-  progress.
+- **Status:** running; protocol frozen and both cache partitions launched as private
+  Kaggle version 1 jobs from source commit `d0ce2c7`.
 - **Hypothesis:** denser physical volume coverage and a strong 384 px compact
   convolution/attention backbone will recover spatially sparse abnormalities missed
   by the current 224 px/18-window DINO representation.
@@ -125,8 +125,11 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Evaluation:** direct untouched-expert gate followed by five report-group-purged
   feature-head folds and paired comparison with P0-B.
 - **Frozen contract:** [`P2_PROTOCOL.md`](P2_PROTOCOL.md).
-- **Next action:** execute and validate both cache parts, then launch the pinned-cache
-  GPU notebook.
+- **Launch evidence:** cache A reached 100/2,204 studies in 4.3 minutes and cache B
+  reached 100/2,203 in 4.1 minutes, both with zero failures. The two workers run
+  concurrently and write disjoint row ranges.
+- **Next action:** wait for both `P2_CACHE_COMPLETE` markers, validate their matching
+  manifests/hashes, then launch the pinned-cache GPU notebook.
 
 ## Previous completed run
 
@@ -250,3 +253,6 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   five-slot, 140 mm/336 px cache, official ImageNet-only CoAtNet-RMLP2 initialization,
   pseudo-group checkpoint selection, untouched direct expert evaluation, and
   report-group-purged cached-feature OOF heads.
+- **2026-09-02:** Published the hashed official CoAtNet initialization as private
+  Kaggle Dataset `vallepuvamsikrishna/rsna-coatnet-rmlp2-imagenet-init`, pushed the
+  P2 implementation at `d0ce2c7`, and launched both `P2-CACHE-v1` version 1 workers.
