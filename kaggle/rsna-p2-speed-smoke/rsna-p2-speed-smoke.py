@@ -132,7 +132,28 @@ def candidate_roots() -> list[Path]:
 
 
 def find_named_file(filename: str, minimum_bytes: int = 1) -> Path:
-    direct: list[Path] = []
+    kaggle_direct = {
+        "train.csv": Path(
+            "/kaggle/input/competitions/rsna-knee-abnormality-detection/train.csv"
+        ),
+        "training_targets.csv": Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-report-weak-supervision/training_targets.csv"
+        ),
+        "model.safetensors": Path(
+            "/kaggle/input/datasets/vallepuvamsikrishna/"
+            "rsna-coatnet-rmlp2-imagenet-init/model.safetensors"
+        ),
+        "p2_cache_manifest_part_a.json": Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p2-wide-cache-a/p2_cache_manifest_part_a.json"
+        ),
+        "p2_cache_manifest_part_b.json": Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p2-wide-cache-b/p2_cache_manifest_part_b.json"
+        ),
+    }
+    direct: list[Path] = [kaggle_direct[filename]] if filename in kaggle_direct else []
     for root in candidate_roots():
         direct.extend([
             root / filename,
@@ -377,8 +398,8 @@ def worker_main() -> int:
     if FULL_RUN:
         assert distributed and world_size == 2
         torch.cuda.set_device(local_rank)
-        dist.init_process_group(backend="nccl")
         device = torch.device("cuda", local_rank)
+        dist.init_process_group(backend="nccl", device_id=device)
     else:
         rank = local_rank = 0
         world_size = 1
@@ -606,8 +627,10 @@ def worker_main() -> int:
             output_device=local_rank,
             broadcast_buffers=True,
             find_unused_parameters=False,
-            gradient_as_bucket_view=True,
-            static_graph=True,
+            # PyTorch 2.10's static reducer is incompatible with the no_sync()
+            # accumulation pattern used to preserve the frozen effective batch.
+            gradient_as_bucket_view=False,
+            static_graph=False,
         )
     else:
         train_model = model
