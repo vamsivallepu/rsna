@@ -141,9 +141,19 @@ def main() -> int:
     assert manifest["model_sha256"] == MODEL_SHA256
     assert manifest["cache_signature_sha256"] == CACHE_SIGNATURE
     assert manifest["feature_dim"] == FEATURE_DIM and manifest["k_eval"] == K_EVAL
+    assert manifest["execution_revision"] == "dual_t4_v2"
+    assert manifest["visible_gpus"] == 2 and manifest["data_parallel"] is True
+    assert manifest["study_batch"] == 2 and manifest["eval_study_batch"] == 2
     for name, expected in manifest["artifacts_sha256"].items():
         path = root / name
         assert path.is_file() and sha256(path) == expected, name
+
+    telemetry = pd.read_csv(root / "p2_gpu_telemetry.csv")
+    assert set(telemetry["index"].unique()) == {0, 1}
+    assert len(telemetry) >= 20 and telemetry.notna().all().all()
+    gpu_utilization = telemetry.groupby("index")["utilization_gpu_percent"].agg(
+        ["count", "mean", "median", "max"]
+    )
 
     studies = pd.read_csv(root / "p2_coatnet_feature_studies.csv", dtype={ID: str})
     train = pd.read_csv(args.train_csv, dtype={ID: str})
@@ -228,6 +238,7 @@ def main() -> int:
         "paired_bootstrap": bootstrap,
         "saved_direct_and_fold_heads_replayed": True,
         "report_group_purge_validated": True,
+        "gpu_utilization": gpu_utilization.to_dict("index"),
     }
     print(json.dumps(summary, indent=2))
     return 0

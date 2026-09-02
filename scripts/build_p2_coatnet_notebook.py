@@ -59,7 +59,9 @@ import math
 import os
 import platform
 import random
+import subprocess
 import sys
+import threading
 import time
 import unicodedata
 from pathlib import Path
@@ -107,6 +109,8 @@ REP_EPOCHS = 8
 HEAD_EPOCHS = 30
 STUDY_BATCH = 2
 GRAD_ACCUM = 4
+EVAL_STUDY_BATCH = 2
+LOADER_WORKERS = 2
 BACKBONE_LR = 3e-5
 HEAD_LR = 1e-3
 REP_WEIGHT_DECAY = 0.02
@@ -125,6 +129,8 @@ if not FULL_RUN:
     HEAD_EPOCHS = 1
     STUDY_BATCH = 1
     GRAD_ACCUM = 1
+    EVAL_STUDY_BATCH = 1
+    LOADER_WORKERS = 0
     K_TRAIN = 1
     K_EVAL = 1
 
@@ -140,10 +146,48 @@ print({
     "python": platform.python_version(), "torch": torch.__version__,
     "timm": timm.__version__, "device": str(DEVICE), "full_run": FULL_RUN,
     "rep_epochs": REP_EPOCHS, "k_train": K_TRAIN, "k_eval": K_EVAL,
+    "visible_gpus": torch.cuda.device_count(), "study_batch": STUDY_BATCH,
+    "eval_study_batch": EVAL_STUDY_BATCH, "loader_workers": LOADER_WORKERS,
 })
 if ON_KAGGLE:
     assert DEVICE.type == "cuda", "P2 training requires a Kaggle GPU"
-    print(torch.cuda.get_device_name(0))
+    print([torch.cuda.get_device_name(index) for index in range(torch.cuda.device_count())])
+
+GPU_TELEMETRY_PATH = OUTPUT_ROOT / "p2_gpu_telemetry.csv"
+GPU_TELEMETRY_STOP = threading.Event()
+GPU_TELEMETRY_THREAD = None
+
+
+def sample_gpu_telemetry() -> None:
+    query = (
+        "timestamp,index,name,utilization.gpu,utilization.memory,memory.used,"
+        "memory.total,power.draw,temperature.gpu"
+    )
+    header = (
+        "unix_time,timestamp,index,name,utilization_gpu_percent,"
+        "utilization_memory_percent,memory_used_mib,memory_total_mib,power_draw_w,"
+        "temperature_c\n"
+    )
+    GPU_TELEMETRY_PATH.write_text(header)
+    while not GPU_TELEMETRY_STOP.is_set():
+        try:
+            completed = subprocess.run(
+                ["nvidia-smi", f"--query-gpu={query}", "--format=csv,noheader,nounits"],
+                check=True, capture_output=True, text=True, timeout=15,
+            )
+            rows = [row.strip() for row in completed.stdout.splitlines() if row.strip()]
+            with GPU_TELEMETRY_PATH.open("a") as handle:
+                for row in rows:
+                    handle.write(f"{time.time():.3f},{row}\n")
+            print({"P2_GPU": rows}, flush=True)
+        except Exception as exc:
+            print({"P2_GPU_TELEMETRY_ERROR": f"{type(exc).__name__}: {exc}"}, flush=True)
+        GPU_TELEMETRY_STOP.wait(60.0)
+
+
+if FULL_RUN:
+    GPU_TELEMETRY_THREAD = threading.Thread(target=sample_gpu_telemetry, daemon=True)
+    GPU_TELEMETRY_THREAD.start()
 """
         ),
         markdown("## Resolve and cryptographically validate every input"),
@@ -296,6 +340,13 @@ def read_study(index: int) -> tuple[np.ndarray, np.ndarray]:
     return np.asarray(pixels_b[local]), np.asarray(mask_b[local])
 
 
+def read_mask(index: int) -> np.ndarray:
+    if index < len(mask_a):
+        return np.asarray(mask_a[index])
+    assert mask_b is not None
+    return np.asarray(mask_b[index - len(mask_a)])
+
+
 def valid_centers(mask: np.ndarray) -> np.ndarray:
     centers = []
     for start, stop in slot_bounds:
@@ -412,8 +463,12 @@ class CoAtNetMIL(nn.Module):
         pixels = (pixels - self.mean) / self.std
         return self.backbone(pixels).reshape(batch, count, FEATURE_DIM)
 
-    def forward(self, windows: torch.Tensor, mask: torch.Tensor, augment: bool = False) -> torch.Tensor:
-        return self.head(self.encode(windows, augment=augment), mask)
+    def forward(
+        self, windows: torch.Tensor, mask: torch.Tensor, augment: bool = False,
+        return_features: bool = False,
+    ) -> torch.Tensor:
+        features = self.encode(windows, augment=augment)
+        return features if return_features else self.head(features, mask)
 
 
 def weighted_bce(logits: torch.Tensor, labels: torch.Tensor, label_weights: torch.Tensor) -> torch.Tensor:
@@ -422,9 +477,16 @@ def weighted_bce(logits: torch.Tensor, labels: torch.Tensor, label_weights: torc
 
 
 model = CoAtNetMIL(MODEL_PATH).to(DEVICE)
+USE_DATA_PARALLEL = FULL_RUN and torch.cuda.device_count() > 1
+parallel_model = nn.DataParallel(model) if USE_DATA_PARALLEL else model
 parameter_count = sum(parameter.numel() for parameter in model.parameters())
 assert 73_000_000 < parameter_count < 76_000_000
-print({"parameters": parameter_count, "feature_dim": model.backbone.num_features})
+if FULL_RUN:
+    assert torch.cuda.device_count() >= 2, "P2 dual-GPU execution requires both Kaggle T4s"
+print({
+    "parameters": parameter_count, "feature_dim": model.backbone.num_features,
+    "data_parallel": USE_DATA_PARALLEL, "device_ids": list(range(torch.cuda.device_count())),
+})
 """
         ),
         markdown("## Fixed pseudo-only representation training"),
@@ -444,14 +506,17 @@ def move_batch(batch):
 @torch.inference_mode()
 def validation_loss(indices: np.ndarray) -> float:
     dataset = StudyDataset(indices, K_EVAL, stochastic=False)
-    loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0)
-    model.eval()
+    loader = DataLoader(
+        dataset, batch_size=EVAL_STUDY_BATCH, shuffle=False,
+        num_workers=LOADER_WORKERS, pin_memory=DEVICE.type == "cuda",
+    )
+    parallel_model.eval()
     numerator = 0.0
     denominator = 0.0
     for batch in loader:
         _, windows, window_mask, labels, label_weights = move_batch(batch)
         with torch.autocast(device_type=DEVICE.type, dtype=torch.float16, enabled=DEVICE.type == "cuda"):
-            logits = model(windows, window_mask, augment=False)
+            logits = parallel_model(windows, window_mask, augment=False)
             raw = F.binary_cross_entropy_with_logits(logits, labels, reduction="none")
         numerator += float((raw.float() * label_weights).sum())
         denominator += float(label_weights.sum())
@@ -471,7 +536,7 @@ scheduler = torch.optim.lr_scheduler.OneCycleLR(
     total_steps=REP_EPOCHS * updates_per_epoch,
     pct_start=0.15,
 )
-scaler = torch.cuda.amp.GradScaler(enabled=DEVICE.type == "cuda")
+scaler = torch.amp.GradScaler("cuda", enabled=DEVICE.type == "cuda")
 history = []
 best_loss = float("inf")
 best_epoch = -1
@@ -483,25 +548,29 @@ for epoch in range(REP_EPOCHS):
     generator = torch.Generator().manual_seed(P2_SEED + epoch)
     loader = DataLoader(
         train_dataset, batch_size=STUDY_BATCH, shuffle=True, generator=generator,
-        num_workers=0, pin_memory=DEVICE.type == "cuda",
+        num_workers=LOADER_WORKERS, pin_memory=DEVICE.type == "cuda",
     )
-    model.train()
+    parallel_model.train()
     optimizer.zero_grad(set_to_none=True)
     losses = []
     for step, batch in enumerate(loader):
         _, windows, window_mask, labels, label_weights = move_batch(batch)
         with torch.autocast(device_type=DEVICE.type, dtype=torch.float16, enabled=DEVICE.type == "cuda"):
-            logits = model(windows, window_mask, augment=True)
+            logits = parallel_model(windows, window_mask, augment=True)
             loss = weighted_bce(logits, labels, label_weights)
         scaler.scale(loss / GRAD_ACCUM).backward()
         should_update = (step + 1) % GRAD_ACCUM == 0 or step + 1 == len(loader)
         if should_update:
             scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
+            scale_before = scaler.get_scale()
             scaler.step(optimizer)
             scaler.update()
             optimizer.zero_grad(set_to_none=True)
-            scheduler.step()
+            # GradScaler skips optimizer.step on overflow; advance OneCycle only
+            # when an optimizer update really occurred.
+            if scaler.get_scale() >= scale_before:
+                scheduler.step()
         losses.append(float(loss.detach()))
         if FULL_RUN and (step + 1) % 250 == 0:
             print(
@@ -541,26 +610,33 @@ feature_cache = np.lib.format.open_memmap(
 feature_mask = np.zeros((len(study_ids), K_EVAL), dtype=np.uint8)
 feature_positions = np.full((len(study_ids), K_EVAL), -1, dtype=np.int16)
 extract_started = time.time()
-model.eval()
+parallel_model.eval()
+feature_dataset = StudyDataset(np.arange(len(study_ids)), K_EVAL, stochastic=False)
+feature_loader = DataLoader(
+    feature_dataset, batch_size=EVAL_STUDY_BATCH, shuffle=False,
+    num_workers=LOADER_WORKERS, pin_memory=DEVICE.type == "cuda",
+)
 
 with torch.inference_mode():
-    for index in range(len(study_ids)):
-        volume, slice_mask = read_study(index)
-        centers, selected_mask = choose_centers(slice_mask, K_EVAL, stochastic=False, seed=0)
-        windows = np.zeros((K_EVAL, 3, CACHE_SIZE, CACHE_SIZE), dtype=np.uint8)
-        for out_index, center in enumerate(centers):
-            if selected_mask[out_index]:
-                windows[out_index] = volume[int(center) - 1:int(center) + 2]
-        windows_tensor = torch.from_numpy(windows[None]).to(DEVICE)
+    processed = 0
+    for batch in feature_loader:
+        indices, windows, window_mask, _, _ = move_batch(batch)
         with torch.autocast(device_type=DEVICE.type, dtype=torch.float16, enabled=DEVICE.type == "cuda"):
-            encoded = model.encode(windows_tensor, augment=False)
-        feature_cache[index] = encoded[0].float().cpu().numpy().astype(np.float16)
-        feature_mask[index] = selected_mask.astype(np.uint8)
-        feature_positions[index, selected_mask] = centers[selected_mask]
-        if (index + 1) % (100 if FULL_RUN else 1) == 0 or index + 1 == len(study_ids):
+            encoded = parallel_model(
+                windows, window_mask, augment=False, return_features=True
+            )
+        selected_masks = window_mask.cpu().numpy().astype(bool)
+        feature_cache[indices] = encoded.float().cpu().numpy().astype(np.float16)
+        feature_mask[indices] = selected_masks.astype(np.uint8)
+        for index, selected_mask in zip(indices, selected_masks, strict=True):
+            slice_mask = read_mask(int(index))
+            centers, _ = choose_centers(slice_mask, K_EVAL, stochastic=False, seed=0)
+            feature_positions[int(index), selected_mask] = centers[selected_mask]
+        processed += len(indices)
+        if processed % (100 if FULL_RUN else 1) == 0 or processed == len(study_ids):
             feature_cache.flush()
             print(
-                f"P2 features {index + 1:,}/{len(study_ids):,} in "
+                f"P2 features {processed:,}/{len(study_ids):,} in "
                 f"{(time.time() - extract_started) / 60:.1f} min", flush=True,
             )
 
@@ -735,10 +811,14 @@ artifacts = [
     "p2_coatnet_feature_positions.npy", "p2_coatnet_feature_studies.csv",
 ]
 if FULL_RUN:
+    GPU_TELEMETRY_STOP.set()
+    if GPU_TELEMETRY_THREAD is not None:
+        GPU_TELEMETRY_THREAD.join(timeout=10)
     artifacts.extend([
         "p2_direct_expert_metrics.csv", "p2_direct_expert_predictions.csv",
         "p2_oof_metrics.csv", "p2_oof_predictions.csv", "p2_fold_summary.csv",
         *[f"p2_fold_{fold}_head.pt" for fold in range(N_FOLDS)],
+        "p2_gpu_telemetry.csv",
     ])
 else:
     artifacts.append("p2_local_smoke.json")
@@ -765,6 +845,13 @@ manifest = {
     "k_train": K_TRAIN,
     "k_eval": K_EVAL,
     "representation_epochs": REP_EPOCHS,
+    "execution_revision": "dual_t4_v2",
+    "visible_gpus": torch.cuda.device_count(),
+    "data_parallel": USE_DATA_PARALLEL,
+    "study_batch": STUDY_BATCH,
+    "gradient_accumulation": GRAD_ACCUM,
+    "eval_study_batch": EVAL_STUDY_BATCH,
+    "loader_workers": LOADER_WORKERS,
     "best_epoch": best_epoch,
     "best_pseudo_valid_weighted_bce": best_loss,
     "direct_expert": direct_result,

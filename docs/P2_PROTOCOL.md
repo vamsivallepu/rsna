@@ -81,6 +81,12 @@ kernel versions and verifies both manifests before training.
   decay `0.02`, OneCycle schedule with `pct_start=0.15`, gradient clipping at `3.0`,
   mixed float16, gradient checkpointing, study batch size `2`, and four-step gradient
   accumulation. Training samples 8 valid windows per study per epoch.
+- Execution uses both allocated T4 GPUs through study-level data parallelism while
+  preserving the global study batch of 2 and four-step accumulation. Validation and
+  feature extraction use a global study batch of 2. Two loader workers prefetch the
+  immutable memmaps, and per-GPU utilization/memory/power telemetry is logged every
+  60 seconds. These are execution-only changes; labels, windows, optimization updates,
+  epoch selection, folds, and decision gates are unchanged.
 - The only representation checkpoint is the epoch with minimum grouped pseudo-
   validation weighted BCE. Validation uses 32 deterministic valid windows per study.
   The expert labels cannot choose an epoch, checkpoint average, or retry.
