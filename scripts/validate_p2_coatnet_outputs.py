@@ -141,9 +141,15 @@ def main() -> int:
     assert manifest["model_sha256"] == MODEL_SHA256
     assert manifest["cache_signature_sha256"] == CACHE_SIGNATURE
     assert manifest["feature_dim"] == FEATURE_DIM and manifest["k_eval"] == K_EVAL
-    assert manifest["execution_revision"] == "dual_t4_v2"
+    assert manifest["execution_revision"] == "ddp_t4_v3"
     assert manifest["visible_gpus"] == 2 and manifest["data_parallel"] is True
+    assert manifest["data_parallel_backend"] == "DistributedDataParallel"
+    assert manifest["distributed_backend"] == "nccl" and manifest["world_size"] == 2
     assert manifest["study_batch"] == 2 and manifest["eval_study_batch"] == 2
+    assert manifest["loader_workers_per_rank"] == 2
+    assert manifest["gradient_checkpointing"] is False
+    assert manifest["channels_last"] is True and manifest["cudnn_benchmark"] is True
+    assert manifest["fused_adamw"] is True
     for name, expected in manifest["artifacts_sha256"].items():
         path = root / name
         assert path.is_file() and sha256(path) == expected, name

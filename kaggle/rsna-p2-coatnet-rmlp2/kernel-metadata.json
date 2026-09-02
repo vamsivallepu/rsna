@@ -1,9 +1,9 @@
 {
   "id": "vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2",
   "title": "RSNA Knee P2 CoAtNet RMLP2",
-  "code_file": "rsna-p2-coatnet-rmlp2.ipynb",
+  "code_file": "rsna-p2-coatnet-rmlp2.py",
   "language": "python",
-  "kernel_type": "notebook",
+  "kernel_type": "script",
   "is_private": true,
   "enable_gpu": true,
   "enable_tpu": false,

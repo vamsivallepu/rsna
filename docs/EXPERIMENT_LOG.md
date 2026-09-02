@@ -97,7 +97,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
-| P2 | **running** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | `P2_PROTOCOL.md` frozen; build and validate `P2-CACHE-v1` first |
+| P2 | **queued** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | Cache complete; `ddp_t4_v3` must pass its short speed/memory gate before relaunch |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
@@ -106,9 +106,11 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ### P2 — wide-coverage CoAtNet-RMLP2
 
-- **Status:** running; both version 2 cache partitions completed and passed their
-  self-validation; P2 CoAtNet GPU notebook version 1 is now running from source
-  commit `d0ce2c7` without a CLI runtime limit.
+- **Status:** cache complete; the first training version was cancelled after one full
+  epoch plus 250 steps of epoch 2 because it used only GPU 0 from a T4 x2 allocation.
+  Its partial checkpoint is not used. The replacement `ddp_t4_v3` execution path is
+  locally smoke-tested and must pass a short remote throughput/memory gate before the
+  full eight-epoch launch.
 - **Hypothesis:** denser physical volume coverage and a strong 384 px compact
   convolution/attention backbone will recover spatially sparse abnormalities missed
   by the current 224 px/18-window DINO representation.
@@ -140,8 +142,19 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   `520b08734af7e86a05e8562efbedab261747aeadf78038bc26080f2ba354e5bf`.
   Both manifests report the frozen cache signature
   `0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3`.
-- **Next action:** wait for the active notebook's independent cache/model hash gate,
-  eight pseudo-only training epochs, expert evaluation, and five fold-head fits.
+- **Training version 1 evidence:** input verification finished at 1,240 seconds.
+  Epoch 1 completed at 4,192 seconds with 49.06 minutes of representation time and
+  pseudo-validation weighted BCE `0.5926257`; epoch 2 reached step 250/1,963 before
+  cancellation. The code used `nn.DataParallel` only after the subsequent local
+  revision; the actual version 1 model was plain `cuda` and left the second T4 idle.
+- **Execution revision `ddp_t4_v3`:** true two-process NCCL DDP, `no_sync()` during
+  gradient accumulation, channels-last fp16, fused AdamW, fixed-shape cuDNN autotuning,
+  no per-step scalar synchronization, two loader workers per rank, parallel full-file
+  cache hashing, and two-GPU feature sharding. The global study batch, accumulation,
+  sampling, labels, loss, optimizer schedule, validation, and expert gates remain fixed.
+- **Next action:** run the 256-study DDP speed/memory smoke. Launch the full run without
+  a CLI timeout only if both T4s are active, peak memory is safely below 15 GB, and the
+  projected completion time is comfortably within Kaggle's limit.
 
 ## Previous completed run
 

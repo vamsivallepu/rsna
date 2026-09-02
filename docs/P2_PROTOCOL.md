@@ -79,14 +79,25 @@ kernel versions and verifies both manifests before training.
   replacement is introduced in P2.
 - Optimization: 8 complete epochs, AdamW, backbone LR `3e-5`, head LR `1e-3`, weight
   decay `0.02`, OneCycle schedule with `pct_start=0.15`, gradient clipping at `3.0`,
-  mixed float16, gradient checkpointing, study batch size `2`, and four-step gradient
-  accumulation. Training samples 8 valid windows per study per epoch.
-- Execution uses both allocated T4 GPUs through study-level data parallelism while
-  preserving the global study batch of 2 and four-step accumulation. Validation and
-  feature extraction use a global study batch of 2. Two loader workers prefetch the
-  immutable memmaps, and per-GPU utilization/memory/power telemetry is logged every
-  60 seconds. These are execution-only changes; labels, windows, optimization updates,
-  epoch selection, folds, and decision gates are unchanged.
+  mixed float16, study batch size `2`, and four-step gradient accumulation. Training
+  samples 8 valid windows per study per epoch. Gradient checkpointing is disabled in
+  execution revision `ddp_t4_v3`: the speed smoke must first prove that the unchanged
+  microbatch fits safely in each 15 GB T4, otherwise the full run is not launched.
+- Execution revision `ddp_t4_v3` uses one NCCL
+  `DistributedDataParallel` process per T4. Each rank receives one study from every
+  frozen global batch, and DDP gradient averaging is rescaled to reproduce the same
+  global weighted-BCE denominator as the original two-study calculation. The first
+  three accumulation backwards use `no_sync()`, so gradients communicate only at the
+  optimizer boundary. Validation and feature extraction shard rows across both GPUs
+  without changing their deterministic windows.
+- Execution also uses channels-last fp16 tensors, deterministic cuDNN kernels with
+  fixed-shape autotuning, fused AdamW, two loader workers per rank, pinned asynchronous
+  transfers, and no per-step GPU-to-CPU scalar synchronization. The two independent
+  cache-part SHA-256 streams are read concurrently while still validating every byte.
+  Per-GPU utilization, memory, power, and temperature are logged every 60 seconds.
+  These are execution-only changes; labels, study order within each global batch,
+  windows, effective batch, optimizer updates, epoch selection, folds, and decision
+  gates are unchanged.
 - The only representation checkpoint is the epoch with minimum grouped pseudo-
   validation weighted BCE. Validation uses 32 deterministic valid windows per study.
   The expert labels cannot choose an epoch, checkpoint average, or retry.
