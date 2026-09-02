@@ -97,7 +97,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
-| P2 | **running** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | Full Kaggle version 2 launched on T4 x2 after the `ddp_t4_v3` gate passed |
+| P2 | **validated / promoted** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | OOF 0.891125 versus P0-B 0.796788; integrity, uncertainty, and runtime gates passed |
+| P2-SUB | **local smoke passed** | Five-head P2 hidden-test inference and `submission.csv` | Exact source hashes and five-head mean independently validated; Kaggle canary run next |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
@@ -106,8 +107,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ### P2 — wide-coverage CoAtNet-RMLP2
 
-- **Status:** full Kaggle version 2 launched on 2026-09-02 with T4 x2 and no CLI
-  timeout. The first training version was cancelled after one full
+- **Status:** full Kaggle version 2 completed and independently validated. The first
+  training version was cancelled after one full
   epoch plus 250 steps of epoch 2 because it used only GPU 0 from a T4 x2 allocation.
   Its partial checkpoint is not used. The replacement `ddp_t4_v3` execution path has
   passed local validation and the remote two-GPU throughput/memory gate; the full
@@ -171,8 +172,23 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   check the worker was `RUNNING` on T4 x2, while Kaggle's log-stream API returned HTTP
   500 and the signed-in log viewer remained on `Loading`; DDP startup therefore still
   requires direct log evidence once Kaggle exposes it.
-- **Next action:** verify both DDP ranks, the first training milestone, and telemetry,
-  then leave the no-timeout run to complete and validate every downloaded artifact.
+- **Full version 2 result:** all eight epochs completed; epoch 8 minimized grouped
+  pseudo-validation BCE at `0.4762114`. Direct untouched-expert macro AUC was
+  `0.8784271`; five-fold report-purged OOF macro AUC was `0.8911254` versus P0-B
+  `0.7967883`, delta `+0.0943371`. The paired 5,000-sample interval was
+  `[0.0635023, 0.1280301]` with probability positive `1.0`. Eleven targets improved;
+  Lateral OA declined `-0.05416`, with its paired interval crossing zero. All hashes,
+  feature geometry, report purges, saved-head replays, rows, and metrics passed the
+  independent validator.
+- **Runtime:** representation plus selection took `133.16` minutes and final feature,
+  head, and evaluation work took `20.76` minutes. Median GPU utilization was 100% on
+  both T4s, with mean utilization 97.27% and 96.65%.
+- **Submission path:** `P2-SUBMISSION-v1` is frozen in
+  [`P2_SUBMISSION_PROTOCOL.md`](P2_SUBMISSION_PROTOCOL.md). Its local representative
+  DICOM smoke and independent five-head-mean validator passed; the private Kaggle
+  three-study canary run is next, followed by the notebook-only hidden-test submission.
+- **Next action:** run and validate the P2 submission canary, submit that notebook
+  version, and record the first actual leaderboard score before starting P3.
 
 ## Previous completed run
 

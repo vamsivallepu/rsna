@@ -1,0 +1,20 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p2-submission",
+  "title": "RSNA Knee P2 Submission",
+  "code_file": "rsna-p2-submission.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2"
+  ],
+  "model_sources": []
+}
