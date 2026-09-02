@@ -106,8 +106,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ### P2 — wide-coverage CoAtNet-RMLP2
 
-- **Status:** running; protocol frozen and both cache partitions launched as private
-  Kaggle version 1 jobs from source commit `d0ce2c7`.
+- **Status:** running; protocol frozen and both cache partitions relaunched as private
+  Kaggle version 2 jobs from source commit `d0ce2c7`, with no CLI runtime limit.
 - **Hypothesis:** denser physical volume coverage and a strong 384 px compact
   convolution/attention backbone will recover spatially sparse abnormalities missed
   by the current 224 px/18-window DINO representation.
@@ -128,6 +128,10 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Launch evidence:** cache A reached 100/2,204 studies in 4.3 minutes and cache B
   reached 100/2,203 in 4.1 minutes, both with zero failures. The two workers run
   concurrently and write disjoint row ranges.
+- **Version 1 incident:** both otherwise healthy jobs were mistakenly launched with
+  CLI `--timeout 1200` and received `CANCEL_ACKNOWLEDGED` near 20 minutes. A stopped
+  at 400/2,204 (17.3 min) and B at 400/2,203 (15.9 min), both with zero failures and
+  no traceback. Those partial outputs are not reused. Version 2 omits `--timeout`.
 - **Next action:** wait for both `P2_CACHE_COMPLETE` markers, validate their matching
   manifests/hashes, then launch the pinned-cache GPU notebook.
 
@@ -256,3 +260,6 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-02:** Published the hashed official CoAtNet initialization as private
   Kaggle Dataset `vallepuvamsikrishna/rsna-coatnet-rmlp2-imagenet-init`, pushed the
   P2 implementation at `d0ce2c7`, and launched both `P2-CACHE-v1` version 1 workers.
+- **2026-09-02:** Diagnosed both version 1 cache cancellations as the accidental
+  1,200-second CLI runtime limit, not a cache failure. Relaunched identical version 2
+  jobs without `--timeout`; both reached authoritative `RUNNING` state.
