@@ -488,8 +488,10 @@ def worker_main() -> int:
             set(report_hashes[adapt_indices]) & set(report_hashes[pseudo_valid_indices])
         )
         if SPEED_SMOKE:
-            adapt_indices = adapt_indices[:256]
-            pseudo_valid_indices = pseudo_valid_indices[:16]
+            # Preserve the full tensor shapes and accumulation path while keeping
+            # the remote diagnostic short enough to stream and inspect live.
+            adapt_indices = adapt_indices[:64]
+            pseudo_valid_indices = pseudo_valid_indices[:8]
         assert len(adapt_indices) % world_size == 0
     else:
         adapt_indices = pseudo_valid_indices = np.arange(len(study_ids))
@@ -631,6 +633,15 @@ def worker_main() -> int:
             gradient_as_bucket_view=False,
             static_graph=False,
         )
+        print(
+            {
+                "P2_DDP_READY": True,
+                "rank": rank,
+                "device": str(device),
+                "parameters": parameter_count,
+            },
+            flush=True,
+        )
     else:
         train_model = model
 
@@ -686,6 +697,7 @@ def worker_main() -> int:
 
     training_started = time.time()
     for epoch in range(rep_epochs):
+        epoch_started = time.time()
         generator = torch.Generator().manual_seed(P2_SEED + epoch)
         permutation = torch.randperm(len(adapt_indices), generator=generator).numpy()
         ordered = adapt_indices[permutation]
@@ -741,7 +753,21 @@ def worker_main() -> int:
                         flush=True,
                     )
                 window_totals.zero_()
+            if SPEED_SMOKE and is_primary and (step + 1) % 4 == 0:
+                print(
+                    {
+                        "P2_SPEED_SMOKE_PROGRESS": {
+                            "step": step + 1,
+                            "steps": len(loader),
+                            "elapsed_seconds": time.time() - epoch_started,
+                        }
+                    },
+                    flush=True,
+                )
 
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        epoch_training_seconds = time.time() - epoch_started
         global_epoch_totals = epoch_totals.clone()
         if distributed:
             dist.all_reduce(global_epoch_totals, op=dist.ReduceOp.SUM)
@@ -754,6 +780,7 @@ def worker_main() -> int:
             "train_loss": train_loss,
             "pseudo_valid_weighted_bce": valid_loss,
             "elapsed_minutes": (time.time() - training_started) / 60.0,
+            "training_seconds": epoch_training_seconds,
         }
         if is_primary:
             history.append(row)
@@ -767,34 +794,30 @@ def worker_main() -> int:
             print({"P2_EPOCH_COMPLETE": row, "best_epoch": best_epoch}, flush=True)
 
     if SPEED_SMOKE:
+        smoke_global_steps = math.ceil(len(adapt_indices) / GLOBAL_STUDY_BATCH)
         memory_mib = torch.tensor(
             [torch.cuda.max_memory_allocated(device) / (1024 ** 2)],
             dtype=torch.float64,
             device=device,
         )
-        gathered_memory = (
-            [torch.zeros_like(memory_mib) for _ in range(world_size)]
-            if is_primary
-            else None
-        )
+        gathered_memory = [torch.zeros_like(memory_mib) for _ in range(world_size)]
         if distributed:
-            dist.gather(memory_mib, gather_list=gathered_memory, dst=0)
-            dist.barrier()
+            dist.all_gather(gathered_memory, memory_mib)
         if is_primary:
             result = {
                 "execution_revision": EXECUTION_REVISION,
                 "world_size": world_size,
                 "global_study_batch": GLOBAL_STUDY_BATCH,
                 "gradient_accumulation": grad_accum,
-                "global_steps": len(adapt_indices) // GLOBAL_STUDY_BATCH,
+                "global_steps": smoke_global_steps,
                 "elapsed_minutes": history[-1]["elapsed_minutes"],
                 "seconds_per_global_step": (
-                    history[-1]["elapsed_minutes"] * 60
-                    / (len(adapt_indices) // GLOBAL_STUDY_BATCH)
+                    history[-1]["training_seconds"]
+                    / smoke_global_steps
                 ),
                 "pseudo_valid_weighted_bce": history[-1]["pseudo_valid_weighted_bce"],
                 "peak_memory_mib_by_rank": [
-                    float(value.item()) for value in (gathered_memory or [memory_mib])
+                    float(value.item()) for value in gathered_memory
                 ],
                 "gradient_checkpointing": False,
                 "channels_last": channels_last,

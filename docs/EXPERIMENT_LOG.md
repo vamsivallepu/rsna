@@ -152,7 +152,13 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   no per-step scalar synchronization, two loader workers per rank, parallel full-file
   cache hashing, and two-GPU feature sharding. The global study batch, accumulation,
   sampling, labels, loss, optimizer schedule, validation, and expert gates remain fixed.
-- **Next action:** run the 256-study DDP speed/memory smoke. Launch the full run without
+- **DDP speed-gate incidents:** remote smoke v1 initialized both NCCL ranks but failed
+  on the first accumulated update because PyTorch 2.10's static reducer is incompatible
+  with this `no_sync()` pattern. Smoke v2 disabled the static reducer but exceeded the
+  ten-minute diagnostic ceiling and was cancelled; Kaggle discarded its buffered logs
+  and partial output. Neither smoke produced a reusable model artifact.
+- **Next action:** run the 64-study/32-global-step DDP speed/memory smoke with streamed
+  four-step timing and symmetric NCCL result collection. Launch the full run without
   a CLI timeout only if both T4s are active, peak memory is safely below 15 GB, and the
   projected completion time is comfortably within Kaggle's limit.
 

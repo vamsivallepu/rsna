@@ -11,7 +11,7 @@
 | P2 wide cache A | [rsna-knee-p2-wide-cache-a](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-a) | CPU | Version 2 complete; 2,204/2,204, failures=0, 95.85 min total |
 | P2 wide cache B | [rsna-knee-p2-wide-cache-b](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-b) | CPU | Version 2 complete; 2,203/2,203, failures=0, 77.04 min total |
 | P2 CoAtNet-RMLP2 | [rsna-knee-p2-coatnet-rmlp2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2) | GPU T4 x2 | Version 1 cancelled after proving the notebook used only one GPU; DDP revision pending speed smoke |
-| P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | Short throughput/memory gate for `ddp_t4_v3`; full P2 launches only after it passes |
+| P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V1 exposed a static-reducer failure; V2 was bounded and cancelled without retained logs; corrected 32-step gate pending |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
