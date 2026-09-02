@@ -10,7 +10,7 @@
 | DINOv2 pseudo adaptation | [rsna-knee-dinov2-pseudo-adaptation](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-dinov2-pseudo-adaptation) | Nvidia Tesla T4 | Version 1 verified complete; 4,407/4,407 usable, direct expert AUC 0.7852, fold-head OOF AUC 0.7976 |
 | P2 wide cache A | [rsna-knee-p2-wide-cache-a](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-a) | CPU | Version 2 complete; 2,204/2,204, failures=0, 95.85 min total |
 | P2 wide cache B | [rsna-knee-p2-wide-cache-b](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-b) | CPU | Version 2 complete; 2,203/2,203, failures=0, 77.04 min total |
-| P2 CoAtNet-RMLP2 | `rsna-knee-p2-coatnet-rmlp2` | Nvidia Tesla T4 | Source ready; cache gate satisfied |
+| P2 CoAtNet-RMLP2 | [rsna-knee-p2-coatnet-rmlp2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2) | Nvidia Tesla T4 | Version 1 running without CLI timeout; validating attached cache/model hashes |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

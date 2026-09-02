@@ -107,7 +107,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 ### P2 — wide-coverage CoAtNet-RMLP2
 
 - **Status:** running; both version 2 cache partitions completed and passed their
-  self-validation; P2 GPU training is ready to launch from source commit `d0ce2c7`.
+  self-validation; P2 CoAtNet GPU notebook version 1 is now running from source
+  commit `d0ce2c7` without a CLI runtime limit.
 - **Hypothesis:** denser physical volume coverage and a strong 384 px compact
   convolution/attention backbone will recover spatially sparse abnormalities missed
   by the current 224 px/18-window DINO representation.
@@ -139,8 +140,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   `520b08734af7e86a05e8562efbedab261747aeadf78038bc26080f2ba354e5bf`.
   Both manifests report the frozen cache signature
   `0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3`.
-- **Next action:** wait for both `P2_CACHE_COMPLETE` markers, validate their matching
-  manifests/hashes, then launch the pinned-cache GPU notebook.
+- **Next action:** wait for the active notebook's independent cache/model hash gate,
+  eight pseudo-only training epochs, expert evaluation, and five fold-head fits.
 
 ## Previous completed run
 
@@ -272,3 +273,5 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   jobs without `--timeout`; both reached authoritative `RUNNING` state.
 - **2026-09-02:** Both version 2 cache jobs reached `COMPLETE`: 4,407/4,407 studies,
   zero failures, matching contract signatures, and finalized per-part pixel hashes.
+- **2026-09-02:** Launched private P2 CoAtNet GPU notebook version 1 without a CLI
+  timeout after both cache sources completed; authoritative state reached `RUNNING`.
