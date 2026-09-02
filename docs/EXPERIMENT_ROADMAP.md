@@ -1,6 +1,6 @@
 # Experiment roadmap
 
-Snapshot date: 2026-09-01
+Snapshot date: 2026-09-02
 
 This is the canonical execution plan for the competition. Conversation history is
 not a source of truth. Change the ordering here before starting an unlisted run,
@@ -33,9 +33,9 @@ or hyperparameter may be selected on those 58 labels.
   `(4407, 6, 3, 768)` DINOv2 token cache. They do **not** decode DICOM again.
 - Geometry, slice coverage, crop, resolution, augmentation, or backbone changes
   require a new pixel/feature cache because the image inputs or encoder changed.
-- The next full-image notebook must write a versioned pixel cache to a private
-  Kaggle Dataset. Subsequent training notebooks attach that dataset instead of
-  repeating the multi-hour DICOM pass.
+- The next full-image notebook must write a versioned private Kaggle pixel cache.
+  A private Dataset or immutable version-pinned private kernel output is acceptable;
+  subsequent training notebooks attach it instead of repeating the DICOM pass.
 - A cache is identified by data version, study ordering hash, series-selection
   policy, crop in millimetres, slice positions, image size, preprocessing, encoder
   checkpoint, and encoder weights hash. A changed signature means a new cache.
@@ -49,7 +49,7 @@ later expensive stage advances only after its prerequisites pass.
 |---:|---|---|---|---|---|
 | 0 | **P0** | validated | Validation hardening: paired replay of the current DINO head and report-group-purged OOF training | Local CPU; existing token cache | Passed: all 58 rows OOF, zero purged overlap, saved-head and hash validation |
 | 1 | **P1** | validated | Cached-token head and objective ablations | Local CPU; existing token cache | Closed after P1-D; no change promoted over P0-B |
-| 2 | **P2** | **next** | Strong compact convolutional baseline: CoAtNet-RMLP2-style model at about 384 px with fuller physical slice coverage | Kaggle GPU; new pixel cache | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
+| 2 | **P2** | **running** | Strong compact convolutional baseline: CoAtNet-RMLP2 at 384 px with fuller physical slice coverage | Kaggle CPU cache + GPU training; `P2-CACHE-v1` | One honest fixed configuration beats the purged DINO baseline and fits inference budget |
 | 3 | **P3** | queued | DINOv2-small at 336 px with fuller coverage, LoRA/last-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse P2 pixel cache when compatible | Clear validation gain over P0/P2 with stable targets and acceptable runtime |
 | 4 | **P4** | queued | Five end-to-end folds for only the winning P2/P3 configuration | Kaggle GPU; winning cache | Fold-safe representation training and repeatable pooled OOF improvement |
 | 5 | **P5** | queued | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
@@ -147,12 +147,15 @@ P0-B's dropout `0.20` and weight decay `1e-3`, close P1, and proceed to P2.
 
 ### P2–P4 — high-value image models
 
-P2 tests the strongest compact convolutional family under a fixed, documented
-physical-geometry policy: roughly 130 mm crops, broader volume coverage, and enough
-windows to expose small lesions. P3 holds geometry as constant as practical while
-testing higher-resolution DINOv2-small and hierarchical MIL. Avoid DINOv2-base at
-224 px: the present bottleneck is coverage/resolution and label noise, not raw model
-size. P4 pays for five end-to-end folds only after one configuration wins cheaply.
+P2 tests the strongest compact convolutional family under the frozen
+[`P2_PROTOCOL.md`](P2_PROTOCOL.md): 140 mm crops, 64 slices over five acquisition
+slots, 2–98% volume coverage, official ImageNet-only CoAtNet-RMLP2 initialization,
+and target-specific attention MIL. The representation checkpoint is selected only
+by report-grouped pseudo validation; expert labels are reserved for the direct gate
+and fold-safe cached-feature OOF heads. P3 holds geometry as constant as practical
+while testing higher-resolution DINOv2-small and hierarchical MIL. Avoid DINOv2-base
+at 224 px: the present bottleneck is coverage/resolution and label noise, not raw
+model size. P4 pays for five end-to-end folds only after one configuration wins cheaply.
 
 ### P5–P9 — complementary signal
 

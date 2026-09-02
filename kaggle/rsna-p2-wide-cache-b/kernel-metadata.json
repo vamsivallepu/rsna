@@ -1,0 +1,17 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b",
+  "title": "RSNA Knee P2 Wide Cache B",
+  "code_file": "rsna-p2-wide-cache-b.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

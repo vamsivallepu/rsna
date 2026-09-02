@@ -1,0 +1,9 @@
+{
+  "title": "RSNA CoAtNet RMLP2 ImageNet Init",
+  "id": "vallepuvamsikrishna/rsna-coatnet-rmlp2-imagenet-init",
+  "licenses": [
+    {
+      "name": "Apache 2.0"
+    }
+  ]
+}

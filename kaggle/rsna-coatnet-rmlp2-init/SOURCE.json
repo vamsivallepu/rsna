@@ -1,0 +1,10 @@
+{
+  "model_id": "timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k",
+  "source_repository": "https://huggingface.co/timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k",
+  "weights_url": "https://huggingface.co/timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k/resolve/main/model.safetensors",
+  "config_url": "https://huggingface.co/timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k/resolve/main/config.json",
+  "license": "Apache-2.0",
+  "model_safetensors_sha256": "91570c7af10fea0af03c1b0a49be3e4775596239890eb4193c75129b3045623e",
+  "config_json_sha256": "579a2743ed8f790588a6e659dcb2440ed0ca59e48a76bebb0dc87426d0b93161",
+  "downloaded_utc": "2026-09-02"
+}

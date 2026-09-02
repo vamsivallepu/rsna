@@ -1,6 +1,6 @@
 # Experiment log
 
-Last updated: 2026-09-01
+Last updated: 2026-09-02
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
@@ -97,10 +97,36 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
-| P2 | **next** | CoAtNet-RMLP2-style 384 px/full-coverage image model | P1 complete; define and version the pixel-cache contract first |
+| P2 | **running** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | `P2_PROTOCOL.md` frozen; build and validate `P2-CACHE-v1` first |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
+
+## Active run
+
+### P2 — wide-coverage CoAtNet-RMLP2
+
+- **Status:** running; protocol frozen, cache and training notebook construction in
+  progress.
+- **Hypothesis:** denser physical volume coverage and a strong 384 px compact
+  convolution/attention backbone will recover spatially sparse abnormalities missed
+  by the current 224 px/18-window DINO representation.
+- **Parent:** P0-B purged OOF macro AUC `0.7967883` and its unchanged weighted-BCE,
+  target-specific-attention, and report-purge guardrails.
+- **Cache:** `P2-CACHE-v1`; five slots, 64 total slices, 2–98% coverage, 140 mm crop,
+  336 px uint8 storage, and boundary-safe adjacent-slice windows. Two versioned private
+  Kaggle kernel outputs keep each part below the practical output-size limit.
+- **Model:** official Apache-2.0 timm
+  `coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k` initialization; no public
+  competition-trained weights.
+- **Selection:** train the representation on pseudo-labelled rows only and select its
+  checkpoint by grouped pseudo-validation weighted BCE. Expert labels cannot select
+  the epoch, checkpoint, or retry.
+- **Evaluation:** direct untouched-expert gate followed by five report-group-purged
+  feature-head folds and paired comparison with P0-B.
+- **Frozen contract:** [`P2_PROTOCOL.md`](P2_PROTOCOL.md).
+- **Next action:** execute and validate both cache parts, then launch the pinned-cache
+  GPU notebook.
 
 ## Previous completed run
 
@@ -220,3 +246,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **2026-09-01:** P1-D screened four global regularization arms and confirmed the
   selected lower-weight-decay arm at two additional seeds. It tied the default on
   every target and seed; no arm is promoted, P1 closes with P0-B, and P2 becomes next.
+- **2026-09-02:** Froze P2 before remote execution. P2 uses a new 64-slice,
+  five-slot, 140 mm/336 px cache, official ImageNet-only CoAtNet-RMLP2 initialization,
+  pseudo-group checkpoint selection, untouched direct expert evaluation, and
+  report-group-purged cached-feature OOF heads.

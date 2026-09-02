@@ -8,6 +8,9 @@
 | Report weak supervision | [rsna-knee-report-weak-supervision](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-report-weak-supervision) | CPU | Version 1 verified complete; outputs downloaded and byte-checked |
 | 2.5D image baseline | [rsna-knee-2-5d-radimagenet-baseline](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-2-5d-radimagenet-baseline) | Nvidia Tesla T4 | Version 3 verified complete; 4,407/4,407 usable, macro OOF AUC 0.6943 |
 | DINOv2 pseudo adaptation | [rsna-knee-dinov2-pseudo-adaptation](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-dinov2-pseudo-adaptation) | Nvidia Tesla T4 | Version 1 verified complete; 4,407/4,407 usable, direct expert AUC 0.7852, fold-head OOF AUC 0.7976 |
+| P2 wide cache A | `rsna-knee-p2-wide-cache-a` | CPU | Source preparation; rows 0–2,203 of `P2-CACHE-v1` |
+| P2 wide cache B | `rsna-knee-p2-wide-cache-b` | CPU | Source preparation; rows 2,204–4,406 of `P2-CACHE-v1` |
+| P2 CoAtNet-RMLP2 | `rsna-knee-p2-coatnet-rmlp2` | Nvidia Tesla T4 | Source preparation; starts only after both cache manifests pass |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -32,9 +35,11 @@ five-fold head OOF macro AUC is **0.7976**.
 The 116.2 MiB adapted token cache is retained in the downloaded outputs and can be
 reused for head-only experiments without decoding DICOM again. The 11.12 GiB pixel
 cache was temporary and is not in the notebook outputs, so changes to image geometry
-or backbone adaptation currently require rebuilding it. Before the next such run,
-publish the deterministic pixel cache as a private Kaggle Dataset if its storage and
-attachment costs are preferable to another roughly 128-minute preprocessing pass.
+or backbone adaptation currently require rebuilding it. P2 therefore creates
+`P2-CACHE-v1` as two immutable, version-pinned private Kaggle kernel outputs. This
+keeps the roughly 32 GB cache entirely on Kaggle and avoids downloading and re-uploading
+it locally. Every consumer validates the two manifests, row ranges, study-order hash,
+cache-signature hash, and array hashes before training.
 
 ## Local and deployment artifacts
 
@@ -59,6 +64,13 @@ attachment costs are preferable to another roughly 128-minute preprocessing pass
 - Full-output integrity checker: `scripts/validate_gpu_baseline_outputs.py`
 - DINO full-output integrity checker: `scripts/validate_dino_adaptation_outputs.py`
 - Reconnect-safe Kaggle log monitor: `scripts/follow_kaggle_milestones.py`
+
+- P2 cache builders and sources: `scripts/build_p2_cache_notebook.py`,
+  `kaggle/rsna-p2-wide-cache-a/`, and `kaggle/rsna-p2-wide-cache-b/`
+- P2 training builder and source: `scripts/build_p2_coatnet_notebook.py` and
+  `kaggle/rsna-p2-coatnet-rmlp2/`
+- P2 offline official-weight provenance: `kaggle/rsna-coatnet-rmlp2-init/`
+- Frozen P2 protocol: `docs/P2_PROTOCOL.md`
 
 The local notebook is executed against the representative DICOM sample. The
 clean deployment notebook uses the same UIDs and loader against Kaggle's full
