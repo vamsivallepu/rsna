@@ -145,7 +145,7 @@ def main() -> int:
     assert manifest["visible_gpus"] == 2 and manifest["data_parallel"] is True
     assert manifest["data_parallel_backend"] == "DistributedDataParallel"
     assert manifest["distributed_backend"] == "nccl" and manifest["world_size"] == 2
-    assert manifest["study_batch"] == 2 and manifest["eval_study_batch"] == 4
+    assert manifest["study_batch"] == 2 and manifest["eval_study_batch"] == 2
     assert manifest["loader_workers_per_rank"] == 2
     assert manifest["gradient_checkpointing"] is False
     assert manifest["channels_last"] is True and manifest["cudnn_benchmark"] is True

@@ -97,7 +97,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-B | validated | Query/head pooling controls | All three controls underperformed P0-B; no promotion |
 | P1-C | validated | BCE versus asymmetric objective | Gate failed; no ranking/consistency follow-up and no promotion |
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
-| P2 | **queued** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | Cache complete; `ddp_t4_v3` must pass its short speed/memory gate before relaunch |
+| P2 | **launch ready** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | Cache complete; `ddp_t4_v3` speed/memory gate passed on both T4s |
 | P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
@@ -108,9 +108,9 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 - **Status:** cache complete; the first training version was cancelled after one full
   epoch plus 250 steps of epoch 2 because it used only GPU 0 from a T4 x2 allocation.
-  Its partial checkpoint is not used. The replacement `ddp_t4_v3` execution path is
-  locally smoke-tested and must pass a short remote throughput/memory gate before the
-  full eight-epoch launch.
+  Its partial checkpoint is not used. The replacement `ddp_t4_v3` execution path has
+  passed local validation and the remote two-GPU throughput/memory gate; the full
+  eight-epoch relaunch is ready.
 - **Hypothesis:** denser physical volume coverage and a strong 384 px compact
   convolution/attention backbone will recover spatially sparse abnormalities missed
   by the current 224 px/18-window DINO representation.
@@ -150,18 +150,24 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Execution revision `ddp_t4_v3`:** true two-process NCCL DDP, `no_sync()` during
   gradient accumulation, channels-last fp16, fused AdamW, fixed-shape cuDNN autotuning,
   no per-step scalar synchronization, two loader workers per rank, parallel full-file
-  cache hashing, two-study-per-rank inference, and two-GPU feature sharding. The global
+  cache hashing, one-study-per-rank inference, and two-GPU feature sharding. The global
   training study batch, accumulation,
   sampling, labels, loss, optimizer schedule, validation, and expert gates remain fixed.
 - **DDP speed-gate incidents:** remote smoke v1 initialized both NCCL ranks but failed
   on the first accumulated update because PyTorch 2.10's static reducer is incompatible
   with this `no_sync()` pattern. Smoke v2 disabled the static reducer but exceeded the
   ten-minute diagnostic ceiling and was cancelled; Kaggle discarded its buffered logs
-  and partial output. Neither smoke produced a reusable model artifact.
-- **Next action:** run the 64-study/32-global-step DDP speed/memory smoke with streamed
-  four-step timing and symmetric NCCL result collection. Launch the full run without
-  a CLI timeout only if both T4s are active, peak memory is safely below 15 GB, and the
-  projected completion time is comfortably within Kaggle's limit.
+  and partial output. Smoke v4, a speculative two-study-per-rank inference benchmark,
+  never exposed script output during its ten-minute bound and was cancelled; the
+  unproven larger inference batch was reverted. None produced a reusable model artifact.
+- **DDP speed gate passed:** smoke v3 completed 32 real global training steps in
+  38.47 seconds including one-time cuDNN warm-up (`1.2021 s/step` conservative average;
+  approximately `0.41 s/step` after warm-up). Both T4s sampled at 100% utilization and
+  each peaked at 8,084.9 MiB of 15,360 MiB. The downloaded JSON, telemetry, and complete
+  log are retained under `outputs/kaggle/rsna-p2-ddp-speed-smoke-v3/`.
+- **Next action:** launch the proven full `ddp_t4_v3` run without a CLI timeout, then
+  verify both ranks, the first training milestone, and telemetry before leaving it to
+  complete.
 
 ## Previous completed run
 

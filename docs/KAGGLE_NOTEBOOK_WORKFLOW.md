@@ -10,8 +10,8 @@
 | DINOv2 pseudo adaptation | [rsna-knee-dinov2-pseudo-adaptation](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-dinov2-pseudo-adaptation) | Nvidia Tesla T4 | Version 1 verified complete; 4,407/4,407 usable, direct expert AUC 0.7852, fold-head OOF AUC 0.7976 |
 | P2 wide cache A | [rsna-knee-p2-wide-cache-a](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-a) | CPU | Version 2 complete; 2,204/2,204, failures=0, 95.85 min total |
 | P2 wide cache B | [rsna-knee-p2-wide-cache-b](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-b) | CPU | Version 2 complete; 2,203/2,203, failures=0, 77.04 min total |
-| P2 CoAtNet-RMLP2 | [rsna-knee-p2-coatnet-rmlp2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2) | GPU T4 x2 | Version 1 cancelled after proving the notebook used only one GPU; DDP revision pending speed smoke |
-| P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V1 exposed a static-reducer failure; V2 was bounded and cancelled without retained logs; corrected 32-step gate pending |
+| P2 CoAtNet-RMLP2 | [rsna-knee-p2-coatnet-rmlp2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2) | GPU T4 x2 | Version 1 cancelled after proving it used only one GPU; `ddp_t4_v3` speed/memory gate passed and full relaunch is next |
+| P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V3 passed: both GPUs 100%, 8,084.9 MiB peak/rank, 1.2021 s/global step including warm-up; V4 infrastructure-stalled and was bounded/cancelled |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
