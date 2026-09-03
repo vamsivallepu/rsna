@@ -216,6 +216,12 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   gate withheld approval because the 4.38-second training segment was shorter than
   the five-second telemetry interval and therefore did not capture peak utilization.
   V2 changes only the telemetry sampling interval to one second.
+- **Speed smoke v2:** passed the independent gate. It reproduced validation BCE
+  `0.648608`, measured `3.05` seconds for 64 training studies and `0.72` seconds
+  for eight 32-window validation studies, projected `36.73` minutes for the full
+  representation/validation/extraction path, and used `481.2` MiB peak allocated
+  memory per rank. Telemetry captured maxima of 93% and 99% utilization on the two
+  T4s. The full P3 run is approved.
 
 ## Previous completed run
 
