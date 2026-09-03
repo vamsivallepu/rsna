@@ -40,3 +40,12 @@
 The visible three-study mount is only a canary. Kaggle's notebook-only submission
 rerun evaluates the same code on the hidden test set of roughly 1,300 studies under
 the nine-hour GPU limit.
+
+## Verified leaderboard result
+
+- Canonical submission reference: `55965846`.
+- Public leaderboard score: `0.908`.
+- Accidental duplicate reference `55965923` also scored `0.908`, providing an
+  end-to-end determinism check.
+- The live leading public score when this result was verified was `0.952`; the P2
+  gap was therefore `0.044`.

@@ -12,7 +12,7 @@
 | P2 wide cache B | [rsna-knee-p2-wide-cache-b](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-wide-cache-b) | CPU | Version 2 complete; 2,203/2,203, failures=0, 77.04 min total |
 | P2 CoAtNet-RMLP2 | [rsna-knee-p2-coatnet-rmlp2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2) | GPU T4 x2 | Version 2 verified complete; OOF 0.891125, direct 0.878427, epoch 8 selected, both GPUs validated |
 | P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V3 passed: both GPUs 100%, 8,084.9 MiB peak/rank, 1.2021 s/global step including warm-up; V4 infrastructure-stalled and was bounded/cancelled |
-| P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 complete/validated in 0.51 min; notebook submission `55965846` pending hidden-test scoring |
+| P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 validated; canonical submission `55965846` complete with public score 0.908; duplicate `55965923` matched exactly |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

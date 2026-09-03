@@ -17,7 +17,7 @@ public dependencies are kept locally and are excluded from version control.
    expert/pseudo twin path and established a **0.7968** honest cached-token baseline.
 5. Train the frozen wide-coverage CoAtNet P2 system. Its independently validated
    report-purged OOF score is **0.8911**, a paired **+0.0943** over the honest baseline;
-   its first notebook-only leaderboard submission is the active step.
+   its first notebook-only submission scored **0.908** on the public leaderboard.
 6. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
