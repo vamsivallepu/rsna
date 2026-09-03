@@ -288,14 +288,21 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   and artifact hashes, and sustained 100% median utilization on both T4s. Manifest
   SHA-256 values are `6ed454243a6e3ffead8566edb86bb4c7ecc3be668a11fa0f53bd0c093d001932`
   and `9541ca0158a96c2350f4fbd94d10ad385cff06d6d8457c2f92b57fdd9a1bb4d5`.
-- **Full launch wave 2:** fold 2 and fold 3 version 1 were accepted from the same
-  frozen Git commit `77148f5`; both are `RUNNING` on T4 x2. Fold 4 remains unlaunched
-  until one batch-GPU slot is released.
+- **Full wave 2 result:** folds 2 and 3 completed and passed the independent validator.
+  Fold 2 correctly excluded the four validation-report twins, selected epoch 8 at
+  pseudo-validation BCE `0.4669970`, and trained for `129.61` representation minutes.
+  Fold 3 selected epoch 8 at `0.4616242` and trained for `140.98` minutes. Both had
+  zero forbidden report overlap, exact split and artifact hashes, correct held-out
+  rows, and 100% median utilization on both T4s. Their manifest SHA-256 values are
+  `93135d2849dc891115fd256472729cc817f86ea2ba79c7f8d5a1553da66aebac` and
+  `9894605caa4ae2c0d93f5d11c8766a2256f20e14298821f40dc7b1df9e83867c`.
+- **Final launch wave:** fold 4 version 1 was accepted from the same frozen commit
+  `77148f5` and is `RUNNING` on T4 x2.
 - **Tracked smoke result:**
   [`experiments/results/P4-SPEED-SMOKE.json`](../experiments/results/P4-SPEED-SMOKE.json).
-- **Next action:** validate folds 2 and 3 after completion, then launch fold 4 in the
-  final wave. Compute no partial P4 AUC: the declared result requires all 58 expert
-  studies concatenated exactly once.
+- **Next action:** validate fold 4 after completion, aggregate all five folds, and run
+  the independent P4-versus-P2 and fixed-rank-blend bootstrap. Compute no partial P4
+  AUC: the declared result requires all 58 expert studies concatenated exactly once.
 
 ## Previous completed run
 

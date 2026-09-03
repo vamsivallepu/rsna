@@ -18,9 +18,9 @@
 | P4 fold-0 speed smoke | [rsna-knee-p4-coatnet-e2e-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-speed-smoke) | GPU T4 x2 | Version 1 independently passed; exact mixed-label fold path, 12 held-out predictions, both GPUs 100% peak |
 | P4 CoAtNet E2E fold 0 | [rsna-knee-p4-coatnet-e2e-fold-0](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-0) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.463703, 130.59 min representation |
 | P4 CoAtNet E2E fold 1 | [rsna-knee-p4-coatnet-e2e-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-1) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.462888, 140.58 min representation |
-| P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 `RUNNING`; wave 2 from commit `77148f5` |
-| P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 `RUNNING`; wave 2 from commit `77148f5` |
-| P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Bundle validated; launch after a wave-2 slot is released |
+| P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.466997, 129.61 min representation |
+| P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.461624, 140.98 min representation |
+| P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 `RUNNING`; final wave from commit `77148f5` |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
