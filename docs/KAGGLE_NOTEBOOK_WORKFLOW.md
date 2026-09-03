@@ -13,6 +13,8 @@
 | P2 CoAtNet-RMLP2 | [rsna-knee-p2-coatnet-rmlp2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2) | GPU T4 x2 | Version 2 verified complete; OOF 0.891125, direct 0.878427, epoch 8 selected, both GPUs validated |
 | P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V3 passed: both GPUs 100%, 8,084.9 MiB peak/rank, 1.2021 s/global step including warm-up; V4 infrastructure-stalled and was bounded/cancelled |
 | P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 validated; canonical submission `55965846` complete with public score 0.908; duplicate `55965923` matched exactly |
+| P3 speed smoke | [rsna-knee-p3-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-speed-smoke) | GPU T4 x2 | Prepared; exact 336 px DINO forward/backward and runtime gate |
+| P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hmil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hmil) | GPU T4 x2 | Frozen protocol active; launch only after speed smoke passes |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

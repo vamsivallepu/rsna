@@ -132,6 +132,10 @@ full archive was not downloaded. The five official CSV metadata files are in
 - External data and models are allowed only when publicly available and equally
   accessible at no cost, or when they satisfy Kaggle's reasonableness/minimal-cost
   standard.
+- Competition-specific Section 2.5 says an incompatible external pretrained model
+  need not itself be relicensed under the winner license. That carve-out does not
+  waive the model's own usage restrictions or the general warranty against
+  third-party-rights violations; verify each exact weight artifact independently.
 - Hand-labeling or human prediction of validation/test records is prohibited.
 - Winner submission/code license named by the rules: CC BY-NC 4.0.
 - Winners must provide reproducible training and inference code, model weights,

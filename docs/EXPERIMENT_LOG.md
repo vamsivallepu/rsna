@@ -99,7 +99,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
 | P2 | **validated / promoted** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | OOF 0.891125 versus P0-B 0.796788; integrity, uncertainty, and runtime gates passed |
 | P2-SUB | **validated / scored** | Five-head P2 hidden-test inference and `submission.csv` | Public leaderboard 0.908; both identical submissions completed successfully |
-| P3 | queued | DINOv2-small 336 px LoRA hierarchical MIL | P2 cache/geometry contract |
+| P3 | **active** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Frozen protocol; local and remote speed validation before full run |
 | P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
@@ -198,6 +198,18 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   `0.044` public-leaderboard gap.
 - **Next action:** retain `55965846` as the canonical P2 submission and start P3 under
   the existing roadmap gate; do not spend another submission slot on unchanged P2.
+
+## Active P3 run
+
+- **Run ID:** `P3-DINOV2-HMIL-v1`.
+- **Frozen protocol:** [`P3_PROTOCOL.md`](P3_PROTOCOL.md).
+- **Parent:** validated P2 OOF `0.8911254`, public score `0.908`.
+- **Core change:** cache-native 336 px DINOv2-small, final-two-block adaptation,
+  five retained region tokens per window, and two-stage diagnosis-query pooling.
+- **Integrity:** reuse exact `P2-CACHE-v1`; pseudo-only representation selection;
+  untouched direct expert gate; report-group-purged five-fold expert OOF heads.
+- **Execution plan:** local one-study forward/backward, dual-T4 64-study speed smoke,
+  then full P3 only if memory, utilization, numerical, and runtime gates pass.
 
 ## Previous completed run
 
