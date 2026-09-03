@@ -343,6 +343,12 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   margin gate, so version 1 is not submitted. Version 2 uses three-study batches and
   shares resize/normalization across each GPU's three models before repeating the
   canary.
+- **Submission canary v2:** output validation passed and its final `submission.csv`
+  was byte-identical to version 1, but the three-study batch raised observed GPU memory
+  to `12,621 MiB` and slowed the inference segment to `1.3089` minutes. Its linear
+  hidden-test projection exceeds nine hours, so version 2 is also rejected. Version 3
+  returns to batch size 2, retains shared preprocessing, and stores inference-only
+  model weights in FP16 to eliminate repeated autocast weight conversion.
 
 ## Previous completed run
 

@@ -539,6 +539,7 @@ def load_full_model(checkpoint: Path, device: torch.device) -> CoAtNetMIL:
     del state
     if channels_last:
         model = model.to(device=device, memory_format=torch.channels_last)
+        model = model.half()
     else:
         model = model.to(device)
     model.eval()
@@ -557,6 +558,8 @@ def load_p2_heads(
             weights_only=True,
         )
         head.load_state_dict(state, strict=True)
+        if device.type == "cuda":
+            head = head.half()
         head.eval()
         heads.append(head)
         del state
@@ -781,7 +784,7 @@ def main() -> int:
         flush=True,
     )
 
-    batch_size = 3 if visible_gpus else 1
+    batch_size = 2 if visible_gpus else 1
     dataset = TestStudyDataset(study_ids, series_by_study, dicom_root)
     loader_options: dict[str, object] = {
         "batch_size": batch_size,
@@ -955,8 +958,8 @@ def main() -> int:
             "weights": {"p2": 0.5, "p4": 0.5},
         },
         "inference_optimization": (
-            "three-study batches; one shared resize and normalization per "
-            "device group"
+            "two-study batches; resident FP16 inference weights; one shared "
+            "resize and normalization per device group"
         ),
         "submission_file": "submission.csv",
         "test_metadata_sha256": {
