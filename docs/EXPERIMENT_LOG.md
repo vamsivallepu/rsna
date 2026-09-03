@@ -273,8 +273,21 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   four known validation-report twins; folds 3 and 4 each deterministically drop one
   pseudo row to balance DDP shards. No expert row is dropped or duplicated, and all
   training/selection/held-out report intersections are empty.
-- **Next action:** run and independently validate the fold-0 speed smoke. Launch all
-  five full fold jobs only after that gate passes.
+- **Speed smoke result:** private Kaggle version 1 completed successfully. It trained
+  62 pseudo and two expert rows through the exact fold-0 DDP branch, selected epoch 1
+  at pseudo-validation BCE `0.5126671`, and wrote all 12 held-out predictions. The
+  representation segment took `0.97` minutes and held-out inference `0.08` minutes
+  after `2.95` minutes of full cache hashing. Both T4s reached 100% utilization. The
+  independent validator passed the script/artifact hashes, complete 4,407-row role
+  ledger, label/prediction rows, report isolation, and telemetry.
+- **Full launch wave 1:** fold 0 and fold 1 version 1 were accepted from Git commit
+  `77148f5` and are both `RUNNING` on T4 x2. Kaggle rejected—not queued—folds 2–4
+  with `Maximum batch GPU session count of 2 reached`.
+- **Tracked smoke result:**
+  [`experiments/results/P4-SPEED-SMOKE.json`](../experiments/results/P4-SPEED-SMOKE.json).
+- **Next action:** wait for either running fold to release a GPU slot, validate its
+  output, then launch folds 2 and 3; launch fold 4 in the final wave. Do not assume
+  rejected pushes are queued.
 
 ## Previous completed run
 

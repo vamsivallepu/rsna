@@ -15,8 +15,10 @@
 | P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 validated; canonical submission `55965846` complete with public score 0.908; duplicate `55965923` matched exactly |
 | P3 speed smoke | [rsna-knee-p3-dinov2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-ddp-speed-smoke) | GPU T4 x2 | V2 independently passed: 93%/99% GPU maxima, 481.2 MiB per-rank peak, 36.73 min full-path projection |
 | P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Version 1 independently verified complete in 30.89 min; OOF 0.805988, fixed P2+P3 rank blend 0.863908; rejected versus P2 |
-| P4 fold-0 speed smoke | [rsna-knee-p4-coatnet-e2e-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-speed-smoke) | GPU T4 x2 | Bundle and split contract locally validated; remote launch is the next gate |
-| P4 CoAtNet E2E folds 0–4 | `rsna-knee-p4-coatnet-e2e-fold-{0..4}` | GPU T4 x2 each | Five bundles locally validated; launch only after the P4 speed smoke passes |
+| P4 fold-0 speed smoke | [rsna-knee-p4-coatnet-e2e-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-speed-smoke) | GPU T4 x2 | Version 1 independently passed; exact mixed-label fold path, 12 held-out predictions, both GPUs 100% peak |
+| P4 CoAtNet E2E fold 0 | [rsna-knee-p4-coatnet-e2e-fold-0](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-0) | GPU T4 x2 | Version 1 `RUNNING`; launched from commit `77148f5` |
+| P4 CoAtNet E2E fold 1 | [rsna-knee-p4-coatnet-e2e-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-1) | GPU T4 x2 | Version 1 `RUNNING`; launched from commit `77148f5` |
+| P4 CoAtNet E2E folds 2–4 | `rsna-knee-p4-coatnet-e2e-fold-{2..4}` | GPU T4 x2 each | Locally validated but not queued; Kaggle rejected launch while both batch-GPU slots were occupied |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P4-SPEED-SMOKE",
+  "run_id": "P4-COATNET-E2E-FOLD-0-SPEED-SMOKE-v1",
+  "status": "validated",
+  "date": "2026-09-03",
+  "code_commit": "77148f5a3930d6a63fb83598a348619d9198ec65",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-speed-smoke",
+  "raw_artifact_path": "outputs/kaggle/rsna-p4-speed-smoke-v1",
+  "raw_manifest_sha256": "1f25ac3993ceea67dc472340155e46dc0a2740189753316766e33558c2c80ed9",
+  "validated": true,
+  "execution": {
+    "fold": 0,
+    "representation_rows": 64,
+    "pseudo_train_rows": 62,
+    "expert_train_rows": 2,
+    "pseudo_valid_rows": 8,
+    "expert_valid_rows": 12,
+    "representation_epochs": 1,
+    "best_epoch": 1,
+    "best_pseudo_valid_weighted_bce": 0.5126670889909979,
+    "world_size": 2,
+    "gpu_peak_utilization_percent": {"0": 100, "1": 100}
+  },
+  "elapsed": {
+    "input_validation_minutes": 2.9453787724177043,
+    "representation_minutes": 0.9681613008181255,
+    "fold_inference_minutes": 0.07900938193003336
+  },
+  "validation": {
+    "source_and_artifact_hashes_verified": true,
+    "complete_role_ledger_verified": true,
+    "report_isolation_verified": true,
+    "expert_predictions_and_labels_verified": true,
+    "both_gpus_active": true
+  },
+  "decision": "Pass the P4 execution gate and launch the five full end-to-end folds in waves constrained by Kaggle's two batch-GPU-session limit."
+}
