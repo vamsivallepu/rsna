@@ -222,6 +222,10 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   representation/validation/extraction path, and used `481.2` MiB peak allocated
   memory per rank. Telemetry captured maxima of 93% and 99% utilization on the two
   T4s. The full P3 run is approved.
+- **Full launch:** private Kaggle kernel
+  [`rsna-knee-p3-dinov2-hierarchical-mil`](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil)
+  version 1 was launched from the frozen implementation at Git commit `024db68`.
+  Kaggle reports the worker status as `RUNNING`; no startup error has been emitted.
 
 ## Previous completed run
 

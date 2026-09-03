@@ -14,7 +14,7 @@
 | P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V3 passed: both GPUs 100%, 8,084.9 MiB peak/rank, 1.2021 s/global step including warm-up; V4 infrastructure-stalled and was bounded/cancelled |
 | P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 validated; canonical submission `55965846` complete with public score 0.908; duplicate `55965923` matched exactly |
 | P3 speed smoke | [rsna-knee-p3-dinov2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-ddp-speed-smoke) | GPU T4 x2 | V2 independently passed: 93%/99% GPU maxima, 481.2 MiB per-rank peak, 36.73 min full-path projection |
-| P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Frozen protocol and speed gate passed; full run approved |
+| P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Version 1 launched from commit `024db68`; current worker state `RUNNING` |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
