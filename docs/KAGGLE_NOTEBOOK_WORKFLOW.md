@@ -16,9 +16,11 @@
 | P3 speed smoke | [rsna-knee-p3-dinov2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-ddp-speed-smoke) | GPU T4 x2 | V2 independently passed: 93%/99% GPU maxima, 481.2 MiB per-rank peak, 36.73 min full-path projection |
 | P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Version 1 independently verified complete in 30.89 min; OOF 0.805988, fixed P2+P3 rank blend 0.863908; rejected versus P2 |
 | P4 fold-0 speed smoke | [rsna-knee-p4-coatnet-e2e-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-speed-smoke) | GPU T4 x2 | Version 1 independently passed; exact mixed-label fold path, 12 held-out predictions, both GPUs 100% peak |
-| P4 CoAtNet E2E fold 0 | [rsna-knee-p4-coatnet-e2e-fold-0](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-0) | GPU T4 x2 | Version 1 `RUNNING`; launched from commit `77148f5` |
-| P4 CoAtNet E2E fold 1 | [rsna-knee-p4-coatnet-e2e-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-1) | GPU T4 x2 | Version 1 `RUNNING`; launched from commit `77148f5` |
-| P4 CoAtNet E2E folds 2–4 | `rsna-knee-p4-coatnet-e2e-fold-{2..4}` | GPU T4 x2 each | Locally validated but not queued; Kaggle rejected launch while both batch-GPU slots were occupied |
+| P4 CoAtNet E2E fold 0 | [rsna-knee-p4-coatnet-e2e-fold-0](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-0) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.463703, 130.59 min representation |
+| P4 CoAtNet E2E fold 1 | [rsna-knee-p4-coatnet-e2e-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-1) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.462888, 140.58 min representation |
+| P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 `RUNNING`; wave 2 from commit `77148f5` |
+| P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 `RUNNING`; wave 2 from commit `77148f5` |
+| P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Bundle validated; launch after a wave-2 slot is released |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -97,6 +99,8 @@ cache-signature hash, and array hashes before training.
   `scripts/p2_coatnet_ddp.py`, `scripts/build_p4_coatnet_folds.py`,
   `scripts/build_p4_speed_smoke.py`, `scripts/validate_p4_prelaunch.py`, and
   `scripts/validate_p4_speed_smoke.py`
+- P4 per-fold and aggregate validation: `scripts/validate_p4_fold.py`,
+  `scripts/aggregate_p4_outputs.py`, and `scripts/validate_p4_outputs.py`
 - P4 Kaggle bundles: `kaggle/rsna-p4-coatnet-folds/fold-{0..4}/` and
   `kaggle/rsna-p4-speed-smoke/`; frozen protocol: `docs/P4_PROTOCOL.md`
 

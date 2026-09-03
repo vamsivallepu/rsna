@@ -280,14 +280,22 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   after `2.95` minutes of full cache hashing. Both T4s reached 100% utilization. The
   independent validator passed the script/artifact hashes, complete 4,407-row role
   ledger, label/prediction rows, report isolation, and telemetry.
-- **Full launch wave 1:** fold 0 and fold 1 version 1 were accepted from Git commit
-  `77148f5` and are both `RUNNING` on T4 x2. Kaggle rejected—not queued—folds 2–4
-  with `Maximum batch GPU session count of 2 reached`.
+- **Full wave 1 result:** fold 0 and fold 1 version 1 completed and passed the
+  independent per-fold validator. Fold 0 selected epoch 8 at pseudo-validation BCE
+  `0.4637027` in `130.59` representation minutes; fold 1 selected epoch 8 at
+  `0.4628877` in `140.58` minutes. Both produced the exact 12 held-out expert rows,
+  had zero training/selection/validation report overlap, reproduced all split roles
+  and artifact hashes, and sustained 100% median utilization on both T4s. Manifest
+  SHA-256 values are `6ed454243a6e3ffead8566edb86bb4c7ecc3be668a11fa0f53bd0c093d001932`
+  and `9541ca0158a96c2350f4fbd94d10ad385cff06d6d8457c2f92b57fdd9a1bb4d5`.
+- **Full launch wave 2:** fold 2 and fold 3 version 1 were accepted from the same
+  frozen Git commit `77148f5`; both are `RUNNING` on T4 x2. Fold 4 remains unlaunched
+  until one batch-GPU slot is released.
 - **Tracked smoke result:**
   [`experiments/results/P4-SPEED-SMOKE.json`](../experiments/results/P4-SPEED-SMOKE.json).
-- **Next action:** wait for either running fold to release a GPU slot, validate its
-  output, then launch folds 2 and 3; launch fold 4 in the final wave. Do not assume
-  rejected pushes are queued.
+- **Next action:** validate folds 2 and 3 after completion, then launch fold 4 in the
+  final wave. Compute no partial P4 AUC: the declared result requires all 58 expert
+  studies concatenated exactly once.
 
 ## Previous completed run
 
