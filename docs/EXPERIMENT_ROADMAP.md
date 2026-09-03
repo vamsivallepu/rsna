@@ -50,8 +50,8 @@ later expensive stage advances only after its prerequisites pass.
 | 0 | **P0** | validated | Validation hardening: paired replay of the current DINO head and report-group-purged OOF training | Local CPU; existing token cache | Passed: all 58 rows OOF, zero purged overlap, saved-head and hash validation |
 | 1 | **P1** | validated | Cached-token head and objective ablations | Local CPU; existing token cache | Closed after P1-D; no change promoted over P0-B |
 | 2 | **P2** | **validated / promoted / scored** | Strong compact convolutional baseline: CoAtNet-RMLP2 at 384 px with fuller physical slice coverage | Kaggle CPU cache + GPU training; `P2-CACHE-v1` | Passed at 0.891125 OOF with +0.094337 over P0-B; first public leaderboard score 0.908 |
-| 3 | **P3** | **active** | DINOv2-small at 336 px with fuller coverage, final-two-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse `P2-CACHE-v1` | Clear validation gain over P2 or validated complementary ensemble signal, with stable targets and acceptable runtime |
-| 4 | **P4** | queued | Five end-to-end folds for only the winning P2/P3 configuration | Kaggle GPU; winning cache | Fold-safe representation training and repeatable pooled OOF improvement |
+| 3 | **P3** | **rejected** | DINOv2-small at 336 px with fuller coverage, final-two-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse `P2-CACHE-v1` | Failed: 0.805988 OOF and 0.863908 fixed rank blend both underperformed P2 |
+| 4 | **P4** | **queued / next** | Five end-to-end folds of the winning P2 configuration | Kaggle GPU; `P2-CACHE-v1` | Fold-safe representation training and repeatable pooled OOF improvement |
 | 5 | **P5** | queued | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
 | 6 | **P6** | queued | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Kaggle GPU | Dataset agreement/license verified and ROI pretraining improves held-out pseudo groups |
 | 7 | **P7** | queued | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
@@ -155,7 +155,10 @@ by report-grouped pseudo validation; expert labels are reserved for the direct g
 and fold-safe cached-feature OOF heads. P3 holds geometry as constant as practical
 while testing higher-resolution DINOv2-small and hierarchical MIL. Avoid DINOv2-base
 at 224 px: the present bottleneck is coverage/resolution and label noise, not raw
-model size. P4 pays for five end-to-end folds only after one configuration wins cheaply.
+model size. P3 scored `0.805988` OOF versus P2's `0.891125`; its fixed equal-rank
+blend with P2 also declined to `0.863908`. P3 is rejected, P2 is the winner, and P4
+is now the next stage: five end-to-end P2 folds to measure and exploit representation
+variance without changing the winning architecture.
 
 ### P5–P9 — complementary signal
 

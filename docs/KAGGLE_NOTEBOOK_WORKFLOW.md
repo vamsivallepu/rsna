@@ -14,7 +14,7 @@
 | P2 DDP speed smoke | [rsna-knee-p2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-ddp-speed-smoke) | GPU T4 x2 | V3 passed: both GPUs 100%, 8,084.9 MiB peak/rank, 1.2021 s/global step including warm-up; V4 infrastructure-stalled and was bounded/cancelled |
 | P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 validated; canonical submission `55965846` complete with public score 0.908; duplicate `55965923` matched exactly |
 | P3 speed smoke | [rsna-knee-p3-dinov2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-ddp-speed-smoke) | GPU T4 x2 | V2 independently passed: 93%/99% GPU maxima, 481.2 MiB per-rank peak, 36.73 min full-path projection |
-| P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Version 1 launched from commit `024db68`; current worker state `RUNNING` |
+| P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Version 1 independently verified complete in 30.89 min; OOF 0.805988, fixed P2+P3 rank blend 0.863908; rejected versus P2 |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -82,6 +82,13 @@ cache-signature hash, and array hashes before training.
   `kaggle/rsna-p2-submission/`
 - P2 offline official-weight provenance: `kaggle/rsna-coatnet-rmlp2-init/`
 - Frozen P2 protocols: `docs/P2_PROTOCOL.md` and `docs/P2_SUBMISSION_PROTOCOL.md`
+- P3 source, builders, and validators: `scripts/p3_dinov2_hmil_ddp.py`,
+  `scripts/build_p3_dinov2_notebook.py`, `scripts/build_p3_speed_smoke.py`,
+  `scripts/validate_p3_speed_smoke.py`, and `scripts/validate_p3_outputs.py`
+- P3 Kaggle bundles: `kaggle/rsna-p3-dinov2-hmil/` and
+  `kaggle/rsna-p3-speed-smoke/`; frozen protocol: `docs/P3_PROTOCOL.md`
+- Downloaded P3 full outputs: `outputs/kaggle/rsna-p3-dinov2-hmil-v1/`
+  (ignored by Git); compact validated result: `experiments/results/P3.json`
 
 The local notebook is executed against the representative DICOM sample. The
 clean deployment notebook uses the same UIDs and loader against Kaggle's full

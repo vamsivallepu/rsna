@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P3",
+  "run_id": "P3-DINOV2-HMIL-v1",
+  "status": "rejected",
+  "date": "2026-09-03",
+  "description": "DINOv2-small final-two-block adaptation with hierarchical diagnosis-query MIL",
+  "code_commit": "024db6862eff63b391ed30b76b08e8ef69e87f83",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil",
+  "raw_artifact_path": "outputs/kaggle/rsna-p3-dinov2-hmil-v1",
+  "raw_manifest_sha256": "908a343c68146f02430dea7e0882659aaa2e0ce622b2064a73ce050df9050298",
+  "validated": true,
+  "validation": {
+    "source_and_output_hashes_verified": true,
+    "saved_direct_and_fold_heads_replayed": true,
+    "expert_oof_rows": 58,
+    "report_hash_overlap_in_training": 0,
+    "feature_shape": [4407, 32, 5, 384],
+    "visible_gpus": 2,
+    "gpu_utilization_median_percent": {"0": 97.0, "1": 96.0},
+    "gpu_utilization_max_percent": {"0": 99, "1": 100}
+  },
+  "config": {
+    "cache_id": "P2-CACHE-v1",
+    "cache_signature_sha256": "0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3",
+    "model_id": "metaresearch/dinov2/PyTorch/small/1",
+    "model_sha256": "1051e25b2ed69ddad24f3c41e7b6eed6e7f7d012103ea227e47eb82e87dc2050",
+    "image_size": 336,
+    "unfrozen_blocks": 2,
+    "region_tokens_per_window": 5,
+    "train_windows_per_study": 8,
+    "evaluation_windows_per_study": 32,
+    "representation_epochs": 8,
+    "best_epoch": 8,
+    "best_pseudo_valid_weighted_bce": 0.5070693257194764,
+    "world_size": 2,
+    "trainable_parameters": 3728652
+  },
+  "data_audit": {
+    "studies": 4407,
+    "expert_studies": 58,
+    "pseudo_studies": 4349,
+    "representation_gold_rows": 0,
+    "pseudo_report_group_overlap": 0
+  },
+  "result": {
+    "direct_expert_macro_auc": 0.8041672399138572,
+    "p3_oof_macro_auc": 0.8059880562440003,
+    "p2_oof_macro_auc": 0.8911253543643616,
+    "p3_minus_p2": -0.0851372981203613,
+    "p3_vs_p2_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": -0.08538077857558096,
+      "ci95": [-0.11602856624112078, -0.05775276409758073],
+      "probability_positive": 0.0
+    },
+    "equal_rank_p2_p3_macro_auc": 0.8639077962540243,
+    "equal_rank_minus_p2": -0.027217558110337325,
+    "equal_rank_vs_p2_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": -0.027117193905311865,
+      "ci95": [-0.04216893215699617, -0.013320065052118827],
+      "probability_positive": 0.0002
+    },
+    "p3_target_auc": {
+      "ACL": 0.8088235294117647,
+      "MCL": 0.7210884353741497,
+      "Medial Meniscus": 0.7103365384615385,
+      "Lateral Meniscus": 0.7354037267080745,
+      "Medial OA": 0.9007751937984496,
+      "Lateral OA": 0.8201160541586073,
+      "PF OA": 0.7477477477477477,
+      "Effusion": 0.9577639751552794,
+      "Synovitis": 0.7538829151732378,
+      "Baker's": 0.8224637681159421,
+      "Contusion": 0.8434547908232118,
+      "Fracture": 0.85
+    }
+  },
+  "elapsed": {
+    "kernel_wall_minutes": 30.89,
+    "input_validation_minutes": 3.9607799013455707,
+    "representation_minutes": 15.461714514096577,
+    "feature_head_evaluation_minutes": 10.689386451244355
+  },
+  "decision": "Reject P3 and its fixed equal-rank blend with P2. Retain P2 as the winning P2/P3 configuration and advance to P4 end-to-end P2 folds."
+}

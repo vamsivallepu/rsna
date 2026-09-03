@@ -1,6 +1,6 @@
 # Experiment log
 
-Last updated: 2026-09-02
+Last updated: 2026-09-03
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
@@ -99,8 +99,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P1-D | validated | Factor-at-a-time global regularization and matched repeated-seed confirmation | No promotion; P0-B retained and P1 closed |
 | P2 | **validated / promoted** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | OOF 0.891125 versus P0-B 0.796788; integrity, uncertainty, and runtime gates passed |
 | P2-SUB | **validated / scored** | Five-head P2 hidden-test inference and `submission.csv` | Public leaderboard 0.908; both identical submissions completed successfully |
-| P3 | **active** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Frozen protocol; local and remote speed validation before full run |
-| P4 | queued | Five end-to-end folds of the P2/P3 winner | A clear single-run winner |
+| P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
+| P4 | queued | Five end-to-end folds of the P2 winner | P2 retained after P3 failed both single-model and diversity gates |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
 ## Active run
@@ -199,7 +199,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Next action:** retain `55965846` as the canonical P2 submission and start P3 under
   the existing roadmap gate; do not spend another submission slot on unchanged P2.
 
-## Active P3 run
+## Completed P3 run
 
 - **Run ID:** `P3-DINOV2-HMIL-v1`.
 - **Frozen protocol:** [`P3_PROTOCOL.md`](P3_PROTOCOL.md).
@@ -225,7 +225,32 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Full launch:** private Kaggle kernel
   [`rsna-knee-p3-dinov2-hierarchical-mil`](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil)
   version 1 was launched from the frozen implementation at Git commit `024db68`.
-  Kaggle reports the worker status as `RUNNING`; no startup error has been emitted.
+  Kaggle completed the worker successfully in `30.89` wall-clock minutes.
+- **Representation result:** all eight epochs completed and grouped pseudo-validation
+  BCE improved monotonically from `0.559016` to `0.507069`, selecting epoch 8.
+  Representation plus selection took `15.46` minutes; feature extraction, expert-head
+  fitting, and evaluation took `10.69` minutes after `3.96` minutes of cache hashing.
+- **Expert result:** direct untouched-expert macro AUC was `0.8041672`; five-fold
+  report-purged OOF macro AUC was `0.8059881`, which is `-0.0851373` below P2's
+  `0.8911254`. The independently recomputed 5,000-sample paired interval was
+  `[-0.1160286, -0.0577528]`, with probability positive `0.0`.
+- **Diversity result:** the predeclared equal-rank P2+P3 blend scored `0.8639078`,
+  `-0.0272176` below P2. Its paired interval was `[-0.0421689, -0.0133201]`, with
+  probability positive `0.0002`; P3 therefore does not supply useful aggregate
+  ensemble diversity.
+- **Target pattern:** P3 improved only Lateral OA (`+0.05996`) and Effusion
+  (`+0.01118`). Ten targets declined, led by Medial Meniscus (`-0.24639`), MCL
+  (`-0.18821`), Baker's (`-0.13587`), and ACL (`-0.12868`). The rank blend improved
+  only Lateral OA, Effusion, and Synovitis and still lost decisively in macro AUC.
+- **Independent validation:** all artifact hashes and feature geometry passed; every
+  direct and fold head replayed its saved predictions; all 58 expert rows appeared
+  exactly once OOF; and every fold had zero validation-report overlap. Both T4s were
+  active with utilization medians `97%` and `96%` and maxima `99%` and `100%`.
+- **Tracked result:** [`experiments/results/P3.json`](../experiments/results/P3.json).
+- **Decision:** reject P3 and the P2+P3 blend. This is a valid negative result rather
+  than an infrastructure failure: pseudo BCE continued improving, but the learned
+  DINOv2 hierarchy transferred poorly to the expert targets. Retain P2 as the P2/P3
+  winner and advance the ordered roadmap to P4; do not spend a submission on P3.
 
 ## Previous completed run
 
