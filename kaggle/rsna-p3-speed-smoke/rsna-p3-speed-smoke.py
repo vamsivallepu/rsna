@@ -473,7 +473,7 @@ def worker_main() -> int:
     telemetry = (
         GpuTelemetry(
             OUTPUT_ROOT / "p3_gpu_telemetry.csv",
-            interval_seconds=5 if SPEED_SMOKE else 60,
+            interval_seconds=1 if SPEED_SMOKE else 60,
         )
         if FULL_RUN and is_primary
         else None

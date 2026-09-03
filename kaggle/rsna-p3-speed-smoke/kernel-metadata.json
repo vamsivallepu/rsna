@@ -1,5 +1,5 @@
 {
-  "id": "vallepuvamsikrishna/rsna-knee-p3-speed-smoke",
+  "id": "vallepuvamsikrishna/rsna-knee-p3-dinov2-ddp-speed-smoke",
   "title": "RSNA Knee P3 DINOv2 DDP Speed Smoke",
   "code_file": "rsna-p3-speed-smoke.py",
   "language": "python",

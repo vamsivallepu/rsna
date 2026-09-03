@@ -1,5 +1,5 @@
 {
-  "id": "vallepuvamsikrishna/rsna-knee-p3-dinov2-hmil",
+  "id": "vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil",
   "title": "RSNA Knee P3 DINOv2 Hierarchical MIL",
   "code_file": "rsna-p3-dinov2-hmil.py",
   "language": "python",

@@ -210,6 +210,12 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   untouched direct expert gate; report-group-purged five-fold expert OOF heads.
 - **Execution plan:** local one-study forward/backward, dual-T4 64-study speed smoke,
   then full P3 only if memory, utilization, numerical, and runtime gates pass.
+- **Speed smoke v1:** the exact dual-T4 path completed with finite validation BCE
+  `0.648608`, `481.2` MiB peak allocated memory per rank, and a projected full
+  representation/validation/extraction time of `50.05` minutes. The independent
+  gate withheld approval because the 4.38-second training segment was shorter than
+  the five-second telemetry interval and therefore did not capture peak utilization.
+  V2 changes only the telemetry sampling interval to one second.
 
 ## Previous completed run
 
