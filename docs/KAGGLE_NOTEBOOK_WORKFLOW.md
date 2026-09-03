@@ -21,7 +21,7 @@
 | P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.466997, 129.61 min representation |
 | P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.461624, 140.98 min representation |
 | P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.464586, 126.86 min representation |
-| P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | Self-contained six-model script prepared; private three-study canary pending |
+| P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | V1 functionally passed but projected to 8.41 h/1,300 studies; not submitted, optimized V2 canary pending |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

@@ -334,6 +334,15 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   state; neither reached inference or produced an artifact. Full execution validation
   is therefore assigned to the private three-study Kaggle T4 x2 canary, not retried
   locally.
+- **Submission canary v1:** all six immutable model sources loaded, both T4s were
+  assigned three models, all three visible studies completed, and the independent
+  validator exactly reproduced the five-fold P4 mean and final rank blend. Total time
+  was `1.77` minutes and the DICOM-plus-six-model segment took `1.1647` minutes.
+  Naively scaling the measured segment to roughly 1,300 hidden studies gives `8.41`
+  hours, only about 35 minutes below the nine-hour ceiling. This fails the runtime
+  margin gate, so version 1 is not submitted. Version 2 uses three-study batches and
+  shares resize/normalization across each GPU's three models before repeating the
+  canary.
 
 ## Previous completed run
 

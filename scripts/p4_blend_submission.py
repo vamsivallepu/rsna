@@ -14,6 +14,7 @@ from p2_submission import (
     CACHE_SIZE,
     DataLoader,
     EXPECTED_CACHE_SIGNATURE,
+    F,
     ID,
     K_EVAL,
     MODEL_SIZE,
@@ -152,6 +153,8 @@ def infer_device_group(
 ) -> tuple[np.ndarray | None, dict[int, np.ndarray]]:
     windows = windows_cpu.to(device, non_blocking=device.type == "cuda")
     mask = mask_cpu.to(device, non_blocking=device.type == "cuda").bool()
+    reference = p2_model if p2_model is not None else p4_models[0][1]
+    batch, count = windows.shape[:2]
     p2_result: np.ndarray | None = None
     p4_result: dict[int, np.ndarray] = {}
     with torch.inference_mode(), torch.autocast(
@@ -159,15 +162,29 @@ def infer_device_group(
         dtype=torch.float16,
         enabled=device.type == "cuda",
     ):
+        pixels = windows.reshape(
+            batch * count, 3, CACHE_SIZE, CACHE_SIZE
+        ).float().div(255.0)
+        pixels = F.interpolate(
+            pixels,
+            size=(MODEL_SIZE, MODEL_SIZE),
+            mode="bicubic",
+            align_corners=False,
+        )
+        if device.type == "cuda":
+            pixels = pixels.contiguous(memory_format=torch.channels_last)
+        pixels = (pixels - reference.mean) / reference.std
         if p2_model is not None:
-            features = p2_model.encode(windows)
+            features = p2_model.backbone(pixels).reshape(
+                batch, count, -1
+            )
             probabilities = torch.stack(
                 [torch.sigmoid(head(features, mask)) for head in p2_heads]
             ).mean(dim=0)
             p2_result = probabilities.float().cpu().numpy()
             del features, probabilities
         for fold, model in p4_models:
-            features = model.encode(windows)
+            features = model.backbone(pixels).reshape(batch, count, -1)
             probabilities = torch.sigmoid(model.head(features, mask))
             p4_result[fold] = probabilities.float().cpu().numpy()
             del features, probabilities
@@ -344,7 +361,7 @@ def main() -> int:
         flush=True,
     )
 
-    batch_size = 2 if visible_gpus else 1
+    batch_size = 3 if visible_gpus else 1
     dataset = TestStudyDataset(study_ids, series_by_study, dicom_root)
     loader_options: dict[str, object] = {
         "batch_size": batch_size,
@@ -517,6 +534,10 @@ def main() -> int:
             ),
             "weights": {"p2": 0.5, "p4": 0.5},
         },
+        "inference_optimization": (
+            "three-study batches; one shared resize and normalization per "
+            "device group"
+        ),
         "submission_file": "submission.csv",
         "test_metadata_sha256": {
             "test.csv": sha256_file(

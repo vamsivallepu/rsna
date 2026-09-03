@@ -23,6 +23,9 @@ Frozen: 2026-09-03
   model input, and 32 deterministic valid windows per study.
 - Decode and select each study once. Run P2 and P4 over the same in-memory windows;
   do not perform six independent DICOM passes or write a hidden-test pixel cache.
+- Use three-study inference batches. On each GPU, convert, resize, and normalize the
+  shared window tensor once, then feed that identical tensor through the three resident
+  backbones assigned to the device.
 - P2 is the mean probability from its five report-purged heads over the selected P2
   backbone. P4 is the mean probability from the five end-to-end fold checkpoints.
 - On a T4 x2 allocation, keep P2 plus two P4 folds on GPU 0 and the remaining three
