@@ -349,6 +349,17 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   hidden-test projection exceeds nine hours, so version 2 is also rejected. Version 3
   returns to batch size 2, retains shared preprocessing, and stores inference-only
   model weights in FP16 to eliminate repeated autocast weight conversion.
+- **Submission canary v3:** version 3 completed all three studies in `1.4153` minutes;
+  its DICOM-plus-six-model segment fell to `1.0076` minutes. The independent validator
+  rechecked every source hash, exact five-fold P4 mean, rank blend, sample order,
+  geometry, and artifact hash. Its `submission.csv` is byte-identical to versions 1
+  and 2. Linear projection of the measured inference segment is `7.28` hours for
+  1,300 hidden studies, leaving `1.72` hours or 19% below the nine-hour ceiling.
+  Version 3 passes the release gate.
+- **Leaderboard submission:** exact notebook version 3 from commit `d1e9f15` was
+  accepted as competition submission `55990677` on 2026-09-03. It is `PENDING` while
+  Kaggle performs the hidden rerun; four submission slots remained after acceptance.
+  Tracked evidence: [`experiments/results/P4-SUBMISSION.json`](../experiments/results/P4-SUBMISSION.json).
 
 ## Previous completed run
 

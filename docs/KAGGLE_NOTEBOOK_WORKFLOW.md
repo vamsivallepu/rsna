@@ -21,7 +21,7 @@
 | P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.466997, 129.61 min representation |
 | P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.461624, 140.98 min representation |
 | P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.464586, 126.86 min representation |
-| P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | V1 valid but only 35 min projected margin; V2 valid/identical but slower; FP16-resident V3 canary pending |
+| P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | V3 independently validated at 1.0076 min/3-study inference; projected 7.28 h/1,300; submission `55990677` pending |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -108,6 +108,9 @@ cache-signature hash, and array hashes before training.
   `scripts/p4_blend_submission.py`, `scripts/build_p4_blend_submission.py`,
   `scripts/validate_p4_blend_submission.py`,
   `kaggle/rsna-p4-blend-submission/`, and `docs/P4_SUBMISSION_PROTOCOL.md`
+- Downloaded P4 blend canaries: `outputs/kaggle/rsna-p4-blend-submission-v{1..3}/`
+  (ignored by Git); compact version-3 and competition-submission evidence:
+  `experiments/results/P4-SUBMISSION.json`
 - Downloaded P4 fold outputs: `outputs/kaggle/rsna-p4-coatnet-e2e-v1/fold-{0..4}/`
   (ignored by Git); aggregate validation outputs:
   `outputs/experiments/P4-coatnet-e2e-oof/` (ignored by Git); compact validated

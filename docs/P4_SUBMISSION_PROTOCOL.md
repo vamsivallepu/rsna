@@ -61,3 +61,13 @@ Frozen: 2026-09-03
    only with a defensible margin under the competition's nine-hour limit.
 5. Download and independently validate the canary outputs before submitting that
    exact notebook version to the competition.
+
+## Recorded release
+
+Versions 1 and 2 were functionally valid but failed the runtime-margin gate. Version
+3 retained batch size 2, shared preprocessing per device, and resident FP16 inference
+weights. It reproduced the exact same canary `submission.csv`, passed the independent
+validator, and reduced the three-study inference segment to `1.0076` minutes. The
+linear 1,300-study projection is `7.28` hours, leaving `1.72` hours below the limit.
+Exact notebook version 3 from commit `d1e9f15` was submitted as reference `55990677`;
+its score is pending.

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P4-SUBMISSION",
+  "run_id": "P4-BLEND-SUBMISSION-v1",
+  "status": "pending",
+  "date": "2026-09-03",
+  "code_commit": "d1e9f1548cb0e2c0844eed5dc8f8a58bc21dde22",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p4-blend-submission",
+  "kaggle_kernel_version": 3,
+  "competition_submission_ref": 55990677,
+  "submission_description": "P2 plus five-fold P4 equal-rank blend, validated canary v3, commit d1e9f15",
+  "source_oof": {
+    "p2_macro_auc": 0.8911253543643616,
+    "p4_macro_auc": 0.89116089660126,
+    "equal_rank_p2_p4_macro_auc": 0.8958210633119559
+  },
+  "canary": {
+    "version": 3,
+    "validated": true,
+    "studies": 3,
+    "series": 15,
+    "visible_gpus": 2,
+    "batch_size": 2,
+    "device_assignments": {
+      "cuda:0": ["P2", "P4-fold-0", "P4-fold-2"],
+      "cuda:1": ["P4-fold-1", "P4-fold-3", "P4-fold-4"]
+    },
+    "resident_model_dtype": "float16",
+    "model_load_minutes": 0.14342841307322185,
+    "dicom_and_six_model_inference_minutes": 1.0076121727625529,
+    "total_minutes": 1.415299371878306,
+    "projected_hidden_studies": 1300,
+    "projected_hidden_inference_hours": 7.277198,
+    "nine_hour_headroom_hours": 1.722802,
+    "nine_hour_headroom_fraction": 0.191422,
+    "five_p4_fold_mean_recomputed": true,
+    "equal_rank_blend_recomputed": true,
+    "byte_identical_submission_to_canary_v1_and_v2": true,
+    "manifest_sha256": "157a42e0d1f6995308561981e7a682b2c8563d6f732f2027bcaf3e316ff2a6ed",
+    "submission_sha256": "36ab2cceb38c4258c218edd3dca4614c76ae065f37b423081291aa3377be0a8c"
+  },
+  "earlier_canaries": {
+    "1": {
+      "validated": true,
+      "dicom_and_six_model_inference_minutes": 1.1647170821825663,
+      "decision": "Do not submit: only about 35 minutes of projected runtime margin."
+    },
+    "2": {
+      "validated": true,
+      "dicom_and_six_model_inference_minutes": 1.3088931481043498,
+      "decision": "Do not submit: three-study batching was slower and projected beyond nine hours."
+    }
+  },
+  "decision": "Submit exact Kaggle kernel version 3. Kaggle accepted reference 55990677; wait for the hidden rerun and public score before judging leaderboard value."
+}
