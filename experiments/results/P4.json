@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P4",
+  "run_id": "P4-COATNET-E2E-OOF-v1",
+  "status": "validated",
+  "date": "2026-09-03",
+  "description": "Five end-to-end fold-safe P2 CoAtNet models and a fixed equal-rank P2+P4 blend",
+  "code_commit": "77148f5a3930d6a63fb83598a348619d9198ec65",
+  "raw_artifact_path": "outputs/kaggle/rsna-p4-coatnet-e2e-v1",
+  "aggregate_artifact_path": "outputs/experiments/P4-coatnet-e2e-oof",
+  "aggregate_manifest_sha256": "a05fbb69c839ee1e0eb05c450ebf0aa6c150bc5c25e091aa6ec13d8094d48d05",
+  "validated": true,
+  "validation": {
+    "fold_outputs_and_hashes_verified": true,
+    "fold_assignments_reconstructed": true,
+    "report_twin_purges_verified": true,
+    "expert_oof_rows": 58,
+    "expert_oof_coverage_exactly_once": true,
+    "forbidden_report_overlap": 0,
+    "both_gpus_active_all_folds": true,
+    "gpu_utilization_median_percent_all_folds": {"0": 100.0, "1": 100.0}
+  },
+  "config": {
+    "cache_id": "P2-CACHE-v1",
+    "cache_signature_sha256": "0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3",
+    "model_id": "coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k",
+    "model_sha256": "91570c7af10fea0af03c1b0a49be3e4775596239890eb4193c75129b3045623e",
+    "image_size": 384,
+    "evaluation_windows_per_study": 32,
+    "representation_epochs": 8,
+    "expert_fold_seed": 20260831,
+    "pseudo_group_split_seed": 20260902,
+    "representation_seeds": [20260904, 20260905, 20260906, 20260907, 20260908],
+    "world_size": 2,
+    "blend": "equal-rank P2 plus P4; weight fixed before OOF evaluation"
+  },
+  "folds": {
+    "0": {
+      "expert_valid_rows": 12,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46370274666509187,
+      "representation_minutes": 130.58964615662893,
+      "manifest_sha256": "6ed454243a6e3ffead8566edb86bb4c7ecc3be668a11fa0f53bd0c093d001932"
+    },
+    "1": {
+      "expert_valid_rows": 12,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46288772177325604,
+      "representation_minutes": 140.57500429948172,
+      "manifest_sha256": "9541ca0158a96c2350f4fbd94d10ad385cff06d6d8457c2f92b57fdd9a1bb4d5"
+    },
+    "2": {
+      "expert_valid_rows": 12,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46699696701507615,
+      "representation_minutes": 129.6096324443817,
+      "manifest_sha256": "93135d2849dc891115fd256472729cc817f86ea2ba79c7f8d5a1553da66aebac"
+    },
+    "3": {
+      "expert_valid_rows": 11,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.4616241701307415,
+      "representation_minutes": 140.98358766237894,
+      "manifest_sha256": "9894605caa4ae2c0d93f5d11c8766a2256f20e14298821f40dc7b1df9e83867c"
+    },
+    "4": {
+      "expert_valid_rows": 11,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.4645860677023812,
+      "representation_minutes": 126.85531936089198,
+      "manifest_sha256": "e592fa0e53cabe35819489e733bdff0885068c5756f65e541d5fee7da6b1c228"
+    }
+  },
+  "result": {
+    "p2_macro_auc": 0.8911253543643616,
+    "p4_macro_auc": 0.89116089660126,
+    "p4_minus_p2": 0.00003554223689838931,
+    "p4_nonnegative_targets": 8,
+    "p4_worst_target_delta": -0.038548752834467126,
+    "p4_vs_p2_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": -0.000046168063516018816,
+      "ci95": [-0.014995463977066815, 0.014756925855979822],
+      "probability_positive": 0.4968
+    },
+    "equal_rank_p2_p4_macro_auc": 0.8958210633119559,
+    "equal_rank_minus_p2": 0.0046957089475943015,
+    "equal_rank_nonnegative_targets": 9,
+    "equal_rank_worst_target_delta": -0.020408163265306145,
+    "equal_rank_vs_p2_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": 0.004835905714503425,
+      "ci95": [-0.004029013554149851, 0.013638101261147173],
+      "probability_positive": 0.8622
+    },
+    "p4_target_auc": {
+      "ACL": 0.9424019607843136,
+      "MCL": 0.8707482993197279,
+      "Medial Meniscus": 0.9519230769230769,
+      "Lateral Meniscus": 0.8024844720496895,
+      "Medial OA": 0.9674418604651163,
+      "Lateral OA": 0.7698259187620891,
+      "PF OA": 0.8056628056628056,
+      "Effusion": 0.9639751552795032,
+      "Synovitis": 0.7765830346475507,
+      "Baker's": 0.963768115942029,
+      "Contusion": 0.9541160593792173,
+      "Fracture": 0.925
+    },
+    "equal_rank_p2_p4_target_auc": {
+      "ACL": 0.9387254901960784,
+      "MCL": 0.8888888888888888,
+      "Medial Meniscus": 0.9675480769230769,
+      "Lateral Meniscus": 0.8229813664596274,
+      "Medial OA": 0.9697674418604652,
+      "Lateral OA": 0.7678916827853,
+      "PF OA": 0.8088803088803088,
+      "Effusion": 0.962111801242236,
+      "Synovitis": 0.7789725209080047,
+      "Baker's": 0.9646739130434783,
+      "Contusion": 0.9439946018893387,
+      "Fracture": 0.9354166666666667
+    }
+  },
+  "promotion_gate": {
+    "p4_alone_passed": false,
+    "fixed_equal_rank_blend_passed": true,
+    "strong_evidence_threshold_met": false
+  },
+  "decision": "Reject P4 alone as a replacement for P2, but promote the predeclared equal-rank P2+P4 blend. The gain is modest and its interval crosses zero, so retain P2 as a required ensemble member and validate the five-checkpoint hidden-test inference path before submission."
+}

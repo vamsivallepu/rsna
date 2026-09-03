@@ -20,9 +20,11 @@ public dependencies are kept locally and are excluded from version control.
    its first notebook-only submission scored **0.908** on the public leaderboard.
 6. P3 tested cache-native DINOv2-small final-block adaptation and hierarchical MIL,
    but was rejected: **0.8060** OOF, and its fixed P2+P3 rank blend fell to **0.8639**.
-   P2 remains the winning configuration. P4 is now active with five fold-safe,
-   end-to-end P2 training jobs behind a dedicated dual-T4 execution smoke.
-7. Promote only repeatable OOF improvements through the canonical ordered roadmap in
+7. P4 trained five fold-safe, end-to-end CoAtNet models. P4 alone tied P2 at
+   **0.8912**, while the predeclared equal-rank P2+P4 blend reached **0.8958** and
+   passed its promotion gate. Only the blend is promoted; P2 remains a required
+   member, and P5 is the next model-research stage.
+8. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
 

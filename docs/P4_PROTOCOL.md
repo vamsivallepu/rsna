@@ -85,3 +85,14 @@ separate representative-data and three-study Kaggle canary before submission.
 
 No architecture, fold, epoch, per-target weight, or ensemble-weight sweep is part of
 P4. Any such change receives a new experiment ID.
+
+## Recorded outcome
+
+All five folds completed on 2026-09-03 and passed independent artifact, split,
+report-purge, and exact OOF-coverage validation. P4 alone scored `0.8911609` versus
+P2's `0.8911254`; its bootstrap probability of improvement was only `0.4968` and its
+worst target delta was `-0.03855`, so it failed the primary gate. The predeclared
+equal-rank P2+P4 blend scored `0.8958211` (`+0.0046957`), with probability positive
+`0.8622`, 9/12 nonnegative target deltas, and worst delta `-0.02041`. Promote only
+the fixed blend. The complete evidence is recorded in
+[`experiments/results/P4.json`](../experiments/results/P4.json).

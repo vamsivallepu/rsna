@@ -20,7 +20,7 @@
 | P4 CoAtNet E2E fold 1 | [rsna-knee-p4-coatnet-e2e-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-1) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.462888, 140.58 min representation |
 | P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.466997, 129.61 min representation |
 | P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.461624, 140.98 min representation |
-| P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 `RUNNING`; final wave from commit `77148f5` |
+| P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.464586, 126.86 min representation |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -103,6 +103,17 @@ cache-signature hash, and array hashes before training.
   `scripts/aggregate_p4_outputs.py`, and `scripts/validate_p4_outputs.py`
 - P4 Kaggle bundles: `kaggle/rsna-p4-coatnet-folds/fold-{0..4}/` and
   `kaggle/rsna-p4-speed-smoke/`; frozen protocol: `docs/P4_PROTOCOL.md`
+- Downloaded P4 fold outputs: `outputs/kaggle/rsna-p4-coatnet-e2e-v1/fold-{0..4}/`
+  (ignored by Git); aggregate validation outputs:
+  `outputs/experiments/P4-coatnet-e2e-oof/` (ignored by Git); compact validated
+  result: `experiments/results/P4.json`
+
+All five P4 folds completed and independently passed their artifact, split, report
+purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively
+tying P2, while the fixed equal-rank P2+P4 blend scored **0.895821** and passed its
+predeclared promotion gate. Only the blend is promoted; its five-checkpoint hidden-test
+inference path still requires a representative-data smoke and Kaggle canary before a
+submission is spent.
 
 The local notebook is executed against the representative DICOM sample. The
 clean deployment notebook uses the same UIDs and loader against Kaggle's full

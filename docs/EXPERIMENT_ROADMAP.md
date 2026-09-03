@@ -51,7 +51,7 @@ later expensive stage advances only after its prerequisites pass.
 | 1 | **P1** | validated | Cached-token head and objective ablations | Local CPU; existing token cache | Closed after P1-D; no change promoted over P0-B |
 | 2 | **P2** | **validated / promoted / scored** | Strong compact convolutional baseline: CoAtNet-RMLP2 at 384 px with fuller physical slice coverage | Kaggle CPU cache + GPU training; `P2-CACHE-v1` | Passed at 0.891125 OOF with +0.094337 over P0-B; first public leaderboard score 0.908 |
 | 3 | **P3** | **rejected** | DINOv2-small at 336 px with fuller coverage, final-two-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse `P2-CACHE-v1` | Failed: 0.805988 OOF and 0.863908 fixed rank blend both underperformed P2 |
-| 4 | **P4** | **active** | Five end-to-end folds of the winning P2 configuration | Five Kaggle T4 x2 jobs; `P2-CACHE-v1` | Fold-safe representation training and repeatable pooled OOF improvement |
+| 4 | **P4** | **validated / blend promoted** | Five end-to-end folds of the winning P2 configuration | Five Kaggle T4 x2 jobs; `P2-CACHE-v1` | P4 alone tied P2; fixed equal-rank P2+P4 passed at 0.895821 OOF |
 | 5 | **P5** | queued | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
 | 6 | **P6** | queued | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Kaggle GPU | Dataset agreement/license verified and ROI pretraining improves held-out pseudo groups |
 | 7 | **P7** | queued | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
@@ -156,9 +156,12 @@ and fold-safe cached-feature OOF heads. P3 holds geometry as constant as practic
 while testing higher-resolution DINOv2-small and hierarchical MIL. Avoid DINOv2-base
 at 224 px: the present bottleneck is coverage/resolution and label noise, not raw
 model size. P3 scored `0.805988` OOF versus P2's `0.891125`; its fixed equal-rank
-blend with P2 also declined to `0.863908`. P3 is rejected, P2 is the winner, and P4
-is now the next stage: five end-to-end P2 folds to measure and exploit representation
-variance without changing the winning architecture.
+blend with P2 also declined to `0.863908`. P3 is rejected and P2 remains the best
+standalone model. P4 then trained five fold-safe, end-to-end P2 models. P4 alone tied
+P2 at `0.891161`, but the predeclared equal-rank P2+P4 blend reached `0.895821`
+(`+0.004696`) and passed the uncertainty and target-stability gate. Promote only that
+blend, retain P2 as a required member, validate its hidden-test inference path, and
+advance model research to P5.
 
 ### P5–P9 — complementary signal
 

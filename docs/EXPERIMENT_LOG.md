@@ -100,10 +100,10 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P2 | **validated / promoted** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | OOF 0.891125 versus P0-B 0.796788; integrity, uncertainty, and runtime gates passed |
 | P2-SUB | **validated / scored** | Five-head P2 hidden-test inference and `submission.csv` | Public leaderboard 0.908; both identical submissions completed successfully |
 | P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
-| P4 | **active** | Five end-to-end folds of the P2 winner | Frozen fold-safe protocol and prelaunch split/bundle validation complete |
+| P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
-## Active run
+## Completed P2 run
 
 ### P2 — wide-coverage CoAtNet-RMLP2
 
@@ -196,8 +196,9 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   `55965923` also completed with the identical `0.908` score, confirming deterministic
   notebook output. The live leading score at verification time was `0.952`, leaving a
   `0.044` public-leaderboard gap.
-- **Next action:** retain `55965846` as the canonical P2 submission and start P3 under
-  the existing roadmap gate; do not spend another submission slot on unchanged P2.
+- **Next action:** retain `55965846` as the canonical P2 submission. P3 was rejected;
+  P4 subsequently promoted only the fixed equal-rank P2+P4 blend. Do not spend
+  another submission slot on unchanged P2.
 
 ## Completed P3 run
 
@@ -252,7 +253,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   DINOv2 hierarchy transferred poorly to the expert targets. Retain P2 as the P2/P3
   winner and advance the ordered roadmap to P4; do not spend a submission on P3.
 
-## Active P4 run
+## Completed P4 run
 
 - **Run IDs:** `P4-COATNET-E2E-FOLD-{0..4}-v1`.
 - **Frozen protocol:** [`P4_PROTOCOL.md`](P4_PROTOCOL.md).
@@ -296,13 +297,34 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   rows, and 100% median utilization on both T4s. Their manifest SHA-256 values are
   `93135d2849dc891115fd256472729cc817f86ea2ba79c7f8d5a1553da66aebac` and
   `9894605caa4ae2c0d93f5d11c8766a2256f20e14298821f40dc7b1df9e83867c`.
-- **Final launch wave:** fold 4 version 1 was accepted from the same frozen commit
-  `77148f5` and is `RUNNING` on T4 x2.
+- **Final fold result:** fold 4 completed and passed the independent validator. It
+  selected epoch 8 at pseudo-validation BCE `0.4645861`, trained for `126.86`
+  representation minutes, produced the exact 11 held-out expert predictions, and
+  sustained 100% median utilization on both T4s. Its manifest SHA-256 is
+  `e592fa0e53cabe35819489e733bdff0885068c5756f65e541d5fee7da6b1c228`.
+- **Aggregate result:** all 58 expert studies appeared exactly once OOF. P4 scored
+  `0.8911609` versus P2's `0.8911254`, a negligible `+0.0000355`. Its paired
+  5,000-sample interval was `[-0.0149955, 0.0147569]` with probability positive
+  `0.4968`; only 8/12 target deltas were nonnegative and MCL declined `-0.03855`.
+  P4 alone therefore fails the declared uncertainty and worst-target gates.
+- **Fixed blend result:** the predeclared equal-rank P2+P4 blend scored `0.8958211`,
+  delta `+0.0046957` over P2. Its paired interval was
+  `[-0.0040290, 0.0136381]`, probability positive `0.8622`, 9/12 target deltas were
+  nonnegative, and the worst delta was MCL at `-0.02041`. It passes every frozen
+  blend-promotion condition, although the interval crosses zero and the gain does
+  not meet the strong-evidence threshold.
+- **Independent validation:** all five source manifests, checkpoints, scripts, split
+  ledgers, report-twin purges, hashes, fold assignments, and aggregate predictions
+  passed. Every fold selected epoch 8 and recorded 100% median utilization on both
+  GPUs. Aggregate manifest SHA-256 is
+  `a05fbb69c839ee1e0eb05c450ebf0aa6c150bc5c25e091aa6ec13d8094d48d05`.
 - **Tracked smoke result:**
   [`experiments/results/P4-SPEED-SMOKE.json`](../experiments/results/P4-SPEED-SMOKE.json).
-- **Next action:** validate fold 4 after completion, aggregate all five folds, and run
-  the independent P4-versus-P2 and fixed-rank-blend bootstrap. Compute no partial P4
-  AUC: the declared result requires all 58 expert studies concatenated exactly once.
+- **Tracked full result:** [`experiments/results/P4.json`](../experiments/results/P4.json).
+- **Decision:** reject P4 alone as a replacement, but promote the fixed equal-rank
+  P2+P4 blend. Retain P2 as a required member, validate the five-checkpoint P4
+  hidden-test inference and blend path before spending a submission, and advance the
+  ordered model-research queue to P5.
 
 ## Previous completed run
 
