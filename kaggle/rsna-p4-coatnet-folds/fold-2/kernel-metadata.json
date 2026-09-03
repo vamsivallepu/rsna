@@ -1,0 +1,24 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2",
+  "title": "RSNA Knee P4 CoAtNet E2E Fold 2",
+  "code_file": "rsna-p4-coatnet-e2e-fold-2.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [
+    "vallepuvamsikrishna/rsna-coatnet-rmlp2-imagenet-init"
+  ],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-report-weak-supervision",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-a",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b"
+  ],
+  "model_sources": []
+}

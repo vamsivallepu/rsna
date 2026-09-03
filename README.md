@@ -20,7 +20,8 @@ public dependencies are kept locally and are excluded from version control.
    its first notebook-only submission scored **0.908** on the public leaderboard.
 6. P3 tested cache-native DINOv2-small final-block adaptation and hierarchical MIL,
    but was rejected: **0.8060** OOF, and its fixed P2+P3 rank blend fell to **0.8639**.
-   P2 remains the winning configuration and P4 is the next queued stage.
+   P2 remains the winning configuration. P4 is now active with five fold-safe,
+   end-to-end P2 training jobs behind a dedicated dual-T4 execution smoke.
 7. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

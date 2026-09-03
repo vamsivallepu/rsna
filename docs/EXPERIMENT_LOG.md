@@ -100,7 +100,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P2 | **validated / promoted** | CoAtNet-RMLP2 384 px/64-slice full-coverage image model | OOF 0.891125 versus P0-B 0.796788; integrity, uncertainty, and runtime gates passed |
 | P2-SUB | **validated / scored** | Five-head P2 hidden-test inference and `submission.csv` | Public leaderboard 0.908; both identical submissions completed successfully |
 | P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
-| P4 | queued | Five end-to-end folds of the P2 winner | P2 retained after P3 failed both single-model and diversity gates |
+| P4 | **active** | Five end-to-end folds of the P2 winner | Frozen fold-safe protocol and prelaunch split/bundle validation complete |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
 ## Active run
@@ -251,6 +251,30 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   than an infrastructure failure: pseudo BCE continued improving, but the learned
   DINOv2 hierarchy transferred poorly to the expert targets. Retain P2 as the P2/P3
   winner and advance the ordered roadmap to P4; do not spend a submission on P3.
+
+## Active P4 run
+
+- **Run IDs:** `P4-COATNET-E2E-FOLD-{0..4}-v1`.
+- **Frozen protocol:** [`P4_PROTOCOL.md`](P4_PROTOCOL.md).
+- **Parent:** promoted P2 CoAtNet OOF `0.8911254`, public score `0.908`; rejected
+  P3 is not used.
+- **Core change:** train one full P2 backbone and target-attention head per expert
+  fold using 46–47 in-fold expert rows plus group-pure pseudo training. Each fold's
+  11–12 expert validation rows and all report twins contribute zero gradients.
+- **Selection:** every checkpoint is selected only by grouped pseudo-validation BCE.
+  Expert-validation AUC cannot choose an epoch or trigger a retry.
+- **Execution:** one private T4 x2 Kaggle script per fold, preserving P2's proven
+  DDP, image, optimizer, augmentation, and eight-epoch contracts. A short fold-0
+  remote smoke exercises the new expert-mixing, held-out inference, shard merge,
+  ledger, and manifest path before launching the five full jobs.
+- **Prelaunch validation:** all five generated scripts compile and independently
+  reconstruct complete 58-study OOF coverage. The version-independent grouped split
+  contains 3,914 pseudo training and 435 pseudo-validation rows. Fold 2 removes the
+  four known validation-report twins; folds 3 and 4 each deterministically drop one
+  pseudo row to balance DDP shards. No expert row is dropped or duplicated, and all
+  training/selection/held-out report intersections are empty.
+- **Next action:** run and independently validate the fold-0 speed smoke. Launch all
+  five full fold jobs only after that gate passes.
 
 ## Previous completed run
 

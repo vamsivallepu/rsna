@@ -88,6 +88,16 @@ HEAD_FOLD_WEIGHT_DECAY = 1e-3
 MODEL_MEAN = (0.5, 0.5, 0.5)
 MODEL_STD = (0.5, 0.5, 0.5)
 EXECUTION_REVISION = "ddp_t4_v3"
+P4_FOLD = int(os.environ["P4_FOLD"]) if "P4_FOLD" in os.environ else None
+if P4_FOLD is not None and P4_FOLD not in range(N_FOLDS):
+    raise ValueError(f"P4_FOLD must be in [0, {N_FOLDS - 1}], got {P4_FOLD}")
+P4_MODE = P4_FOLD is not None
+P4_SEED_BASE = 20260904
+RUN_SEED = P4_SEED_BASE + P4_FOLD if P4_MODE else P2_SEED
+RUN_LABEL = "P4" if P4_MODE else "P2"
+P4_SPEED_SMOKE = os.environ.get("P4_SPEED_SMOKE") == "1"
+if P4_SPEED_SMOKE and not P4_MODE:
+    raise ValueError("P4_SPEED_SMOKE requires a P4_FOLD")
 
 ON_KAGGLE = Path("/kaggle/working").is_dir()
 FULL_RUN = ON_KAGGLE and torch.cuda.is_available()
@@ -99,7 +109,7 @@ def launch_ddp() -> int:
     """Relaunch the Kaggle script with one process per visible GPU."""
     visible = torch.cuda.device_count()
     if visible != 2:
-        raise RuntimeError(f"P2 requires exactly two Kaggle GPUs; observed {visible}")
+        raise RuntimeError(f"{RUN_LABEL} requires exactly two Kaggle GPUs; observed {visible}")
     command = [
         sys.executable,
         "-m",
@@ -109,9 +119,9 @@ def launch_ddp() -> int:
         str(Path(__file__).resolve()),
         "--ddp-worker",
     ]
-    print({"P2_DDP_LAUNCH": command, "visible_gpus": visible}, flush=True)
+    print({f"{RUN_LABEL}_DDP_LAUNCH": command, "visible_gpus": visible}, flush=True)
     subprocess.run(command, check=True)
-    print({"P2_DDP_PROCESS_COMPLETE": True}, flush=True)
+    print({f"{RUN_LABEL}_DDP_PROCESS_COMPLETE": True}, flush=True)
     return 0
 
 
@@ -222,6 +232,39 @@ def report_hash(report: object) -> str:
     if not normalized:
         raise ValueError("empty report after normalization")
     return hashlib.sha256(normalized.encode()).hexdigest()
+
+
+def stable_group_split(
+    indices: np.ndarray,
+    groups: np.ndarray,
+    *,
+    valid_fraction: float,
+    seed: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return a version-independent, group-pure split in original row order."""
+    indices = np.asarray(indices, dtype=int)
+    groups = np.asarray(groups, dtype=str)
+    assert len(indices) == len(groups) and 0.0 < valid_fraction < 1.0
+    unique_groups, counts = np.unique(groups, return_counts=True)
+    count_by_group = dict(zip(unique_groups.tolist(), counts.tolist(), strict=True))
+    ordered_groups = sorted(
+        unique_groups.tolist(),
+        key=lambda group: hashlib.sha256(f"{seed}:{group}".encode()).digest(),
+    )
+    target_rows = round(len(indices) * valid_fraction)
+    valid_groups: set[str] = set()
+    valid_rows = 0
+    for group in ordered_groups:
+        candidate_rows = valid_rows + count_by_group[group]
+        if abs(candidate_rows - target_rows) <= abs(valid_rows - target_rows):
+            valid_groups.add(group)
+            valid_rows = candidate_rows
+        if valid_rows == target_rows:
+            break
+    valid_mask = np.asarray([group in valid_groups for group in groups], dtype=bool)
+    assert valid_mask.any() and (~valid_mask).any()
+    assert not set(groups[valid_mask]) & set(groups[~valid_mask])
+    return indices[~valid_mask], indices[valid_mask]
 
 
 class GpuTelemetry:
@@ -407,19 +450,26 @@ def worker_main() -> int:
 
     is_primary = rank == 0
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
-    telemetry = GpuTelemetry(OUTPUT_ROOT / "p2_gpu_telemetry.csv") if FULL_RUN and is_primary else None
+    telemetry_name = (
+        f"p4_fold_{P4_FOLD}_gpu_telemetry.csv" if P4_MODE else "p2_gpu_telemetry.csv"
+    )
+    telemetry = (
+        GpuTelemetry(OUTPUT_ROOT / telemetry_name) if FULL_RUN and is_primary else None
+    )
     if telemetry is not None:
         telemetry.start()
 
-    random.seed(P2_SEED)
-    np.random.seed(P2_SEED)
-    torch.manual_seed(P2_SEED)
+    random.seed(RUN_SEED)
+    np.random.seed(RUN_SEED)
+    torch.manual_seed(RUN_SEED)
     if device.type == "cuda":
-        torch.cuda.manual_seed_all(P2_SEED)
+        torch.cuda.manual_seed_all(RUN_SEED)
         torch.backends.cudnn.benchmark = True
         torch.backends.cudnn.deterministic = True
 
-    rep_epochs = REP_EPOCHS if FULL_RUN and not SPEED_SMOKE else 1
+    rep_epochs = (
+        REP_EPOCHS if FULL_RUN and not SPEED_SMOKE and not P4_SPEED_SMOKE else 1
+    )
     head_epochs = HEAD_EPOCHS if FULL_RUN else 1
     k_train = K_TRAIN if FULL_RUN else 1
     k_eval = K_EVAL if FULL_RUN else 1
@@ -478,17 +528,121 @@ def worker_main() -> int:
     is_gold = targets["is_gold"].astype(bool).to_numpy()
     gold_indices = np.where(is_gold)[0]
     pseudo_indices = np.where(~is_gold)[0]
+    p4_expert_train_indices = np.empty(0, dtype=int)
+    p4_expert_valid_indices = np.empty(0, dtype=int)
+    p4_dropped_indices = np.empty(0, dtype=int)
+    p4_split_roles = np.full(len(study_ids), "", dtype=object)
     if FULL_RUN:
         assert len(gold_indices) == 58 and len(pseudo_indices) == 4_349
-        splitter = GroupShuffleSplit(n_splits=1, test_size=0.10, random_state=P2_SEED)
-        train_pos, valid_pos = next(
-            splitter.split(pseudo_indices, groups=report_hashes[pseudo_indices])
-        )
-        adapt_indices = pseudo_indices[train_pos]
-        pseudo_valid_indices = pseudo_indices[valid_pos]
+        if P4_MODE:
+            adapt_indices, pseudo_valid_indices = stable_group_split(
+                pseudo_indices,
+                report_hashes[pseudo_indices],
+                valid_fraction=0.10,
+                seed=P2_SEED,
+            )
+        else:
+            splitter = GroupShuffleSplit(
+                n_splits=1, test_size=0.10, random_state=P2_SEED
+            )
+            train_pos, valid_pos = next(
+                splitter.split(pseudo_indices, groups=report_hashes[pseudo_indices])
+            )
+            adapt_indices = pseudo_indices[train_pos]
+            pseudo_valid_indices = pseudo_indices[valid_pos]
         assert not (
             set(report_hashes[adapt_indices]) & set(report_hashes[pseudo_valid_indices])
         )
+        if P4_MODE:
+            assert P4_FOLD is not None
+            folds = list(
+                KFold(n_splits=N_FOLDS, shuffle=True, random_state=FOLD_SEED).split(
+                    gold_indices
+                )
+            )
+            expert_train_pos, expert_valid_pos = folds[P4_FOLD]
+            p4_expert_train_indices = gold_indices[expert_train_pos]
+            p4_expert_valid_indices = gold_indices[expert_valid_pos]
+            expert_valid_hashes = set(report_hashes[p4_expert_valid_indices])
+            expert_train_hashes = set(report_hashes[p4_expert_train_indices])
+
+            base_pseudo_train = adapt_indices.copy()
+            base_pseudo_valid = pseudo_valid_indices.copy()
+            base_pseudo_valid_set = set(base_pseudo_valid.tolist())
+            p4_pseudo_train = np.asarray(
+                [
+                    index
+                    for index in base_pseudo_train
+                    if report_hashes[index] not in expert_valid_hashes
+                ],
+                dtype=int,
+            )
+            p4_pseudo_valid = np.asarray(
+                [
+                    index
+                    for index in base_pseudo_valid
+                    if report_hashes[index] not in expert_valid_hashes
+                    and report_hashes[index] not in expert_train_hashes
+                ],
+                dtype=int,
+            )
+
+            p4_split_roles[base_pseudo_train] = "pseudo_train"
+            p4_split_roles[base_pseudo_valid] = "pseudo_valid"
+            p4_split_roles[p4_expert_train_indices] = "expert_train"
+            p4_split_roles[p4_expert_valid_indices] = "expert_valid"
+            for index in pseudo_indices:
+                if report_hashes[index] in expert_valid_hashes:
+                    p4_split_roles[index] = "excluded_expert_valid_report_twin"
+                elif (
+                    index in base_pseudo_valid_set
+                    and report_hashes[index] in expert_train_hashes
+                ):
+                    p4_split_roles[index] = "excluded_pseudo_valid_expert_train_twin"
+
+            adapt_indices = np.concatenate(
+                [p4_pseudo_train, p4_expert_train_indices]
+            ).astype(int)
+            pseudo_valid_indices = p4_pseudo_valid
+            if len(adapt_indices) % world_size:
+                pseudo_positions = np.where(~is_gold[adapt_indices])[0]
+                assert len(pseudo_positions) > 0
+                drop_position = int(pseudo_positions[-1])
+                p4_dropped_indices = adapt_indices[drop_position:drop_position + 1]
+                p4_split_roles[p4_dropped_indices] = "pseudo_ddp_balance_drop"
+                adapt_indices = np.delete(adapt_indices, drop_position)
+
+            assert len(p4_expert_valid_indices) in {11, 12}
+            assert len(p4_expert_train_indices) + len(p4_expert_valid_indices) == 58
+            assert len(pseudo_valid_indices) > 400
+            assert not (
+                set(report_hashes[adapt_indices]) & expert_valid_hashes
+            )
+            assert not (
+                set(report_hashes[pseudo_valid_indices])
+                & set(report_hashes[adapt_indices])
+            )
+            assert not (
+                set(report_hashes[pseudo_valid_indices]) & expert_valid_hashes
+            )
+            assert (p4_split_roles != "").all()
+            if P4_SPEED_SMOKE:
+                smoke_pseudo_train = adapt_indices[~is_gold[adapt_indices]][:62]
+                smoke_expert_train = p4_expert_train_indices[:2]
+                adapt_indices = np.concatenate(
+                    [smoke_pseudo_train, smoke_expert_train]
+                ).astype(int)
+                pseudo_valid_indices = pseudo_valid_indices[:8]
+                assert len(adapt_indices) == 64
+                assert int(is_gold[adapt_indices].sum()) == 2
+                assert len(pseudo_valid_indices) == 8
+                assert not (
+                    set(report_hashes[adapt_indices]) & expert_valid_hashes
+                )
+                assert not (
+                    set(report_hashes[pseudo_valid_indices])
+                    & set(report_hashes[adapt_indices])
+                )
         if SPEED_SMOKE:
             # Preserve the full tensor shapes and accumulation path while keeping
             # the remote diagnostic short enough to stream and inspect live.
@@ -546,7 +700,7 @@ def worker_main() -> int:
             mask,
             count,
             stochastic=stochastic,
-            seed=P2_SEED + 10_007 * epoch + index,
+            seed=RUN_SEED + 10_007 * epoch + index,
         )
         windows = np.zeros((count, 3, CACHE_SIZE, CACHE_SIZE), dtype=np.uint8)
         for out_index, center in enumerate(centers):
@@ -596,6 +750,9 @@ def worker_main() -> int:
 
     if is_primary:
         print({
+            "run_label": RUN_LABEL,
+            "p4_fold": P4_FOLD,
+            "run_seed": RUN_SEED,
             "python": platform.python_version(),
             "torch": torch.__version__,
             "timm": timm.__version__,
@@ -605,6 +762,7 @@ def worker_main() -> int:
             "world_size": world_size,
             "execution_revision": EXECUTION_REVISION,
             "speed_smoke": SPEED_SMOKE,
+            "p4_speed_smoke": P4_SPEED_SMOKE,
             "gradient_checkpointing": False,
             "channels_last": device.type == "cuda",
             "cudnn_benchmark": device.type == "cuda",
@@ -612,6 +770,9 @@ def worker_main() -> int:
             "pseudo_train": len(adapt_indices),
             "pseudo_valid": len(pseudo_valid_indices),
             "gold": len(gold_indices),
+            "expert_train": len(p4_expert_train_indices) if P4_MODE else 0,
+            "expert_valid": len(p4_expert_valid_indices) if P4_MODE else 0,
+            "ddp_balance_drops": len(p4_dropped_indices) if P4_MODE else 0,
         }, flush=True)
 
     channels_last = device.type == "cuda"
@@ -637,7 +798,7 @@ def worker_main() -> int:
         )
         print(
             {
-                "P2_DDP_READY": True,
+                f"{RUN_LABEL}_DDP_READY": True,
                 "rank": rank,
                 "device": str(device),
                 "parameters": parameter_count,
@@ -703,7 +864,7 @@ def worker_main() -> int:
     training_started = time.time()
     for epoch in range(rep_epochs):
         epoch_started = time.time()
-        generator = torch.Generator().manual_seed(P2_SEED + epoch)
+        generator = torch.Generator().manual_seed(RUN_SEED + epoch)
         permutation = torch.randperm(len(adapt_indices), generator=generator).numpy()
         ordered = adapt_indices[permutation]
         local_indices = ordered[rank::world_size]
@@ -752,7 +913,7 @@ def worker_main() -> int:
                     dist.all_reduce(logged, op=dist.ReduceOp.SUM)
                 if is_primary:
                     print(
-                        f"P2 train epoch {epoch + 1}/{rep_epochs} "
+                        f"{RUN_LABEL} train epoch {epoch + 1}/{rep_epochs} "
                         f"step {step + 1}/{len(loader)} "
                         f"loss={(logged[0] / logged[1].clamp_min(1.0)).item():.5f}",
                         flush=True,
@@ -801,7 +962,7 @@ def worker_main() -> int:
                     key: value.detach().cpu().clone()
                     for key, value in model.state_dict().items()
                 }
-            print({"P2_EPOCH_COMPLETE": row, "best_epoch": best_epoch}, flush=True)
+            print({f"{RUN_LABEL}_EPOCH_COMPLETE": row, "best_epoch": best_epoch}, flush=True)
 
     if SPEED_SMOKE:
         smoke_global_steps = math.ceil(len(adapt_indices) / GLOBAL_STUDY_BATCH)
@@ -846,12 +1007,18 @@ def worker_main() -> int:
             dist.destroy_process_group()
         return 0
 
-    checkpoint_path = OUTPUT_ROOT / "p2_coatnet_pseudo_best.pt"
+    checkpoint_name = (
+        f"p4_fold_{P4_FOLD}_best.pt" if P4_MODE else "p2_coatnet_pseudo_best.pt"
+    )
+    history_name = (
+        f"p4_fold_{P4_FOLD}_history.csv" if P4_MODE else "p2_representation_history.csv"
+    )
+    checkpoint_path = OUTPUT_ROOT / checkpoint_name
     if is_primary:
         assert best_state is not None and best_epoch >= 1
         torch.save(best_state, checkpoint_path)
         pd.DataFrame(history).to_csv(
-            OUTPUT_ROOT / "p2_representation_history.csv", index=False
+            OUTPUT_ROOT / history_name, index=False
         )
         del best_state
     if distributed:
@@ -862,10 +1029,231 @@ def worker_main() -> int:
     gc.collect()
     if is_primary:
         print({
-            "P2_REPRESENTATION_COMPLETE": True,
+            f"{RUN_LABEL}_REPRESENTATION_COMPLETE": True,
             "best_epoch": best_epoch,
             "best_loss": best_loss,
         }, flush=True)
+
+    if P4_MODE and FULL_RUN:
+        assert P4_FOLD is not None
+        fold_inference_started = time.time()
+        local_valid_indices = p4_expert_valid_indices[rank::world_size]
+        local_predictions: list[np.ndarray] = []
+        local_prediction_indices: list[np.ndarray] = []
+        model.eval()
+        with torch.inference_mode():
+            valid_loader = make_loader(
+                StudyDataset(local_valid_indices, k_eval, False),
+                batch_size=eval_batch_per_rank,
+            )
+            for batch in valid_loader:
+                indices, windows, window_mask, _, _ = move_batch(batch)
+                with torch.autocast(
+                    device_type=device.type,
+                    dtype=torch.float16,
+                    enabled=device.type == "cuda",
+                ):
+                    logits = model(windows, window_mask, augment=False)
+                local_prediction_indices.append(indices.astype(np.int64))
+                local_predictions.append(torch.sigmoid(logits).float().cpu().numpy())
+        rank_indices = (
+            np.concatenate(local_prediction_indices)
+            if local_prediction_indices
+            else np.empty(0, dtype=np.int64)
+        )
+        rank_predictions = (
+            np.concatenate(local_predictions)
+            if local_predictions
+            else np.empty((0, N_TARGETS), dtype=np.float32)
+        )
+        np.save(OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{rank}.npy", rank_indices)
+        np.save(
+            OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{rank}.npy",
+            rank_predictions,
+        )
+        if distributed:
+            dist.barrier()
+
+        if is_primary:
+            prediction_by_index: dict[int, np.ndarray] = {}
+            for shard_rank in range(world_size):
+                shard_indices = np.load(
+                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{shard_rank}.npy"
+                )
+                shard_predictions = np.load(
+                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{shard_rank}.npy"
+                )
+                assert len(shard_indices) == len(shard_predictions)
+                prediction_by_index.update(
+                    {
+                        int(index): prediction
+                        for index, prediction in zip(
+                            shard_indices, shard_predictions, strict=True
+                        )
+                    }
+                )
+            assert set(prediction_by_index) == set(p4_expert_valid_indices.tolist())
+            fold_predictions = np.stack(
+                [prediction_by_index[int(index)] for index in p4_expert_valid_indices]
+            )
+            assert fold_predictions.shape == (len(p4_expert_valid_indices), N_TARGETS)
+            assert np.isfinite(fold_predictions).all()
+
+            prediction_frame = pd.DataFrame({
+                ID: np.asarray(study_ids)[p4_expert_valid_indices],
+                "fold": P4_FOLD,
+            })
+            for target_index, target in enumerate(TARGETS):
+                prediction_frame[f"label__{target}"] = y[
+                    p4_expert_valid_indices, target_index
+                ]
+                prediction_frame[f"pred__{target}"] = fold_predictions[:, target_index]
+            prediction_name = f"p4_fold_{P4_FOLD}_oof_predictions.csv"
+            prediction_frame.to_csv(OUTPUT_ROOT / prediction_name, index=False)
+
+            split_name = f"p4_fold_{P4_FOLD}_split.csv"
+            pd.DataFrame({
+                ID: study_ids,
+                "report_hash": report_hashes,
+                "is_gold": is_gold,
+                "role": p4_split_roles,
+            }).to_csv(OUTPUT_ROOT / split_name, index=False)
+
+            for shard_rank in range(world_size):
+                (OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{shard_rank}.npy").unlink()
+                (
+                    OUTPUT_ROOT
+                    / f"p4_fold_{P4_FOLD}_predictions_rank_{shard_rank}.npy"
+                ).unlink()
+
+            if telemetry is not None:
+                telemetry.close()
+            artifacts = [
+                checkpoint_name,
+                history_name,
+                prediction_name,
+                split_name,
+                telemetry_name,
+            ]
+            for name in artifacts:
+                assert (OUTPUT_ROOT / name).is_file(), name
+            manifest = {
+                "schema_version": 1,
+                "run_id": (
+                    f"P4-COATNET-E2E-FOLD-{P4_FOLD}-SPEED-SMOKE-v1"
+                    if P4_SPEED_SMOKE
+                    else f"P4-COATNET-E2E-FOLD-{P4_FOLD}-v1"
+                ),
+                "full_run": not P4_SPEED_SMOKE,
+                "speed_smoke": P4_SPEED_SMOKE,
+                "fold": P4_FOLD,
+                "seeds": {
+                    "pseudo_split": P2_SEED,
+                    "expert_folds": FOLD_SEED,
+                    "representation": RUN_SEED,
+                },
+                "studies": len(study_ids),
+                "pseudo_studies": int((~is_gold).sum()),
+                "expert_studies": int(is_gold.sum()),
+                "pseudo_train_rows": int((~is_gold[adapt_indices]).sum()),
+                "pseudo_valid_rows": len(pseudo_valid_indices),
+                "expert_train_rows": int(is_gold[adapt_indices].sum()),
+                "expert_valid_rows": len(p4_expert_valid_indices),
+                "planned_pseudo_train_rows": int(
+                    np.sum(p4_split_roles == "pseudo_train")
+                ),
+                "planned_pseudo_valid_rows": int(
+                    np.sum(p4_split_roles == "pseudo_valid")
+                ),
+                "planned_expert_train_rows": len(p4_expert_train_indices),
+                "excluded_expert_valid_report_twins": int(
+                    np.sum(p4_split_roles == "excluded_expert_valid_report_twin")
+                ),
+                "excluded_pseudo_valid_expert_train_twins": int(
+                    np.sum(
+                        p4_split_roles == "excluded_pseudo_valid_expert_train_twin"
+                    )
+                ),
+                "ddp_balance_dropped_rows": len(p4_dropped_indices),
+                "ddp_balance_dropped_studies": [
+                    study_ids[index] for index in p4_dropped_indices
+                ],
+                "representation_rows": len(adapt_indices),
+                "representation_gold_rows": int(is_gold[adapt_indices].sum()),
+                "checkpoint_selection_gold_rows": 0,
+                "expert_valid_gradient_rows": 0,
+                "expert_valid_report_overlap": 0,
+                "selection_report_overlap": 0,
+                "cache_id": CACHE_ID,
+                "cache_signature_sha256": EXPECTED_CACHE_SIGNATURE,
+                "model_id": MODEL_ID,
+                "model_sha256": MODEL_SHA256,
+                "model_license": "Apache-2.0",
+                "feature_dim": FEATURE_DIM,
+                "cache_size": CACHE_SIZE,
+                "model_size": MODEL_SIZE,
+                "normalization": {"mean": MODEL_MEAN, "std": MODEL_STD},
+                "k_train": k_train,
+                "k_eval": k_eval,
+                "representation_epochs": rep_epochs,
+                "execution_revision": (
+                    "p4_e2e_fold_ddp_t4_speed_smoke_v1"
+                    if P4_SPEED_SMOKE
+                    else "p4_e2e_fold_ddp_t4_v1"
+                ),
+                "visible_gpus": torch.cuda.device_count(),
+                "data_parallel": distributed,
+                "data_parallel_backend": "DistributedDataParallel",
+                "distributed_backend": "nccl",
+                "world_size": world_size,
+                "study_batch": GLOBAL_STUDY_BATCH,
+                "gradient_accumulation": grad_accum,
+                "eval_study_batch": GLOBAL_EVAL_STUDY_BATCH,
+                "loader_workers_per_rank": workers,
+                "gradient_checkpointing": False,
+                "channels_last": channels_last,
+                "cudnn_benchmark": device.type == "cuda",
+                "fused_adamw": device.type == "cuda",
+                "best_epoch": best_epoch,
+                "best_pseudo_valid_weighted_bce": best_loss,
+                "artifacts_sha256": {
+                    name: sha256_file(OUTPUT_ROOT / name) for name in artifacts
+                },
+                "script_sha256": sha256_file(Path(__file__).resolve()),
+                "elapsed": {
+                    "representation_minutes": (
+                        fold_inference_started - training_started
+                    ) / 60.0,
+                    "fold_inference_minutes": (
+                        time.time() - fold_inference_started
+                    ) / 60.0,
+                },
+                "run_context": {
+                    "device": str(device),
+                    "model_path": str(model_path),
+                    "cache_a": str(part_a["root"]),
+                    "cache_b": str(part_b["root"]) if part_b else None,
+                },
+            }
+            manifest_name = f"p4_fold_{P4_FOLD}_manifest.json"
+            manifest_path = OUTPUT_ROOT / manifest_name
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+            print({
+                (
+                    "P4_SPEED_SMOKE_COMPLETE"
+                    if P4_SPEED_SMOKE
+                    else "P4_FOLD_COMPLETE"
+                ): True,
+                "fold": P4_FOLD,
+                "best_epoch": best_epoch,
+                "best_loss": best_loss,
+                "expert_valid_rows": len(p4_expert_valid_indices),
+                "manifest_sha256": sha256_file(manifest_path),
+            }, flush=True)
+        if distributed:
+            dist.barrier()
+            dist.destroy_process_group()
+        return 0
 
     # Each rank writes a disjoint inference shard. Rank zero merges the shards
     # after both GPUs have completed, avoiding DDP collectives with an odd row count.
@@ -1111,8 +1499,8 @@ def worker_main() -> int:
     if telemetry is not None:
         telemetry.close()
     artifacts = [
-        "p2_coatnet_pseudo_best.pt",
-        "p2_representation_history.csv",
+        checkpoint_name,
+        history_name,
         "p2_coatnet_features.npy",
         "p2_coatnet_feature_mask.npy",
         "p2_coatnet_feature_positions.npy",

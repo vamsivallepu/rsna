@@ -15,6 +15,8 @@
 | P2 submission | [rsna-knee-p2-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p2-submission) | GPU T4 | Canary v1 validated; canonical submission `55965846` complete with public score 0.908; duplicate `55965923` matched exactly |
 | P3 speed smoke | [rsna-knee-p3-dinov2-ddp-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-ddp-speed-smoke) | GPU T4 x2 | V2 independently passed: 93%/99% GPU maxima, 481.2 MiB per-rank peak, 36.73 min full-path projection |
 | P3 DINOv2-HMIL | [rsna-knee-p3-dinov2-hierarchical-mil](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p3-dinov2-hierarchical-mil) | GPU T4 x2 | Version 1 independently verified complete in 30.89 min; OOF 0.805988, fixed P2+P3 rank blend 0.863908; rejected versus P2 |
+| P4 fold-0 speed smoke | [rsna-knee-p4-coatnet-e2e-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-speed-smoke) | GPU T4 x2 | Bundle and split contract locally validated; remote launch is the next gate |
+| P4 CoAtNet E2E folds 0–4 | `rsna-knee-p4-coatnet-e2e-fold-{0..4}` | GPU T4 x2 each | Five bundles locally validated; launch only after the P4 speed smoke passes |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -89,6 +91,12 @@ cache-signature hash, and array hashes before training.
   `kaggle/rsna-p3-speed-smoke/`; frozen protocol: `docs/P3_PROTOCOL.md`
 - Downloaded P3 full outputs: `outputs/kaggle/rsna-p3-dinov2-hmil-v1/`
   (ignored by Git); compact validated result: `experiments/results/P3.json`
+- P4 canonical mode, builders, and prelaunch/speed validators:
+  `scripts/p2_coatnet_ddp.py`, `scripts/build_p4_coatnet_folds.py`,
+  `scripts/build_p4_speed_smoke.py`, `scripts/validate_p4_prelaunch.py`, and
+  `scripts/validate_p4_speed_smoke.py`
+- P4 Kaggle bundles: `kaggle/rsna-p4-coatnet-folds/fold-{0..4}/` and
+  `kaggle/rsna-p4-speed-smoke/`; frozen protocol: `docs/P4_PROTOCOL.md`
 
 The local notebook is executed against the representative DICOM sample. The
 clean deployment notebook uses the same UIDs and loader against Kaggle's full

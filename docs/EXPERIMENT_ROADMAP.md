@@ -51,7 +51,7 @@ later expensive stage advances only after its prerequisites pass.
 | 1 | **P1** | validated | Cached-token head and objective ablations | Local CPU; existing token cache | Closed after P1-D; no change promoted over P0-B |
 | 2 | **P2** | **validated / promoted / scored** | Strong compact convolutional baseline: CoAtNet-RMLP2 at 384 px with fuller physical slice coverage | Kaggle CPU cache + GPU training; `P2-CACHE-v1` | Passed at 0.891125 OOF with +0.094337 over P0-B; first public leaderboard score 0.908 |
 | 3 | **P3** | **rejected** | DINOv2-small at 336 px with fuller coverage, final-two-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse `P2-CACHE-v1` | Failed: 0.805988 OOF and 0.863908 fixed rank blend both underperformed P2 |
-| 4 | **P4** | **queued / next** | Five end-to-end folds of the winning P2 configuration | Kaggle GPU; `P2-CACHE-v1` | Fold-safe representation training and repeatable pooled OOF improvement |
+| 4 | **P4** | **active** | Five end-to-end folds of the winning P2 configuration | Five Kaggle T4 x2 jobs; `P2-CACHE-v1` | Fold-safe representation training and repeatable pooled OOF improvement |
 | 5 | **P5** | queued | OrthoFoundation frozen probe, then limited LoRA if the probe is useful | Kaggle GPU; compatible cache if preprocessing permits | License verified; frozen probe adds signal; LoRA only after that gate |
 | 6 | **P6** | queued | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Kaggle GPU | Dataset agreement/license verified and ROI pretraining improves held-out pseudo groups |
 | 7 | **P7** | queued | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
