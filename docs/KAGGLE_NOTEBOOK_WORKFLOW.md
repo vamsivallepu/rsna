@@ -21,6 +21,7 @@
 | P4 CoAtNet E2E fold 2 | [rsna-knee-p4-coatnet-e2e-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-2) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.466997, 129.61 min representation |
 | P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.461624, 140.98 min representation |
 | P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.464586, 126.86 min representation |
+| P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | Self-contained six-model script prepared; private three-study canary pending |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -103,6 +104,10 @@ cache-signature hash, and array hashes before training.
   `scripts/aggregate_p4_outputs.py`, and `scripts/validate_p4_outputs.py`
 - P4 Kaggle bundles: `kaggle/rsna-p4-coatnet-folds/fold-{0..4}/` and
   `kaggle/rsna-p4-speed-smoke/`; frozen protocol: `docs/P4_PROTOCOL.md`
+- P4 blend submission source, builder, validator, and frozen protocol:
+  `scripts/p4_blend_submission.py`, `scripts/build_p4_blend_submission.py`,
+  `scripts/validate_p4_blend_submission.py`,
+  `kaggle/rsna-p4-blend-submission/`, and `docs/P4_SUBMISSION_PROTOCOL.md`
 - Downloaded P4 fold outputs: `outputs/kaggle/rsna-p4-coatnet-e2e-v1/fold-{0..4}/`
   (ignored by Git); aggregate validation outputs:
   `outputs/experiments/P4-coatnet-e2e-oof/` (ignored by Git); compact validated

@@ -325,6 +325,15 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   P2+P4 blend. Retain P2 as a required member, validate the five-checkpoint P4
   hidden-test inference and blend path before spending a submission, and advance the
   ordered model-research queue to P5.
+- **Submission preparation:** `P4-BLEND-SUBMISSION-v1` is frozen in
+  [`P4_SUBMISSION_PROTOCOL.md`](P4_SUBMISSION_PROTOCOL.md). It decodes each study
+  once, runs P2 plus five P4 models over the same 32 windows, averages P4 probabilities,
+  and applies the exact target-wise equal-rank P2/P4 formula. The generated script is
+  deterministic and passes compile and lint checks. Two local full-model attempts
+  were stopped when the 15 GiB workstation exhausted swap while materializing model
+  state; neither reached inference or produced an artifact. Full execution validation
+  is therefore assigned to the private three-study Kaggle T4 x2 canary, not retried
+  locally.
 
 ## Previous completed run
 
