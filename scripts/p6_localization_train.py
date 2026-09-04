@@ -180,12 +180,21 @@ def sample_records(samples: list[SliceSample]) -> list[dict[str, object]]:
 
 def prepare_data(args: argparse.Namespace):
     annotations, reviewed = load_release(args.annotations, args.reviewed_files)
-    artifact_files = set(
+    study_level_artifact_files = set(
         annotations.loc[annotations["study_level"].eq("Yes"), "file"].astype(str)
     )
-    if len(artifact_files) != 5:
+    slice_level_box_files = set(
+        annotations.loc[annotations["study_level"].eq("No"), "file"].astype(str)
+    )
+    artifact_only_files = study_level_artifact_files - slice_level_box_files
+    if len(study_level_artifact_files) != 13:
         raise ValueError(
-            f"Unexpected study-level artifact volume count: {len(artifact_files)}"
+            "Unexpected study-level artifact volume count: "
+            f"{len(study_level_artifact_files)}"
+        )
+    if len(artifact_only_files) != 5:
+        raise ValueError(
+            f"Unexpected artifact-only volume count: {len(artifact_only_files)}"
         )
     train_raw, train_malformed = index_hdf5_paths(args.train_hdf5_root)
     validation_raw, validation_malformed = index_hdf5_paths(args.validation_hdf5_root)
@@ -227,7 +236,7 @@ def prepare_data(args: argparse.Namespace):
         train_geometry,
         train_sanitation,
         args.negative_slices_per_volume,
-        artifact_files,
+        artifact_only_files,
     )
     validation_samples = build_split_samples(
         "validation",
@@ -235,7 +244,7 @@ def prepare_data(args: argparse.Namespace):
         validation_geometry,
         validation_sanitation,
         args.negative_slices_per_volume,
-        artifact_files,
+        artifact_only_files,
     )
     if {sample.file for sample in train_samples} & {
         sample.file for sample in validation_samples
@@ -247,7 +256,8 @@ def prepare_data(args: argparse.Namespace):
         train_index,
         validation_index,
         sanitation,
-        artifact_files,
+        study_level_artifact_files,
+        artifact_only_files,
     )
 
 
@@ -381,7 +391,8 @@ def main() -> None:
         train_index,
         validation_index,
         sanitation,
-        artifact_files,
+        study_level_artifact_files,
+        artifact_only_files,
     ) = prepare_data(args)
     train_records = sample_records(train_samples)
     validation_records = sample_records(validation_samples)
@@ -554,7 +565,8 @@ def main() -> None:
             ),
             "kept_boxes": int(sanitation["kept"].sum()),
             "discarded_boxes": int((~sanitation["kept"]).sum()),
-            "excluded_study_level_artifact_volumes": len(artifact_files),
+            "study_level_artifact_volumes": len(study_level_artifact_files),
+            "excluded_study_level_artifact_volumes": len(artifact_only_files),
             "sample_signature": sha256_jsonable(train_records + validation_records),
         },
         "training": {

@@ -121,6 +121,8 @@ def main() -> None:
         raise ValueError("Manifest box sanitation counts are inconsistent")
     if data.get("excluded_study_level_artifact_volumes") != 5:
         raise ValueError("Five study-level artifact-only volumes must be excluded")
+    if data.get("study_level_artifact_volumes") != 13:
+        raise ValueError("The release must contain 13 study-level artifact volumes")
 
     history = json.loads(artifact_paths["history_sha256"].read_text(encoding="utf-8"))
     trained = [row for row in history if row["epoch"] > 0]
