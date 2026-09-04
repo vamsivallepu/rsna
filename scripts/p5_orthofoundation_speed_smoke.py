@@ -38,7 +38,7 @@ TARGETS = [
     "Synovitis", "Baker's", "Contusion", "Fracture",
 ]
 RUN_ID = "P5A-ORTHOFOUNDATION-FROZEN-v1"
-EXECUTION_REVISION = "p5a_frozen_t4x2_smoke_v1"
+EXECUTION_REVISION = "p5a_frozen_t4x2_smoke_v2"
 CACHE_ID = "P2-CACHE-v1"
 CACHE_SIGNATURE = "0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3"
 MODEL_SHA256 = "385a775822107b68eaa486336feb982e1ce7bd6d4e8c03ceb482a0bf546f2ff9"
@@ -368,6 +368,20 @@ def worker() -> int:
         pretrained=False,
     )
     state = torch.load(checkpoint, map_location="cpu", weights_only=True)
+    assert isinstance(state, dict) and state
+    original_keys = list(state)
+    if all(key.startswith("backbone.") for key in original_keys):
+        state = {key.removeprefix("backbone."): value for key, value in state.items()}
+        checkpoint_namespace = "backbone."
+    elif all(key.startswith("module.backbone.") for key in original_keys):
+        state = {key.removeprefix("module.backbone."): value for key, value in state.items()}
+        checkpoint_namespace = "module.backbone."
+    else:
+        checkpoint_namespace = "unprefixed"
+    assert set(state) == set(model.state_dict()), {
+        "missing": sorted(set(model.state_dict()) - set(state))[:10],
+        "unexpected": sorted(set(state) - set(model.state_dict()))[:10],
+    }
     model.load_state_dict(state, strict=True)
     del state
     model.requires_grad_(False).eval().to(device)
@@ -382,6 +396,7 @@ def worker() -> int:
                 "parameters": total_parameters,
                 "load_seconds": model_load_seconds,
                 "world_size": world_size,
+                "checkpoint_namespace": checkpoint_namespace,
             },
             flush=True,
         )
@@ -500,6 +515,7 @@ def worker() -> int:
             "feature_shape_per_study": [K_SLICES, N_REGIONS, BACKBONE_DIM],
             "checkpoint_sha256": MODEL_SHA256,
             "checkpoint_bytes": MODEL_BYTES,
+            "checkpoint_namespace": checkpoint_namespace,
             "orthofoundation_commit": ORTHO_COMMIT,
             "dinov3_commit": DINOV3_COMMIT,
             "cache_id": CACHE_ID,

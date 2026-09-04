@@ -17,7 +17,7 @@ def main() -> int:
     args = parser.parse_args()
     result = json.loads((args.output_dir / "p5_speed_smoke.json").read_text())
     assert result["run_id"] == "P5A-ORTHOFOUNDATION-FROZEN-v1"
-    assert result["execution_revision"] == "p5a_frozen_t4x2_smoke_v1"
+    assert result["execution_revision"] == "p5a_frozen_t4x2_smoke_v2"
     assert result["world_size"] == 2
     assert result["smoke_studies"] == 128
     assert result["slices_per_study"] == 32
@@ -28,6 +28,7 @@ def main() -> int:
         "385a775822107b68eaa486336feb982e1ce7bd6d4e8c03ceb482a0bf546f2ff9"
     )
     assert result["checkpoint_bytes"] == 1_213_056_638
+    assert result["checkpoint_namespace"] == "backbone."
     assert 300_000_000 < result["model_parameters"] < 310_000_000
     numeric = [
         result["images_per_second_two_gpu"],
