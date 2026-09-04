@@ -60,7 +60,10 @@
     "checkpoint_dataset_status": "ready",
     "matched_control_kernel": "vallepuvamsikrishna/rsna-knee-p6-p2-matched-control",
     "transfer_kernel": "vallepuvamsikrishna/rsna-knee-p6-p2-transfer",
-    "state": "ready_to_launch"
+    "launch_commit": "679e531",
+    "control_version": 1,
+    "transfer_version": 1,
+    "state": "running"
   },
   "decision": "The full localization source run passed every frozen data, selection, utilization, artifact, and strict-backbone-compatibility check. Advance to the matched P2 ImageNet-control versus P6-initialized comparison; the source result alone does not promote P6."
 }

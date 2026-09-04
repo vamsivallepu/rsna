@@ -29,8 +29,8 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 ### P6 — fastMRI+ localization transfer
 
 - **Status:** P6-A, all P6-B smoke gates, and the full P6-B source run passed on
-  private AWS. The selected epoch-2 backbone and matched ImageNet control are ready
-  for concurrent P2 reruns on Kaggle T4 x2.
+  private AWS. The selected epoch-2 backbone and matched ImageNet control launched
+  concurrently as Kaggle version-1 T4 x2 runs from commit `679e531`.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -140,6 +140,8 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   `rsna-knee-p6-p2-matched-control` and `rsna-knee-p6-p2-transfer` use the same source,
   P2 cache, seeds, optimizer, batches, epochs, checkpoint-selection boundary, and
   five-fold expert OOF procedure; initialization is their only intended difference.
+  Both version-1 kernels were confirmed `RUNNING` immediately after launch on
+  2026-09-04.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
   Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
   First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).
@@ -228,7 +230,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
-| P6 | **active** | fastMRI+ localization transfer into matched P2 reruns | Source pretraining validated; control and transfer arms ready for Kaggle execution |
+| P6 | **running** | fastMRI+ localization transfer into matched P2 reruns | Source pretraining validated; control and transfer version-1 arms running on Kaggle |
 | P7–P9 | queued | Report-image auxiliary, relabelling/ensemble, and 3D stages | Gates in the roadmap |
 
 ## Completed P5 run
