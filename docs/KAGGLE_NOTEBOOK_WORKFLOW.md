@@ -24,7 +24,7 @@
 | P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | V3 validated; submission `55990677` complete with public score 0.916, +0.008 over P2 |
 | P5 OrthoFoundation speed smoke | [rsna-knee-p5-orthofoundation-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-speed-smoke) | GPU T4 x2 | V2 independently passed: 159.45 images/s, 14.74 min full-feature projection, 1,847 MiB/rank, both GPUs 100% peak |
 | P5 OrthoFoundation frozen | [rsna-knee-p5-orthofoundation-frozen](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen) | GPU T4 x2 | V3 complete and independently validated; OOF 0.768822, fixed P5 blend 0.886740; rejected and LoRA gate failed |
-| P5 diagnostic submission | [rsna-knee-p5-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-submission) | GPU T4 x2 | Diagnostic-only five-head P5 inference; private canary pending before submission |
+| P5 diagnostic submission | [rsna-knee-p5-diagnostic-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission) | GPU T4 x2 | Diagnostic-only five-head P5 inference; private canary v1 running before submission |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
