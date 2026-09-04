@@ -152,7 +152,14 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Diagnostic submission:** requested for leaderboard information only. The frozen
   five-fold probability mean is isolated under `P5-DIAGNOSTIC-SUBMISSION-v1`; its
   public score cannot promote P5 or authorize target/weight tuning. A two-T4 private
-  canary and independent output validation are required before spending a submission.
+  canary completed in 9.64 wall minutes and independently passed source hashes,
+  geometry, sample order, prediction, and five-fold replay checks. Its slower-rank
+  inference segment was 0.304 minutes for the three visible studies, projecting the
+  1,300-study hidden run to about 1.79 hours including startup. Exact Kaggle kernel
+  version 1 was submitted as reference `56008122`; evaluation is pending. The
+  submission description contains an incidental commit-hash typo (`a9447a1`); the
+  immutable kernel version was built from actual code commit `a80f042` and is traced
+  by manifest SHA-256 `ddec9141e892bda4db4b6c3b75590cb65c0fe0c16e34460f9396606195086fd2`.
 
 ## Completed P2 run
 

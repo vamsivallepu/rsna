@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P5-SUBMISSION",
+  "run_id": "P5-DIAGNOSTIC-SUBMISSION-v1",
+  "status": "submitted_pending",
+  "date": "2026-09-04",
+  "code_commit": "a80f042",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission",
+  "kaggle_kernel_version": 1,
+  "competition_submission_ref": 56008122,
+  "submission_description": "Diagnostic P5 OrthoFoundation five-fold ensemble, validated canary v1, commit a9447a1",
+  "submission_description_note": "The description contains a commit-hash typo; the exact submitted kernel version 1 was built from commit a80f042 and is identified by its source and output hashes below.",
+  "source_p5_manifest_sha256": "3b739d18f85347bbc457885bba72b1a20712d2ab56dda67ac68fc35840b3163d",
+  "source_p5_oof_macro_auc": 0.7688217022757898,
+  "canary": {
+    "validated": true,
+    "studies": 3,
+    "series": 15,
+    "world_size": 2,
+    "batch_size_per_rank": 2,
+    "inference_minutes_by_rank": [0.3035977840423584, 0.3036004622777303],
+    "total_minutes_rank0": 8.845455578962962,
+    "kaggle_wall_minutes": 9.643333333333333,
+    "projected_hidden_studies": 1300,
+    "projected_hidden_total_hours": 1.786865965260399,
+    "five_fold_mean_recomputed": true,
+    "manifest_sha256": "ddec9141e892bda4db4b6c3b75590cb65c0fe0c16e34460f9396606195086fd2",
+    "submission_sha256": "5bb5582cad42a6dd948b9f4fa53a0d0e85a26c388e659e8b032df5beb4e98340"
+  },
+  "leaderboard": {
+    "status": "PENDING",
+    "public_score": null,
+    "private_score": null
+  },
+  "decision": "Diagnostic submission only. Wait for the public score; do not promote P5 or tune against the leaderboard result."
+}

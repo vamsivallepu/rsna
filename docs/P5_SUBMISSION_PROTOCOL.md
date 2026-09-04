@@ -23,3 +23,15 @@ public score will not be used to tune weights or override the fold-safe decision
 - Record the public score as diagnostic evidence only. Regardless of leaderboard
   score, P5 remains rejected unless new genuinely independent validation justifies a
   new protocol.
+
+## Recorded release
+
+The private three-study canary completed in 9.64 wall minutes and independently
+passed all output checks. The slowest rank's inference segment was 0.304 minutes;
+scaling the per-rank study count and retaining measured startup projects about 1.79
+hours for 1,300 hidden studies. Exact Kaggle kernel version 1 was submitted as
+competition reference `56008122`; its public score is pending. The submission message
+contains a non-functional commit-hash typo, while the immutable submitted version is
+traceable to actual source commit `a80f042`, source manifest hash
+`3b739d18f85347bbc457885bba72b1a20712d2ab56dda67ac68fc35840b3163d`, and canary
+manifest hash `ddec9141e892bda4db4b6c3b75590cb65c0fe0c16e34460f9396606195086fd2`.
