@@ -143,9 +143,12 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   Both version-1 kernels were confirmed `RUNNING` immediately after launch on
   2026-09-04.
 - **AWS cost control:** after the selected checkpoint was verified locally and in the
-  private Kaggle Dataset, instance `i-0952ebd05fab9e563` was confirmed `stopped` on
-  2026-09-04. Compute billing is halted. Its 600 GiB of EBS remains pending explicit
-  approval for irreversible instance/volume deletion.
+  private Kaggle Dataset, instance `i-0952ebd05fab9e563` was stopped and then
+  terminated with explicit approval on 2026-09-04. Its 100 GiB root and 500 GiB data
+  EBS volumes, eight versioned staging bundles, and private staging bucket were
+  deleted. A post-cleanup audit found no RSNA EBS volumes, snapshots, Elastic IPs, or
+  staging bucket; only non-chargeable IAM, security-group, and Standard SSM
+  configuration remains.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
   Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
   First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).

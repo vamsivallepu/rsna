@@ -65,5 +65,21 @@
     "transfer_version": 1,
     "state": "running"
   },
+  "aws_cleanup": {
+    "date": "2026-09-04",
+    "instance_id": "i-0952ebd05fab9e563",
+    "instance_state": "terminated",
+    "deleted_ebs_volumes": [
+      "vol-06b9b60c02150d33f",
+      "vol-03a6067d66b1a8ca7"
+    ],
+    "deleted_staging_bucket": "rsna-p6-261513860644-ap-south-1",
+    "remaining_chargeable_rsna_resources_found": false,
+    "retained_free_configuration": [
+      "IAM role and instance profile",
+      "security group",
+      "Standard-tier SSM parameters"
+    ]
+  },
   "decision": "The full localization source run passed every frozen data, selection, utilization, artifact, and strict-backbone-compatibility check. Advance to the matched P2 ImageNet-control versus P6-initialized comparison; the source result alone does not promote P6."
 }

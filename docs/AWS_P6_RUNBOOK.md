@@ -2,23 +2,25 @@
 
 Provisioned: 2026-09-04
 
-Lifecycle status: instance `i-0952ebd05fab9e563` was confirmed `stopped` on
-2026-09-04 after P6 source training and downstream checkpoint staging completed.
-Compute billing is halted; the 100 GiB root and 500 GiB data EBS volumes remain and
-continue to incur storage charges pending explicit approval for permanent deletion.
+Lifecycle status: instance `i-0952ebd05fab9e563` was terminated on 2026-09-04 after
+P6 source training and downstream checkpoint staging completed. Both EBS volumes and
+the private staging bucket were permanently deleted after explicit user approval.
+Post-cleanup verification found no RSNA EBS volumes, snapshots, Elastic IPs, or
+staging bucket. Only non-chargeable IAM, security-group, and Standard-tier SSM
+configuration remains.
 
 This is the durable operating record for the private AWS compute used by P6. It
 contains resource identifiers and public commands, but no credentials, temporary
 fastMRI URLs, patient data, images, or model artifacts.
 
-## Current resources
+## Provisioned resources and final state
 
 All resources use AWS CLI profile `personal`, account `261513860644`, and region
 `ap-south-1`.
 
 | Resource | Identifier / setting |
 |---|---|
-| EC2 | `i-0952ebd05fab9e563` (`rsna-p6-gpu`) |
+| EC2 | `i-0952ebd05fab9e563` (`rsna-p6-gpu`); terminated 2026-09-04 |
 | Type / AZ | on-demand `g6.2xlarge`, `ap-south-1b` |
 | GPU | one NVIDIA L4, 24 GB |
 | Host memory / CPU | 32 GiB / 8 vCPU |
@@ -26,11 +28,11 @@ All resources use AWS CLI profile `personal`, account `261513860644`, and region
 | Access | AWS Systems Manager only; no key pair and no inbound security-group rules |
 | Security group | `sg-058b303bf550878cc` (`rsna-p6-ssm-only`) |
 | IAM role / profile | `rsna-p6-ec2-role` / `rsna-p6-ec2-profile` |
-| Root EBS | `vol-06b9b60c02150d33f`, 100 GiB encrypted gp3, delete on termination |
-| Data EBS | `vol-03a6067d66b1a8ca7`, 500 GiB encrypted gp3, retained on termination |
+| Root EBS | `vol-06b9b60c02150d33f`, 100 GiB encrypted gp3; deleted |
+| Data EBS | `vol-03a6067d66b1a8ca7`, 500 GiB encrypted gp3; deleted |
 | Data mount | `/mnt/rsna` by filesystem UUID |
 | Instance NVMe | `/opt/dlami/nvme`, about 412 GiB; disposable scratch only |
-| Private staging bucket | `rsna-p6-261513860644-ap-south-1` |
+| Private staging bucket | `rsna-p6-261513860644-ap-south-1`; versions and bucket deleted |
 
 Termination protection is enabled and instance-initiated shutdown is configured to
 stop. The S3 bucket blocks all public access, uses default AES-256 encryption and
