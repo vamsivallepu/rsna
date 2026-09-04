@@ -2,10 +2,10 @@
   "schema_version": 1,
   "experiment_id": "P6-AUDIT",
   "run_id": "P6A-FASTMRI-PLUS-AUDIT-v1",
-  "status": "validated_blocked_on_authorized_images",
+  "status": "validated_ready_for_secure_image_staging",
   "date": "2026-09-04",
   "description": "Provenance, schema, target-transfer, and image-access audit for fastMRI+ knee localization supervision",
-  "code_commit": "139b16f",
+  "code_commit": null,
   "source": {
     "repository": "https://github.com/microsoft/fastmri-plus",
     "commit": "67ed9a68ee33d3197f93893e8125688470c4a577",
@@ -21,9 +21,13 @@
     "slice_level_labels": 21,
     "labels_with_surrounding_whitespace": 1,
     "annotated_volumes": 974,
-    "reviewed_volumes": 1173,
-    "reviewed_without_any_annotation": 199,
+    "reviewed_file_release_rows": 1173,
+    "reviewed_non_id_rows": 1,
+    "ignored_non_id_rows": ["Knee data"],
+    "reviewed_volumes": 1172,
+    "reviewed_without_any_annotation": 198,
     "paper_reported_reviewed_volumes": 1172,
+    "paper_count_matches_valid_file_ids": true,
     "negative_coordinate_boxes": 6,
     "nonpositive_width_boxes": 0,
     "nonpositive_height_boxes": 1
@@ -38,7 +42,7 @@
   },
   "artifacts": {
     "raw_artifact_path": "outputs/experiments/P6-A-fastmri-plus-audit",
-    "audit_json_sha256": "c39f912965922fa0e6d0bdaaa8287c76e156e34ff415effe15c4ab7010f07602",
+    "audit_json_sha256": "c04b36611c91575f61019244eb28971bc4c5877d4056828e3e7314bfa3d8023c",
     "label_stats_sha256": "0e9ab6837c1eeafbb115d1af3617f30e198580257e639b2b3e234bbf88433a57",
     "target_crosswalk_sha256": "ad3695de2b62a06715493c406254adfacbc23c56097882c32ee493edc98e3526",
     "crosswalk_signature": "f718b0818f3dafb7bf1cde47295b6ae89d1f606e26f052635a53375424779d47"
@@ -47,8 +51,10 @@
     "annotations_mit_licensed": true,
     "image_data_included": false,
     "official_fastmri_agreement_required_for_images": true,
-    "official_image_access_confirmed": false,
+    "official_image_access_confirmed": true,
+    "access_confirmation": "Official NYU fastMRI download email dated 2026-09-04 reviewed locally; temporary URLs are intentionally untracked",
+    "kaggle_secret_configured": false,
     "unofficial_kaggle_image_mirror_approved": false
   },
-  "decision": "P6-A is complete. Do not derive RSNA coordinate priors from the CSV alone and do not use unofficial image mirrors. P6-B can launch after the user confirms official fastMRI access and supplies the private source images to Kaggle without redistribution."
+  "decision": "P6-A is complete and official image access is confirmed. Do not derive RSNA coordinate priors from the CSV alone and do not use unofficial image mirrors. Securely stage an official image package in Kaggle through a Secret, then run the filename, geometry, overlay, and 128-volume P6-B smoke gates."
 }

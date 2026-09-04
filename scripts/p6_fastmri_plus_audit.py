@@ -164,11 +164,16 @@ def main() -> None:
         raise ValueError(f"Unexpected knee_file_list.csv SHA-256: {reviewed_hash}")
 
     annotations = pd.read_csv(args.annotations)
-    reviewed = pd.read_csv(args.reviewed_files, header=None, names=["file"], dtype=str)
+    reviewed_raw = pd.read_csv(args.reviewed_files, header=None, names=["file"], dtype=str)
     if annotations.columns.tolist() != EXPECTED_COLUMNS:
         raise ValueError(f"Unexpected annotation columns: {annotations.columns.tolist()}")
-    if reviewed["file"].isna().any() or reviewed["file"].duplicated().any():
-        raise ValueError("Reviewed-volume list contains a null or duplicate file ID")
+    if reviewed_raw["file"].isna().any() or reviewed_raw["file"].duplicated().any():
+        raise ValueError("Reviewed-file release contains a null or duplicate row")
+    reviewed_id_mask = reviewed_raw["file"].str.fullmatch(r"file\d+")
+    ignored_reviewed_rows = reviewed_raw.loc[~reviewed_id_mask, "file"].tolist()
+    if ignored_reviewed_rows != ["Knee data"]:
+        raise ValueError(f"Unexpected non-ID rows in reviewed-file release: {ignored_reviewed_rows}")
+    reviewed = reviewed_raw.loc[reviewed_id_mask].reset_index(drop=True)
     if annotations["file"].isna().any() or annotations["label"].isna().any():
         raise ValueError("Annotation table contains a null file ID or label")
     if not set(annotations["file"]).issubset(set(reviewed["file"])):
@@ -222,6 +227,8 @@ def main() -> None:
             annotations.loc[annotations["label"].ne(annotations["label_clean"]), "label"].nunique()
         ),
         "annotated_volumes": int(annotations["file"].nunique()),
+        "reviewed_file_release_rows": int(len(reviewed_raw)),
+        "reviewed_non_id_rows": int(len(ignored_reviewed_rows)),
         "reviewed_volumes": int(reviewed["file"].nunique()),
         "reviewed_without_any_annotation": int(
             reviewed.loc[~reviewed["file"].isin(set(annotations["file"])), "file"].nunique()
@@ -237,8 +244,10 @@ def main() -> None:
         "released_labels_including_artifact": 22,
         "slice_level_labels": 21,
         "annotated_volumes": 974,
-        "reviewed_volumes": 1_173,
-        "reviewed_without_any_annotation": 199,
+        "reviewed_file_release_rows": 1_173,
+        "reviewed_non_id_rows": 1,
+        "reviewed_volumes": 1_172,
+        "reviewed_without_any_annotation": 198,
     }
     mismatches = {
         key: {"expected": expected, "observed": observed[key]}
@@ -259,10 +268,12 @@ def main() -> None:
             "reviewed_files_sha256": reviewed_hash,
         },
         "observed": observed,
-        "paper_release_discrepancy": {
+        "reviewed_file_interpretation": {
             "paper_reported_reviewed_knee_volumes": 1_172,
-            "current_official_file_unique_rows": observed["reviewed_volumes"],
-            "execution_source_of_truth": "current hash-pinned official CSV",
+            "released_csv_rows": observed["reviewed_file_release_rows"],
+            "valid_file_ids": observed["reviewed_volumes"],
+            "ignored_non_id_rows": ignored_reviewed_rows,
+            "paper_count_matches_valid_file_ids": True,
         },
         "transfer_assessment": {
             "direct_target_count": int(

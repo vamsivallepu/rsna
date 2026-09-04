@@ -31,9 +31,11 @@ access gate below is satisfied. A Kaggle mirror is not a substitute for that gat
   official files. It contains no images.
 - The released annotation file contains 16,154 slice-level boxes, 13 study-level
   artifact rows, 22 labels including artifact, and 974 annotated volumes. The
-  released reviewed-file list contains 1,173 unique volumes, 199 without any row in
-  `knee.csv`. The fastMRI+ paper reports 1,172 reviewed knee volumes; reproducible
-  execution follows the current hash-pinned official CSV and records the discrepancy.
+  released reviewed-file CSV has 1,173 rows, but its final row is the literal footer
+  `Knee data`, not a volume identifier. Filtering by the released `file<digits>` ID
+  contract yields 1,172 unique reviewed volumes, matching the paper; 198 have no row
+  in `knee.csv`. The audit asserts this footer explicitly rather than silently treating
+  arbitrary malformed rows as data.
 - The release has six boxes with `y=-1`, one box with zero height, and one raw label
   (`Joint Effusion `) with trailing whitespace. P6-B must strip label whitespace,
   clamp boxes to the actual reconstructed image bounds, discard boxes that remain
@@ -97,12 +99,17 @@ are evaluated only through the existing five-fold OOF procedure.
 
 ## Gates
 
-P6-B may launch only when all access checks pass:
+The user supplied an official NYU fastMRI download email dated 2026-09-04, so the
+agreement/access confirmation gate is satisfied. Its temporary signed URLs are not
+stored in Git, tracked artifacts, notebook source, or logs. P6-B may launch only when
+the remaining checks pass:
 
-1. the user confirms current official fastMRI access/agreement acceptance;
-2. source HDF5 filenames match the official reviewed list and remain private;
+1. the selected official download URL is supplied to the private Kaggle runtime as a
+   Kaggle Secret rather than embedded in code;
+2. source filenames match the official reviewed list and remain private;
 3. annotation and reviewed-list hashes match P6-A;
-4. overlays pass after the documented up/down flip;
+4. overlays pass in the exact DICOM coordinate frame or after the documented HDF5
+   up/down flip, depending on the selected official package;
 5. a 128-volume smoke stays within Kaggle memory/runtime limits.
 
 Promotion requires a positive matched change on report-grouped pseudo validation,
