@@ -2,6 +2,11 @@
 
 Provisioned: 2026-09-04
 
+Lifecycle status: instance `i-0952ebd05fab9e563` was confirmed `stopped` on
+2026-09-04 after P6 source training and downstream checkpoint staging completed.
+Compute billing is halted; the 100 GiB root and 500 GiB data EBS volumes remain and
+continue to incur storage charges pending explicit approval for permanent deletion.
+
 This is the durable operating record for the private AWS compute used by P6. It
 contains resource identifiers and public commands, but no credentials, temporary
 fastMRI URLs, patient data, images, or model artifacts.
