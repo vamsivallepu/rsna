@@ -284,8 +284,8 @@ def render_overlays(
         slice_index = int(raw_slice)
         with h5py.File(hdf5_root / path_lookup[volume_id], "r") as handle:
             pixels = np.asarray(
-                handle["reconstruction_rss"][slice_index, ::-1, :], dtype=np.float32
-            )
+                handle["reconstruction_rss"][slice_index, :, :], dtype=np.float32
+            )[::-1, :]
         low, high = np.percentile(pixels, [0.5, 99.5])
         if high <= low:
             normalized = np.zeros_like(pixels, dtype=np.uint8)
