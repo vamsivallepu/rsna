@@ -96,8 +96,19 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   All 16 manifest-verified overlays passed visual alignment with no systematic flip,
   mirror, slice offset, or coordinate shift. GPU utilization, peak memory, throughput,
   and full-runtime projection are still unmeasured.
+- **GPU smoke version 1:** commit `826da99` completed without OOM and processed the
+  30-step timed window at 31.64 images/s, with 6.88 GiB peak allocated memory and a
+  projected 0.73 hours for eight source epochs. Its two remaining gates were invalid:
+  the utilization monitor included roughly 70 seconds of lazy worker startup around
+  only 7.58 seconds of timed training, and the ten-step fixed-batch comparison used
+  training-mode running statistics. Mean utilization was therefore reported as
+  17.52% and fixed-batch loss rose 11.33%. Record this as a harness repeat, not model
+  evidence. Version 2 starts workers before CUDA/model construction, monitors only
+  timed optimizer steps, compares fixed-batch loss in evaluation mode over 30 steps,
+  and uses a safer `3e-4` localization-head learning rate.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
   Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
+  First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).
 
 ### B04 target-wise OOF AUC
 

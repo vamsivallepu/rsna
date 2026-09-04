@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P6-B-GPU-SMOKE-v1",
+  "run_id": "P6B-FASTMRI-PLUS-LOCALIZATION-GPU-SMOKE-v1",
+  "status": "repeat",
+  "date": "2026-09-04",
+  "code_commit": "826da99",
+  "ssm_command_id": "0619b8d3-ecec-4aa4-86af-c08fb792e616",
+  "configuration": {
+    "architecture": "coatnet_rmlp_2_rw_384 plus four-level 128-channel class-agnostic FPN",
+    "batch_size": 8,
+    "workers": 4,
+    "overfit_steps": 10,
+    "warmup_steps": 5,
+    "timed_steps": 30,
+    "backbone_lr": 0.00003,
+    "head_lr": 0.001,
+    "amp": "float16",
+    "channels_last": true,
+    "optimizer": "fused AdamW"
+  },
+  "data": {
+    "train_samples": 256,
+    "validation_samples": 128,
+    "train_volumes": 90,
+    "validation_volumes": 25,
+    "volume_overlap": 0
+  },
+  "measured": {
+    "initial_overfit_loss": 3.359764575958252,
+    "final_overfit_loss": 3.740321636199951,
+    "overfit_loss_reduction_fraction": -0.11326896621414582,
+    "timed_elapsed_seconds": 7.584984691999125,
+    "images_per_second": 31.641461353660922,
+    "torch_peak_allocated_mib": 6880.66650390625,
+    "torch_peak_reserved_mib": 7370.0,
+    "nvidia_memory_used_max_mib": 7630.0,
+    "gpu_monitor_samples": 164,
+    "gpu_utilization_mean_percent": 17.51829268292683,
+    "gpu_utilization_max_percent": 100.0,
+    "validation_loss": 3.4335213750600815,
+    "projected_eight_epoch_hours": 0.7285096871306197
+  },
+  "passed": {
+    "finite_losses": true,
+    "peak_torch_allocation_below_22_gib": true,
+    "projected_eight_epoch_runtime_below_six_hours": true,
+    "mean_gpu_utilization_at_least_70_percent": false,
+    "overfit_loss_reduction_at_least_5_percent": false
+  },
+  "diagnosis": {
+    "capacity_problem": false,
+    "utilization_window_invalid": true,
+    "reason": "The monitor included lazy persistent-worker startup and first-batch preparation but the timed training interval was only 7.58 seconds. The fixed-batch comparison also used training-mode running statistics and only 10 steps, so it was not a stable overfit assertion."
+  },
+  "decision": "Do not interpret the failed gates as model evidence. Repeat after starting workers before CUDA/model construction, restricting GPU monitoring to timed optimizer steps, comparing fixed-batch loss in evaluation mode, using 30 overfit steps, and lowering the localization-head learning rate to 3e-4."
+}

@@ -64,12 +64,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-train-samples", type=int, default=256)
     parser.add_argument("--max-validation-samples", type=int, default=128)
     parser.add_argument("--negative-slices-per-volume", type=int, default=4)
-    parser.add_argument("--overfit-steps", type=int, default=10)
+    parser.add_argument("--overfit-steps", type=int, default=30)
     parser.add_argument("--warmup-steps", type=int, default=5)
     parser.add_argument("--timed-steps", type=int, default=30)
     parser.add_argument("--projected-epochs", type=int, default=8)
     parser.add_argument("--backbone-lr", type=float, default=3e-5)
-    parser.add_argument("--head-lr", type=float, default=1e-3)
+    parser.add_argument("--head-lr", type=float, default=3e-4)
     parser.add_argument("--weight-decay", type=float, default=0.02)
     parser.add_argument("--background-weight", type=float, default=0.10)
     parser.add_argument("--size-loss-weight", type=float, default=0.10)
@@ -547,6 +547,12 @@ def main() -> None:
     if len(train_loader) == 0:
         raise ValueError("Training loader has no complete batch")
 
+    # Start persistent HDF5 workers before creating CUDA state. Forking workers
+    # after a large CUDA model is resident caused a one-time idle gap that does
+    # not represent steady-state training throughput.
+    train_iterator = infinite_loader(train_loader)
+    fixed_batch = next(train_iterator)
+
     model = CoAtNetLocalizer(args.model_weights).to(
         device=device, memory_format=torch.channels_last
     )
@@ -564,14 +570,10 @@ def main() -> None:
     )
     scaler = torch.amp.GradScaler("cuda")
     torch.cuda.reset_peak_memory_stats(device)
-    monitor_path = args.output_dir / "p6_gpu_samples.csv"
-    monitor = start_nvidia_monitor(monitor_path)
-    train_iterator = infinite_loader(train_loader)
-
-    fixed_batch = next(train_iterator)
-    model.train()
+    model.eval()
     with torch.no_grad():
         initial_overfit_loss = float(forward_loss(model, fixed_batch, device, args)[0])
+    model.train()
     overfit_losses: list[float] = []
     for _ in range(args.overfit_steps):
         optimizer.zero_grad(set_to_none=True)
@@ -580,9 +582,11 @@ def main() -> None:
         scaler.step(optimizer)
         scaler.update()
         overfit_losses.append(float(loss.detach()))
+    model.eval()
     with torch.no_grad():
         final_overfit_loss = float(forward_loss(model, fixed_batch, device, args)[0])
 
+    model.train()
     for _ in range(args.warmup_steps):
         optimizer.zero_grad(set_to_none=True)
         loss, _ = forward_loss(model, next(train_iterator), device, args)
@@ -590,6 +594,8 @@ def main() -> None:
         scaler.step(optimizer)
         scaler.update()
     torch.cuda.synchronize()
+    monitor_path = args.output_dir / "p6_gpu_samples.csv"
+    monitor = start_nvidia_monitor(monitor_path)
     started = time.perf_counter()
     timed_losses: list[float] = []
     for _ in range(args.timed_steps):

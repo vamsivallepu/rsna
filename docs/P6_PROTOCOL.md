@@ -126,6 +126,13 @@ validates the data and visual paths but does not yet satisfy the GPU utilization
 peak-memory, throughput, or projected-runtime part of gate 5. The tracked gate result is
 [`P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
 
+GPU smoke version 1 established that batch 8 fits comfortably (6.88 GiB peak allocated)
+and measured 31.64 images/s, projecting eight source epochs to about 0.73 hours. It is
+recorded as a harness repeat because utilization sampling incorrectly included lazy
+worker startup and the fixed-batch loss comparison used training-mode running
+statistics. Version 2 corrects those measurements without changing the source task,
+cohort, backbone, FPN, loss, or promotion contract.
+
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
 availability and validates the official host/package path; it does not display the
