@@ -55,15 +55,33 @@ from torch.utils.data import DataLoader, Dataset
 
 ID = "StudyInstanceUID"
 TARGETS = [
-    "ACL", "MCL", "Medial Meniscus", "Lateral Meniscus",
-    "Medial OA", "Lateral OA", "PF OA", "Effusion",
-    "Synovitis", "Baker's", "Contusion", "Fracture",
+    "ACL",
+    "MCL",
+    "Medial Meniscus",
+    "Lateral Meniscus",
+    "Medial OA",
+    "Lateral OA",
+    "PF OA",
+    "Effusion",
+    "Synovitis",
+    "Baker's",
+    "Contusion",
+    "Fracture",
 ]
 ARCH = "coatnet_rmlp_2_rw_384"
-MODEL_ID = "timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k"
-MODEL_SHA256 = "91570c7af10fea0af03c1b0a49be3e4775596239890eb4193c75129b3045623e"
+IMAGENET_MODEL_ID = "timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k"
+IMAGENET_MODEL_SHA256 = (
+    "91570c7af10fea0af03c1b0a49be3e4775596239890eb4193c75129b3045623e"
+)
+P6_MODEL_ID = "P6B-FASTMRI-PLUS-LOCALIZATION-v1/e2be22d"
+P6_MODEL_SHA256 = "5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195"
+P6_SOURCE_MANIFEST_SHA256 = (
+    "f6fb96ee2434ee8ead9e9e586be7d85bb8cae3fd6c71e059f552a67fb02452ef"
+)
 CACHE_ID = "P2-CACHE-v1"
-EXPECTED_CACHE_SIGNATURE = "0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3"
+EXPECTED_CACHE_SIGNATURE = (
+    "0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3"
+)
 P2_SEED = 20260902
 FOLD_SEED = 20260831
 N_FOLDS = 5
@@ -88,13 +106,44 @@ HEAD_FOLD_WEIGHT_DECAY = 1e-3
 MODEL_MEAN = (0.5, 0.5, 0.5)
 MODEL_STD = (0.5, 0.5, 0.5)
 EXECUTION_REVISION = "ddp_t4_v3"
+P6_TRANSFER = os.environ.get("P6_TRANSFER") == "1"
+P6_MATCHED_CONTROL = os.environ.get("P6_MATCHED_CONTROL") == "1"
+if P6_TRANSFER and P6_MATCHED_CONTROL:
+    raise ValueError("P6_TRANSFER and P6_MATCHED_CONTROL are mutually exclusive")
 P4_FOLD = int(os.environ["P4_FOLD"]) if "P4_FOLD" in os.environ else None
 if P4_FOLD is not None and P4_FOLD not in range(N_FOLDS):
     raise ValueError(f"P4_FOLD must be in [0, {N_FOLDS - 1}], got {P4_FOLD}")
+if P4_FOLD is not None and (P6_TRANSFER or P6_MATCHED_CONTROL):
+    raise ValueError("P4 mode cannot be combined with a P6 matched arm")
 P4_MODE = P4_FOLD is not None
 P4_SEED_BASE = 20260904
 RUN_SEED = P4_SEED_BASE + P4_FOLD if P4_MODE else P2_SEED
-RUN_LABEL = "P4" if P4_MODE else "P2"
+RUN_LABEL = (
+    "P4"
+    if P4_MODE
+    else "P6_TRANSFER"
+    if P6_TRANSFER
+    else "P6_CONTROL"
+    if P6_MATCHED_CONTROL
+    else "P2"
+)
+RUN_ID = (
+    "P6-P2-TRANSFER-v1"
+    if P6_TRANSFER
+    else "P6-P2-MATCHED-CONTROL-v1"
+    if P6_MATCHED_CONTROL
+    else "P2-COATNET-v1"
+)
+MODEL_ID = P6_MODEL_ID if P6_TRANSFER else IMAGENET_MODEL_ID
+MODEL_SHA256 = P6_MODEL_SHA256 if P6_TRANSFER else IMAGENET_MODEL_SHA256
+MODEL_FILENAME = (
+    "p6_localization_backbone_best.safetensors" if P6_TRANSFER else "model.safetensors"
+)
+MODEL_LICENSE = (
+    "Apache-2.0 backbone; MIT annotations; fastMRI data-use agreement"
+    if P6_TRANSFER
+    else "Apache-2.0"
+)
 P4_SPEED_SMOKE = os.environ.get("P4_SPEED_SMOKE") == "1"
 if P4_SPEED_SMOKE and not P4_MODE:
     raise ValueError("P4_SPEED_SMOKE requires a P4_FOLD")
@@ -109,7 +158,9 @@ def launch_ddp() -> int:
     """Relaunch the Kaggle script with one process per visible GPU."""
     visible = torch.cuda.device_count()
     if visible != 2:
-        raise RuntimeError(f"{RUN_LABEL} requires exactly two Kaggle GPUs; observed {visible}")
+        raise RuntimeError(
+            f"{RUN_LABEL} requires exactly two Kaggle GPUs; observed {visible}"
+        )
     command = [
         sys.executable,
         "-m",
@@ -154,6 +205,15 @@ def find_named_file(filename: str, minimum_bytes: int = 1) -> Path:
             "/kaggle/input/datasets/vallepuvamsikrishna/"
             "rsna-coatnet-rmlp2-imagenet-init/model.safetensors"
         ),
+        "p6_localization_backbone_best.safetensors": Path(
+            "/kaggle/input/datasets/vallepuvamsikrishna/"
+            "rsna-p6-fastmri-localization-init/"
+            "p6_localization_backbone_best.safetensors"
+        ),
+        "p6_localization_training.json": Path(
+            "/kaggle/input/datasets/vallepuvamsikrishna/"
+            "rsna-p6-fastmri-localization-init/p6_localization_training.json"
+        ),
         "p2_cache_manifest_part_a.json": Path(
             "/kaggle/input/notebooks/vallepuvamsikrishna/"
             "rsna-knee-p2-wide-cache-a/p2_cache_manifest_part_a.json"
@@ -165,12 +225,16 @@ def find_named_file(filename: str, minimum_bytes: int = 1) -> Path:
     }
     direct: list[Path] = [kaggle_direct[filename]] if filename in kaggle_direct else []
     for root in candidate_roots():
-        direct.extend([
-            root / filename,
-            root / "data/raw" / filename,
-            root / "outputs/kaggle/rsna-report-weak-supervision" / filename,
-            root / "kaggle/rsna-p2-wide-cache-a/outputs/p2_cache_smoke_a" / filename,
-        ])
+        direct.extend(
+            [
+                root / filename,
+                root / "data/raw" / filename,
+                root / "outputs/kaggle/rsna-report-weak-supervision" / filename,
+                root
+                / "kaggle/rsna-p2-wide-cache-a/outputs/p2_cache_smoke_a"
+                / filename,
+            ]
+        )
     for path in direct:
         if path.is_file() and path.stat().st_size >= minimum_bytes:
             return path.resolve()
@@ -213,13 +277,30 @@ def validate_immutable_inputs(model_path: Path, parts: list[dict[str, object]]) 
             assert isinstance(path, Path)
             jobs.append((path, str(manifest["files_sha256"][name])))
     with ThreadPoolExecutor(max_workers=2) as pool:
-        futures = {pool.submit(sha256_file, path): (path, expected) for path, expected in jobs}
+        futures = {
+            pool.submit(sha256_file, path): (path, expected) for path, expected in jobs
+        }
         for future in as_completed(futures):
             path, expected = futures[future]
             observed = future.result()
             assert observed == expected, f"{path.name} hash mismatch"
             print({"P2_INPUT_HASH_OK": path.name}, flush=True)
     print({"P2_INPUT_VALIDATION_MINUTES": (time.time() - started) / 60.0}, flush=True)
+
+
+def validate_p6_source_manifest(path: Path) -> dict[str, object]:
+    assert sha256_file(path) == P6_SOURCE_MANIFEST_SHA256
+    manifest = json.loads(path.read_text())
+    assert manifest["schema_version"] == 1
+    assert manifest["status"] == "validated"
+    assert manifest["experiment_id"] == "P6B-FASTMRI-PLUS-LOCALIZATION-v1"
+    assert manifest["code_commit"] == "e2be22d"
+    assert manifest["selection"]["best_epoch"] == 2
+    assert manifest["artifacts"]["backbone_sha256"] == P6_MODEL_SHA256
+    assert manifest["data"]["train_volumes"] == 973
+    assert manifest["data"]["validation_volumes"] == 199
+    assert manifest["data"]["volume_overlap"] == 0
+    return manifest
 
 
 def normalize_report(report: object) -> str:
@@ -290,12 +371,18 @@ class GpuTelemetry:
         while not self.stop.is_set():
             try:
                 result = subprocess.run(
-                    ["nvidia-smi", f"--query-gpu={query}", "--format=csv,noheader,nounits"],
+                    [
+                        "nvidia-smi",
+                        f"--query-gpu={query}",
+                        "--format=csv,noheader,nounits",
+                    ],
                     check=True,
                     capture_output=True,
                     text=True,
                 )
-                rows = list(csv.reader(result.stdout.splitlines(), skipinitialspace=True))
+                rows = list(
+                    csv.reader(result.stdout.splitlines(), skipinitialspace=True)
+                )
                 now = time.time()
                 with self.output_path.open("a", newline="") as handle:
                     writer = csv.writer(handle)
@@ -317,7 +404,9 @@ class TargetAttentionHead(nn.Module):
         super().__init__()
         self.norm = nn.LayerNorm(feature_dim)
         self.attention = nn.Sequential(
-            nn.Linear(feature_dim, 256), nn.Tanh(), nn.Dropout(dropout),
+            nn.Linear(feature_dim, 256),
+            nn.Tanh(),
+            nn.Dropout(dropout),
             nn.Linear(256, N_TARGETS),
         )
         self.target_weight = nn.Parameter(torch.randn(N_TARGETS, feature_dim) * 0.02)
@@ -351,15 +440,21 @@ class CoAtNetMIL(nn.Module):
 
     def encode(self, windows: torch.Tensor, augment: bool = False) -> torch.Tensor:
         batch, count = windows.shape[:2]
-        pixels = windows.reshape(batch * count, 3, CACHE_SIZE, CACHE_SIZE).float().div(255.0)
+        pixels = (
+            windows.reshape(batch * count, 3, CACHE_SIZE, CACHE_SIZE).float().div(255.0)
+        )
         pixels = F.interpolate(
             pixels, size=(MODEL_SIZE, MODEL_SIZE), mode="bicubic", align_corners=False
         )
         if self.channels_last:
             pixels = pixels.contiguous(memory_format=torch.channels_last)
         if augment:
-            gain = torch.empty((len(pixels), 1, 1, 1), device=pixels.device).uniform_(0.90, 1.10)
-            offset = torch.empty((len(pixels), 1, 1, 1), device=pixels.device).uniform_(-0.05, 0.05)
+            gain = torch.empty((len(pixels), 1, 1, 1), device=pixels.device).uniform_(
+                0.90, 1.10
+            )
+            offset = torch.empty((len(pixels), 1, 1, 1), device=pixels.device).uniform_(
+                -0.05, 0.05
+            )
             pixels = (pixels * gain + offset).clamp(0.0, 1.0)
         pixels = (pixels - self.mean) / self.std
         return self.backbone(pixels).reshape(batch, count, FEATURE_DIM)
@@ -389,7 +484,9 @@ def weighted_bce(
     return numerator / denominator
 
 
-def calculate_metrics(labels: np.ndarray, predictions: np.ndarray) -> tuple[pd.DataFrame, float]:
+def calculate_metrics(
+    labels: np.ndarray, predictions: np.ndarray
+) -> tuple[pd.DataFrame, float]:
     rows = [
         {"target": target, "auc": float(roc_auc_score(labels[:, i], predictions[:, i]))}
         for i, target in enumerate(TARGETS)
@@ -479,16 +576,31 @@ def worker_main() -> int:
 
     train_path = find_named_file("train.csv", 100_000)
     target_path = find_named_file("training_targets.csv", 100_000)
-    model_path = find_named_file("model.safetensors", 250_000_000)
+    model_path = find_named_file(MODEL_FILENAME, 250_000_000)
+    p6_source_manifest_path = (
+        find_named_file("p6_localization_training.json", 1_000) if P6_TRANSFER else None
+    )
     part_a = prepare_cache_part("a")
     part_b = prepare_cache_part("b") if FULL_RUN else None
     parts = [part_a, *([part_b] if part_b is not None else [])]
     if is_primary:
         if SPEED_SMOKE:
             assert sha256_file(model_path) == MODEL_SHA256
-            print({"P2_SPEED_SMOKE_INPUTS": "manifests_and_model_validated"}, flush=True)
+            print(
+                {"P2_SPEED_SMOKE_INPUTS": "manifests_and_model_validated"}, flush=True
+            )
         else:
             validate_immutable_inputs(model_path, parts)
+            if p6_source_manifest_path is not None:
+                validate_p6_source_manifest(p6_source_manifest_path)
+                print(
+                    {
+                        "P6_TRANSFER_SOURCE_VALIDATED": True,
+                        "manifest_sha256": P6_SOURCE_MANIFEST_SHA256,
+                        "checkpoint_sha256": P6_MODEL_SHA256,
+                    },
+                    flush=True,
+                )
     if distributed:
         dist.barrier()
 
@@ -501,7 +613,9 @@ def worker_main() -> int:
     train_all = pd.read_csv(train_path, dtype={ID: str})
     targets_all = pd.read_csv(target_path, dtype={ID: str})
     ids_a = pd.read_csv(part_a["studies"], dtype={ID: str})[ID].tolist()
-    ids_b = pd.read_csv(part_b["studies"], dtype={ID: str})[ID].tolist() if part_b else []
+    ids_b = (
+        pd.read_csv(part_b["studies"], dtype={ID: str})[ID].tolist() if part_b else []
+    )
     study_ids = ids_a + ids_b
     if FULL_RUN:
         assert len(study_ids) == 4_407 and study_ids == train_all[ID].tolist()
@@ -608,23 +722,19 @@ def worker_main() -> int:
                 pseudo_positions = np.where(~is_gold[adapt_indices])[0]
                 assert len(pseudo_positions) > 0
                 drop_position = int(pseudo_positions[-1])
-                p4_dropped_indices = adapt_indices[drop_position:drop_position + 1]
+                p4_dropped_indices = adapt_indices[drop_position : drop_position + 1]
                 p4_split_roles[p4_dropped_indices] = "pseudo_ddp_balance_drop"
                 adapt_indices = np.delete(adapt_indices, drop_position)
 
             assert len(p4_expert_valid_indices) in {11, 12}
             assert len(p4_expert_train_indices) + len(p4_expert_valid_indices) == 58
             assert len(pseudo_valid_indices) > 400
-            assert not (
-                set(report_hashes[adapt_indices]) & expert_valid_hashes
-            )
+            assert not (set(report_hashes[adapt_indices]) & expert_valid_hashes)
             assert not (
                 set(report_hashes[pseudo_valid_indices])
                 & set(report_hashes[adapt_indices])
             )
-            assert not (
-                set(report_hashes[pseudo_valid_indices]) & expert_valid_hashes
-            )
+            assert not (set(report_hashes[pseudo_valid_indices]) & expert_valid_hashes)
             assert (p4_split_roles != "").all()
             if P4_SPEED_SMOKE:
                 smoke_pseudo_train = adapt_indices[~is_gold[adapt_indices]][:62]
@@ -636,9 +746,7 @@ def worker_main() -> int:
                 assert len(adapt_indices) == 64
                 assert int(is_gold[adapt_indices].sum()) == 2
                 assert len(pseudo_valid_indices) == 8
-                assert not (
-                    set(report_hashes[adapt_indices]) & expert_valid_hashes
-                )
+                assert not (set(report_hashes[adapt_indices]) & expert_valid_hashes)
                 assert not (
                     set(report_hashes[pseudo_valid_indices])
                     & set(report_hashes[adapt_indices])
@@ -669,7 +777,7 @@ def worker_main() -> int:
         centers: list[int] = []
         for start, stop in slot_bounds:
             for center in range(start + 1, stop - 1):
-                if mask[center - 1:center + 2].all():
+                if mask[center - 1 : center + 2].all():
                     centers.append(center)
         return np.asarray(centers, dtype=np.int16)
 
@@ -685,9 +793,9 @@ def worker_main() -> int:
             return selected.astype(np.int16), np.ones(count, dtype=bool)
         if len(available) <= count:
             selected = np.zeros(count, dtype=np.int16)
-            selected[:len(available)] = available
+            selected[: len(available)] = available
             valid = np.zeros(count, dtype=bool)
-            valid[:len(available)] = True
+            valid[: len(available)] = True
             return selected, valid
         positions = np.round(np.linspace(0, len(available) - 1, count)).astype(int)
         return available[positions], np.ones(count, dtype=bool)
@@ -705,7 +813,7 @@ def worker_main() -> int:
         windows = np.zeros((count, 3, CACHE_SIZE, CACHE_SIZE), dtype=np.uint8)
         for out_index, center in enumerate(centers):
             if window_mask[out_index]:
-                windows[out_index] = volume[int(center) - 1:int(center) + 2]
+                windows[out_index] = volume[int(center) - 1 : int(center) + 2]
         return windows, window_mask
 
     class StudyDataset(Dataset):
@@ -749,31 +857,34 @@ def worker_main() -> int:
         )
 
     if is_primary:
-        print({
-            "run_label": RUN_LABEL,
-            "p4_fold": P4_FOLD,
-            "run_seed": RUN_SEED,
-            "python": platform.python_version(),
-            "torch": torch.__version__,
-            "timm": timm.__version__,
-            "device": str(device),
-            "full_run": FULL_RUN,
-            "visible_gpus": torch.cuda.device_count(),
-            "world_size": world_size,
-            "execution_revision": EXECUTION_REVISION,
-            "speed_smoke": SPEED_SMOKE,
-            "p4_speed_smoke": P4_SPEED_SMOKE,
-            "gradient_checkpointing": False,
-            "channels_last": device.type == "cuda",
-            "cudnn_benchmark": device.type == "cuda",
-            "studies": len(study_ids),
-            "pseudo_train": len(adapt_indices),
-            "pseudo_valid": len(pseudo_valid_indices),
-            "gold": len(gold_indices),
-            "expert_train": len(p4_expert_train_indices) if P4_MODE else 0,
-            "expert_valid": len(p4_expert_valid_indices) if P4_MODE else 0,
-            "ddp_balance_drops": len(p4_dropped_indices) if P4_MODE else 0,
-        }, flush=True)
+        print(
+            {
+                "run_label": RUN_LABEL,
+                "p4_fold": P4_FOLD,
+                "run_seed": RUN_SEED,
+                "python": platform.python_version(),
+                "torch": torch.__version__,
+                "timm": timm.__version__,
+                "device": str(device),
+                "full_run": FULL_RUN,
+                "visible_gpus": torch.cuda.device_count(),
+                "world_size": world_size,
+                "execution_revision": EXECUTION_REVISION,
+                "speed_smoke": SPEED_SMOKE,
+                "p4_speed_smoke": P4_SPEED_SMOKE,
+                "gradient_checkpointing": False,
+                "channels_last": device.type == "cuda",
+                "cudnn_benchmark": device.type == "cuda",
+                "studies": len(study_ids),
+                "pseudo_train": len(adapt_indices),
+                "pseudo_valid": len(pseudo_valid_indices),
+                "gold": len(gold_indices),
+                "expert_train": len(p4_expert_train_indices) if P4_MODE else 0,
+                "expert_valid": len(p4_expert_valid_indices) if P4_MODE else 0,
+                "ddp_balance_drops": len(p4_dropped_indices) if P4_MODE else 0,
+            },
+            flush=True,
+        )
 
     channels_last = device.type == "cuda"
     model = CoAtNetMIL(model_path, channels_last=channels_last)
@@ -896,8 +1007,12 @@ def worker_main() -> int:
                     # exactly the old global weighted loss across the two studies.
                     loss = local_num * world_size / global_den.clamp_min(1.0)
                 scaler.scale(loss / grad_accum).backward()
-            epoch_totals += torch.stack([local_num.detach().double(), local_den.detach().double()])
-            window_totals += torch.stack([local_num.detach().double(), local_den.detach().double()])
+            epoch_totals += torch.stack(
+                [local_num.detach().double(), local_den.detach().double()]
+            )
+            window_totals += torch.stack(
+                [local_num.detach().double(), local_den.detach().double()]
+            )
             if should_update:
                 scaler.unscale_(optimizer)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
@@ -962,12 +1077,15 @@ def worker_main() -> int:
                     key: value.detach().cpu().clone()
                     for key, value in model.state_dict().items()
                 }
-            print({f"{RUN_LABEL}_EPOCH_COMPLETE": row, "best_epoch": best_epoch}, flush=True)
+            print(
+                {f"{RUN_LABEL}_EPOCH_COMPLETE": row, "best_epoch": best_epoch},
+                flush=True,
+            )
 
     if SPEED_SMOKE:
         smoke_global_steps = math.ceil(len(adapt_indices) / GLOBAL_STUDY_BATCH)
         memory_mib = torch.tensor(
-            [torch.cuda.max_memory_allocated(device) / (1024 ** 2)],
+            [torch.cuda.max_memory_allocated(device) / (1024**2)],
             dtype=torch.float64,
             device=device,
         )
@@ -983,8 +1101,7 @@ def worker_main() -> int:
                 "global_steps": smoke_global_steps,
                 "elapsed_minutes": history[-1]["elapsed_minutes"],
                 "seconds_per_global_step": (
-                    history[-1]["training_seconds"]
-                    / smoke_global_steps
+                    history[-1]["training_seconds"] / smoke_global_steps
                 ),
                 "pseudo_valid_weighted_bce": history[-1]["pseudo_valid_weighted_bce"],
                 "validation_seconds": history[-1]["validation_seconds"],
@@ -1017,9 +1134,7 @@ def worker_main() -> int:
     if is_primary:
         assert best_state is not None and best_epoch >= 1
         torch.save(best_state, checkpoint_path)
-        pd.DataFrame(history).to_csv(
-            OUTPUT_ROOT / history_name, index=False
-        )
+        pd.DataFrame(history).to_csv(OUTPUT_ROOT / history_name, index=False)
         del best_state
     if distributed:
         dist.barrier()
@@ -1028,11 +1143,14 @@ def worker_main() -> int:
     del selected_state
     gc.collect()
     if is_primary:
-        print({
-            f"{RUN_LABEL}_REPRESENTATION_COMPLETE": True,
-            "best_epoch": best_epoch,
-            "best_loss": best_loss,
-        }, flush=True)
+        print(
+            {
+                f"{RUN_LABEL}_REPRESENTATION_COMPLETE": True,
+                "best_epoch": best_epoch,
+                "best_loss": best_loss,
+            },
+            flush=True,
+        )
 
     if P4_MODE and FULL_RUN:
         assert P4_FOLD is not None
@@ -1066,7 +1184,9 @@ def worker_main() -> int:
             if local_predictions
             else np.empty((0, N_TARGETS), dtype=np.float32)
         )
-        np.save(OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{rank}.npy", rank_indices)
+        np.save(
+            OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{rank}.npy", rank_indices
+        )
         np.save(
             OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{rank}.npy",
             rank_predictions,
@@ -1099,10 +1219,12 @@ def worker_main() -> int:
             assert fold_predictions.shape == (len(p4_expert_valid_indices), N_TARGETS)
             assert np.isfinite(fold_predictions).all()
 
-            prediction_frame = pd.DataFrame({
-                ID: np.asarray(study_ids)[p4_expert_valid_indices],
-                "fold": P4_FOLD,
-            })
+            prediction_frame = pd.DataFrame(
+                {
+                    ID: np.asarray(study_ids)[p4_expert_valid_indices],
+                    "fold": P4_FOLD,
+                }
+            )
             for target_index, target in enumerate(TARGETS):
                 prediction_frame[f"label__{target}"] = y[
                     p4_expert_valid_indices, target_index
@@ -1112,18 +1234,21 @@ def worker_main() -> int:
             prediction_frame.to_csv(OUTPUT_ROOT / prediction_name, index=False)
 
             split_name = f"p4_fold_{P4_FOLD}_split.csv"
-            pd.DataFrame({
-                ID: study_ids,
-                "report_hash": report_hashes,
-                "is_gold": is_gold,
-                "role": p4_split_roles,
-            }).to_csv(OUTPUT_ROOT / split_name, index=False)
+            pd.DataFrame(
+                {
+                    ID: study_ids,
+                    "report_hash": report_hashes,
+                    "is_gold": is_gold,
+                    "role": p4_split_roles,
+                }
+            ).to_csv(OUTPUT_ROOT / split_name, index=False)
 
             for shard_rank in range(world_size):
-                (OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{shard_rank}.npy").unlink()
                 (
-                    OUTPUT_ROOT
-                    / f"p4_fold_{P4_FOLD}_predictions_rank_{shard_rank}.npy"
+                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{shard_rank}.npy"
+                ).unlink()
+                (
+                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{shard_rank}.npy"
                 ).unlink()
 
             if telemetry is not None:
@@ -1170,9 +1295,7 @@ def worker_main() -> int:
                     np.sum(p4_split_roles == "excluded_expert_valid_report_twin")
                 ),
                 "excluded_pseudo_valid_expert_train_twins": int(
-                    np.sum(
-                        p4_split_roles == "excluded_pseudo_valid_expert_train_twin"
-                    )
+                    np.sum(p4_split_roles == "excluded_pseudo_valid_expert_train_twin")
                 ),
                 "ddp_balance_dropped_rows": len(p4_dropped_indices),
                 "ddp_balance_dropped_studies": [
@@ -1223,10 +1346,10 @@ def worker_main() -> int:
                 "elapsed": {
                     "representation_minutes": (
                         fold_inference_started - training_started
-                    ) / 60.0,
-                    "fold_inference_minutes": (
-                        time.time() - fold_inference_started
-                    ) / 60.0,
+                    )
+                    / 60.0,
+                    "fold_inference_minutes": (time.time() - fold_inference_started)
+                    / 60.0,
                 },
                 "run_context": {
                     "device": str(device),
@@ -1238,18 +1361,21 @@ def worker_main() -> int:
             manifest_name = f"p4_fold_{P4_FOLD}_manifest.json"
             manifest_path = OUTPUT_ROOT / manifest_name
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
-            print({
-                (
-                    "P4_SPEED_SMOKE_COMPLETE"
-                    if P4_SPEED_SMOKE
-                    else "P4_FOLD_COMPLETE"
-                ): True,
-                "fold": P4_FOLD,
-                "best_epoch": best_epoch,
-                "best_loss": best_loss,
-                "expert_valid_rows": len(p4_expert_valid_indices),
-                "manifest_sha256": sha256_file(manifest_path),
-            }, flush=True)
+            print(
+                {
+                    (
+                        "P4_SPEED_SMOKE_COMPLETE"
+                        if P4_SPEED_SMOKE
+                        else "P4_FOLD_COMPLETE"
+                    ): True,
+                    "fold": P4_FOLD,
+                    "best_epoch": best_epoch,
+                    "best_loss": best_loss,
+                    "expert_valid_rows": len(p4_expert_valid_indices),
+                    "manifest_sha256": sha256_file(manifest_path),
+                },
+                flush=True,
+            )
         if distributed:
             dist.barrier()
             dist.destroy_process_group()
@@ -1285,10 +1411,14 @@ def worker_main() -> int:
                 dtype=torch.float16,
                 enabled=device.type == "cuda",
             ):
-                encoded = model(windows, window_mask, augment=False, return_features=True)
+                encoded = model(
+                    windows, window_mask, augment=False, return_features=True
+                )
             selected_masks = window_mask.cpu().numpy().astype(bool)
             stop = processed + len(indices)
-            feature_shard[processed:stop] = encoded.float().cpu().numpy().astype(np.float16)
+            feature_shard[processed:stop] = (
+                encoded.float().cpu().numpy().astype(np.float16)
+            )
             mask_shard[processed:stop] = selected_masks.astype(np.uint8)
             for offset, (index, selected_mask) in enumerate(
                 zip(indices, selected_masks, strict=True)
@@ -1297,9 +1427,13 @@ def worker_main() -> int:
                 centers, _ = choose_centers(
                     slice_mask, k_eval, stochastic=False, seed=0
                 )
-                position_shard[processed + offset, selected_mask] = centers[selected_mask]
+                position_shard[processed + offset, selected_mask] = centers[
+                    selected_mask
+                ]
             processed = stop
-            if is_primary and (processed % 50 == 0 or processed == len(local_feature_indices)):
+            if is_primary and (
+                processed % 50 == 0 or processed == len(local_feature_indices)
+            ):
                 print(
                     f"P2 features ~{min(processed * world_size, len(study_ids)):,}/"
                     f"{len(study_ids):,} in {(time.time() - extract_started) / 60:.1f} min",
@@ -1365,15 +1499,15 @@ def worker_main() -> int:
         mask_tensor_gold = torch.from_numpy(feature_mask[gold_indices]).to(device)
         model.head.eval()
         with torch.inference_mode():
-            direct_predictions = torch.sigmoid(
-                model.head(feature_tensor_gold, mask_tensor_gold)
-            ).cpu().numpy()
+            direct_predictions = (
+                torch.sigmoid(model.head(feature_tensor_gold, mask_tensor_gold))
+                .cpu()
+                .numpy()
+            )
         direct_metrics, direct_macro = calculate_metrics(
             y[gold_indices], direct_predictions
         )
-        direct_metrics.to_csv(
-            OUTPUT_ROOT / "p2_direct_expert_metrics.csv", index=False
-        )
+        direct_metrics.to_csv(OUTPUT_ROOT / "p2_direct_expert_metrics.csv", index=False)
         direct_frame = pd.DataFrame({ID: np.asarray(study_ids)[gold_indices]})
         for i, target in enumerate(TARGETS):
             direct_frame[f"label__{target}"] = y[gold_indices, i]
@@ -1411,9 +1545,7 @@ def worker_main() -> int:
                 ],
                 dtype=int,
             )
-            train_index = np.concatenate(
-                [keep_pseudo, gold_indices[gold_train_pos]]
-            )
+            train_index = np.concatenate([keep_pseudo, gold_indices[gold_train_pos]])
             assert not (set(report_hashes[train_index]) & valid_hashes)
             gold_fold[gold_valid_pos] = fold
             fold_seed = FOLD_SEED + fold
@@ -1438,7 +1570,7 @@ def worker_main() -> int:
                 ]
                 losses: list[float] = []
                 for start in range(0, len(permutation), 256):
-                    index = permutation[start:start + 256].to(device)
+                    index = permutation[start : start + 256].to(device)
                     head_optimizer.zero_grad(set_to_none=True)
                     logits = head(features_tensor[index], masks_tensor[index])
                     loss = weighted_bce(
@@ -1451,50 +1583,56 @@ def worker_main() -> int:
                 final_loss = float(np.mean(losses))
             head.eval()
             with torch.inference_mode():
-                oof[valid_index] = torch.sigmoid(
-                    head(features_tensor[valid_index], masks_tensor[valid_index])
-                ).cpu().numpy()
-            torch.save(
-                head.state_dict(), OUTPUT_ROOT / f"p2_fold_{fold}_head.pt"
-            )
+                oof[valid_index] = (
+                    torch.sigmoid(
+                        head(features_tensor[valid_index], masks_tensor[valid_index])
+                    )
+                    .cpu()
+                    .numpy()
+                )
+            torch.save(head.state_dict(), OUTPUT_ROOT / f"p2_fold_{fold}_head.pt")
             excluded = len(pseudo_indices) - len(keep_pseudo)
-            fold_rows.append({
-                "fold": fold,
-                "train_rows": len(train_index),
-                "pseudo_rows": len(keep_pseudo),
-                "expert_train_rows": len(gold_train_pos),
-                "expert_valid_rows": len(valid_index),
-                "excluded_pseudo_rows": excluded,
-                "report_hash_overlap": 0,
-                "final_loss": final_loss,
-            })
+            fold_rows.append(
+                {
+                    "fold": fold,
+                    "train_rows": len(train_index),
+                    "pseudo_rows": len(keep_pseudo),
+                    "expert_train_rows": len(gold_train_pos),
+                    "expert_valid_rows": len(valid_index),
+                    "excluded_pseudo_rows": excluded,
+                    "report_hash_overlap": 0,
+                    "final_loss": final_loss,
+                }
+            )
             print({"P2_HEAD_FOLD_COMPLETE": fold_rows[-1]}, flush=True)
         assert (gold_fold >= 0).all() and np.isfinite(oof[gold_indices]).all()
-        oof_metrics, oof_macro = calculate_metrics(
-            y[gold_indices], oof[gold_indices]
-        )
+        oof_metrics, oof_macro = calculate_metrics(y[gold_indices], oof[gold_indices])
         oof_metrics.to_csv(OUTPUT_ROOT / "p2_oof_metrics.csv", index=False)
-        pd.DataFrame(fold_rows).to_csv(
-            OUTPUT_ROOT / "p2_fold_summary.csv", index=False
+        pd.DataFrame(fold_rows).to_csv(OUTPUT_ROOT / "p2_fold_summary.csv", index=False)
+        oof_frame = pd.DataFrame(
+            {
+                ID: np.asarray(study_ids)[gold_indices],
+                "fold": gold_fold,
+            }
         )
-        oof_frame = pd.DataFrame({
-            ID: np.asarray(study_ids)[gold_indices],
-            "fold": gold_fold,
-        })
         for i, target in enumerate(TARGETS):
             oof_frame[f"label__{target}"] = y[gold_indices, i]
             oof_frame[f"pred__{target}"] = oof[gold_indices, i]
-        oof_frame.to_csv(
-            OUTPUT_ROOT / "p2_oof_predictions.csv", index=False
-        )
+        oof_frame.to_csv(OUTPUT_ROOT / "p2_oof_predictions.csv", index=False)
         fold_result = {"macro_auc": oof_macro}
         print({"P2_OOF_MACRO_AUC": oof_macro}, flush=True)
     else:
-        (OUTPUT_ROOT / "p2_local_smoke.json").write_text(json.dumps({
-            "study_uid": study_ids[0],
-            "features_shape": list(feature_cache.shape),
-            "training_backward": True,
-        }, indent=2) + "\n")
+        (OUTPUT_ROOT / "p2_local_smoke.json").write_text(
+            json.dumps(
+                {
+                    "study_uid": study_ids[0],
+                    "features_shape": list(feature_cache.shape),
+                    "training_backward": True,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
 
     if telemetry is not None:
         telemetry.close()
@@ -1507,15 +1645,17 @@ def worker_main() -> int:
         "p2_coatnet_feature_studies.csv",
     ]
     if FULL_RUN:
-        artifacts.extend([
-            "p2_direct_expert_metrics.csv",
-            "p2_direct_expert_predictions.csv",
-            "p2_oof_metrics.csv",
-            "p2_oof_predictions.csv",
-            "p2_fold_summary.csv",
-            *[f"p2_fold_{fold}_head.pt" for fold in range(N_FOLDS)],
-            "p2_gpu_telemetry.csv",
-        ])
+        artifacts.extend(
+            [
+                "p2_direct_expert_metrics.csv",
+                "p2_direct_expert_predictions.csv",
+                "p2_oof_metrics.csv",
+                "p2_oof_predictions.csv",
+                "p2_fold_summary.csv",
+                *[f"p2_fold_{fold}_head.pt" for fold in range(N_FOLDS)],
+                "p2_gpu_telemetry.csv",
+            ]
+        )
     else:
         artifacts.append("p2_local_smoke.json")
     for name in artifacts:
@@ -1523,7 +1663,7 @@ def worker_main() -> int:
 
     manifest = {
         "schema_version": 1,
-        "run_id": "P2-COATNET-v1",
+        "run_id": RUN_ID,
         "full_run": FULL_RUN,
         "seeds": {"representation": P2_SEED, "folds": FOLD_SEED},
         "studies": len(study_ids),
@@ -1533,7 +1673,21 @@ def worker_main() -> int:
         "cache_signature_sha256": EXPECTED_CACHE_SIGNATURE,
         "model_id": MODEL_ID,
         "model_sha256": MODEL_SHA256,
-        "model_license": "Apache-2.0",
+        "model_license": MODEL_LICENSE,
+        "initialization": {
+            "arm": (
+                "p6_fastmri_localization_transfer"
+                if P6_TRANSFER
+                else "matched_imagenet_control"
+                if P6_MATCHED_CONTROL
+                else "canonical_p2"
+            ),
+            "checkpoint_filename": MODEL_FILENAME,
+            "checkpoint_sha256": MODEL_SHA256,
+            "p6_source_manifest_sha256": (
+                P6_SOURCE_MANIFEST_SHA256 if P6_TRANSFER else None
+            ),
+        },
         "feature_dim": FEATURE_DIM,
         "cache_size": CACHE_SIZE,
         "model_size": MODEL_SIZE,
@@ -1571,19 +1725,35 @@ def worker_main() -> int:
         "run_context": {
             "device": str(device),
             "model_path": str(model_path),
+            "p6_source_manifest_path": (
+                str(p6_source_manifest_path)
+                if p6_source_manifest_path is not None
+                else None
+            ),
             "cache_a": str(part_a["root"]),
             "cache_b": str(part_b["root"]) if part_b else None,
         },
     }
-    manifest_path = OUTPUT_ROOT / "p2_manifest.json"
+    manifest_path = OUTPUT_ROOT / (
+        "p6_transfer_manifest.json"
+        if P6_TRANSFER
+        else "p6_control_manifest.json"
+        if P6_MATCHED_CONTROL
+        else "p2_manifest.json"
+    )
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
-    print({
-        "P2_COMPLETE": True,
-        "best_epoch": best_epoch,
-        "direct_macro": None if direct_result is None else direct_result["macro_auc"],
-        "oof_macro": None if fold_result is None else fold_result["macro_auc"],
-        "manifest_sha256": sha256_file(manifest_path),
-    }, flush=True)
+    print(
+        {
+            f"{RUN_LABEL}_COMPLETE": True,
+            "best_epoch": best_epoch,
+            "direct_macro": None
+            if direct_result is None
+            else direct_result["macro_auc"],
+            "oof_macro": None if fold_result is None else fold_result["macro_auc"],
+            "manifest_sha256": sha256_file(manifest_path),
+        },
+        flush=True,
+    )
     return 0
 
 

@@ -1,0 +1,34 @@
+{
+  "experiment_id": "P6B-FASTMRI-PLUS-LOCALIZATION-v1",
+  "code_commit": "e2be22d",
+  "visibility": "private",
+  "contains_medical_images": false,
+  "checkpoint": {
+    "filename": "p6_localization_backbone_best.safetensors",
+    "bytes": 295695280,
+    "sha256": "5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195"
+  },
+  "training_manifest": {
+    "filename": "p6_localization_training.json",
+    "bytes": 7031,
+    "sha256": "f6fb96ee2434ee8ead9e9e586be7d85bb8cae3fd6c71e059f552a67fb02452ef"
+  },
+  "training_history": {
+    "filename": "p6_training_history.json",
+    "bytes": 3321,
+    "sha256": "7b94a65787d45e84589b5f77134bdc405fcf5e72019ccd8504e00be5a82a6d5c"
+  },
+  "selection": {
+    "best_epoch": 2,
+    "best_validation_loss": 1.056846882395901,
+    "independent_validation": "passed"
+  },
+  "upstream": {
+    "backbone": "timm/coatnet_rmlp_2_rw_384.sw_in12k_ft_in1k",
+    "backbone_license": "Apache-2.0",
+    "annotations": "microsoft/fastmri-plus@67ed9a68ee33d3197f93893e8125688470c4a577",
+    "annotations_license": "MIT",
+    "images": "NYU fastMRI knee single-coil train and validation",
+    "image_terms": "fastMRI data-use agreement"
+  }
+}

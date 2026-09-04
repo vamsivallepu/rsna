@@ -1,0 +1,187 @@
+{
+  "artifacts": {
+    "backbone_sha256": "5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195",
+    "gpu_samples": "p6_full_gpu_samples.csv",
+    "head_sha256": "1e84c39e1ac0a8b22b4e6c9b7569f81b87901368931f115cdc15eb60ac74a21f",
+    "history_sha256": "7b94a65787d45e84589b5f77134bdc405fcf5e72019ccd8504e00be5a82a6d5c",
+    "samples_sha256": "d6c4e5d05ca2db5ccab1b15751eec666e5daa7013adcbcbec4f03b1f46d144ab",
+    "sanitation_sha256": "a2d76d9331fb075cf6f28d541665d624e1cf859718349ff1c8a5e1ba74068f3c",
+    "train_index_sha256": "92aabfcdd6f06ad149be7d802e86591f556de1cc60c6ddd186bd97bfd046c864",
+    "validation_index_sha256": "7ad5211107536744d3a4b78e3e7064585a41694abd29141da289dd9e159947db"
+  },
+  "code_commit": "e2be22d",
+  "data": {
+    "discarded_boxes": 1,
+    "excluded_study_level_artifact_volumes": 5,
+    "kept_boxes": 16153,
+    "sample_signature": "e2b6ffabc4ec844085ffb4163d08d255b5d2cd866f66b928e0ababeac724148c",
+    "study_level_artifact_volumes": 13,
+    "train_negative_samples": 616,
+    "train_positive_samples": 8057,
+    "train_samples": 8673,
+    "train_volumes": 973,
+    "validation_negative_samples": 176,
+    "validation_positive_samples": 1524,
+    "validation_samples": 1700,
+    "validation_volumes": 199,
+    "volume_overlap": 0
+  },
+  "environment": {
+    "cuda": "12.8",
+    "gpu": "NVIDIA L4",
+    "h5py": "3.13.0",
+    "python": "3.10.12",
+    "timm": "1.0.26",
+    "torch": "2.10.0+cu128"
+  },
+  "experiment_id": "P6B-FASTMRI-PLUS-LOCALIZATION-v1",
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": null,
+      "validation_lesion_center_recall_topk_radius_2": 0.0008003201280512205,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 4.117923207126313
+    },
+    {
+      "backbone_lr": 2.994239326156425e-05,
+      "epoch": 1,
+      "epoch_seconds": 334.56689147699944,
+      "head_lr": 0.0002994239326156425,
+      "train_images_per_second": 25.920078229247547,
+      "train_loss": 1.6538783125991752,
+      "validation_lesion_center_recall_topk_radius_2": 0.4289715886354542,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 1.2170056514616863
+    },
+    {
+      "backbone_lr": 2.7987369150655026e-05,
+      "epoch": 2,
+      "epoch_seconds": 286.2085483709998,
+      "head_lr": 0.0002798736915065502,
+      "train_images_per_second": 30.299584164617126,
+      "train_loss": 0.9435403763808008,
+      "validation_lesion_center_recall_topk_radius_2": 0.46418567426970786,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 1.056846882395901
+    },
+    {
+      "backbone_lr": 2.3598725570217728e-05,
+      "epoch": 3,
+      "epoch_seconds": 286.0555112010006,
+      "head_lr": 0.00023598725570217726,
+      "train_images_per_second": 30.31579417432201,
+      "train_loss": 0.7122026799294782,
+      "validation_lesion_center_recall_topk_radius_2": 0.49019607843137253,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 1.0657758245445752
+    },
+    {
+      "backbone_lr": 1.7598825978169507e-05,
+      "epoch": 4,
+      "epoch_seconds": 285.526139652,
+      "head_lr": 0.00017598825978169507,
+      "train_images_per_second": 30.372000302912568,
+      "train_loss": 0.49965653997395754,
+      "validation_lesion_center_recall_topk_radius_2": 0.4961984793917567,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 1.1892735395632998
+    },
+    {
+      "backbone_lr": 1.111195811518415e-05,
+      "epoch": 5,
+      "epoch_seconds": 286.075529341997,
+      "head_lr": 0.0001111195811518415,
+      "train_images_per_second": 30.31367282600678,
+      "train_loss": 0.3311066613755983,
+      "validation_lesion_center_recall_topk_radius_2": 0.49899959983993597,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 1.4960387542214193
+    },
+    {
+      "backbone_lr": 5.3536599918295336e-06,
+      "epoch": 6,
+      "epoch_seconds": 286.2004043570014,
+      "head_lr": 5.3536599918295336e-05,
+      "train_images_per_second": 30.300446358498846,
+      "train_loss": 0.218246473762382,
+      "validation_lesion_center_recall_topk_radius_2": 0.4957983193277311,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 1.8688389160101928
+    },
+    {
+      "backbone_lr": 1.4029469962652504e-06,
+      "epoch": 7,
+      "epoch_seconds": 286.49666512399926,
+      "head_lr": 1.4029469962652504e-05,
+      "train_images_per_second": 30.269113241672997,
+      "train_loss": 0.15135962076182735,
+      "validation_lesion_center_recall_topk_radius_2": 0.506202480992397,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 2.210232421189564
+    },
+    {
+      "backbone_lr": 1.2121516627636328e-10,
+      "epoch": 8,
+      "epoch_seconds": 286.75112352499855,
+      "head_lr": 1.2121516627636327e-09,
+      "train_images_per_second": 30.242252910454553,
+      "train_loss": 0.12098720371448246,
+      "validation_lesion_center_recall_topk_radius_2": 0.5086034413765507,
+      "validation_lesion_centers": 2499,
+      "validation_loss": 2.3665929030339528
+    }
+  ],
+  "memory": {
+    "torch_peak_allocated_mib": 6894.68212890625,
+    "torch_peak_reserved_mib": 7366.0
+  },
+  "schema_version": 1,
+  "selection": {
+    "baseline_validation_lesion_center_recall_topk_radius_2": 0.0008003201280512205,
+    "baseline_validation_loss": 4.117923207126313,
+    "best_epoch": 2,
+    "best_validation_lesion_center_recall_topk_radius_2": 0.46418567426970786,
+    "best_validation_loss": 1.056846882395901,
+    "primary": "minimum held-out-volume localization loss",
+    "tie_breaker": "maximum lesion-center top-K recall at radius 2"
+  },
+  "source": {
+    "annotations_sha256": "c1f4a083646cec815b67f005f8d7764313d1b82a028b90c272a4d000330d065b",
+    "fastmri_plus_commit": "67ed9a68ee33d3197f93893e8125688470c4a577",
+    "image_field": "reconstruction_rss",
+    "labeling_frame_transform": "pixels[:, ::-1, :]",
+    "reviewed_files_sha256": "4b09e5523709815d5314a4f652882c40f8c14af26b67a00ea769054ca7e1d6b7",
+    "train_archive_sha256": "1e8ab7f602bb0fea649736020aa9317ebf3ba9c417c211b286b85c81a28bce5f",
+    "validation_archive_sha256": "cd65a27f25d11369ad73fd329ff0c68ea8d2510f98e9f46aaeff7fcaf0dba43b"
+  },
+  "status": "validated",
+  "training": {
+    "amp": "float16",
+    "backbone_lr": 3e-05,
+    "background_weight": 0.1,
+    "batch_size": 8,
+    "channels_last": true,
+    "epochs": 8,
+    "geometric_augmentation": null,
+    "head_lr": 0.0003,
+    "intensity_augmentation": "gain 0.90-1.10 plus offset -12.75 to 12.75",
+    "optimizer": "fused AdamW",
+    "scheduler": "OneCycleLR",
+    "seed": 20260904,
+    "size_loss_weight": 0.1,
+    "training_hours": 0.6870504762377783,
+    "training_seconds": 2473.3817144560016,
+    "weight_decay": 0.02,
+    "workers": 4
+  },
+  "utilization": {
+    "gpu_utilization_max_percent": 100.0,
+    "gpu_utilization_mean_percent": 97.66477961989486,
+    "gpu_utilization_p10_percent": 100.0,
+    "nvidia_memory_used_max_mib": 7628.0,
+    "power_draw_max_w": 74.96,
+    "power_draw_mean_w": 70.96689850384149,
+    "samples": 4946
+  }
+}

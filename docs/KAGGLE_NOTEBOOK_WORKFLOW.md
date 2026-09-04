@@ -25,6 +25,8 @@
 | P5 OrthoFoundation speed smoke | [rsna-knee-p5-orthofoundation-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-speed-smoke) | GPU T4 x2 | V2 independently passed: 159.45 images/s, 14.74 min full-feature projection, 1,847 MiB/rank, both GPUs 100% peak |
 | P5 OrthoFoundation frozen | [rsna-knee-p5-orthofoundation-frozen](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen) | GPU T4 x2 | V3 complete and independently validated; OOF 0.768822, fixed P5 blend 0.886740; rejected and LoRA gate failed |
 | P5 diagnostic submission | [rsna-knee-p5-diagnostic-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission) | GPU T4 x2 | Canary v1 independently validated; exact version submitted as `56008122`, currently pending |
+| P6 P2 matched control | [rsna-knee-p6-p2-matched-control](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-matched-control) | GPU T4 x2 | Ready to launch; original ImageNet initialization under the frozen P6 comparison contract |
+| P6 P2 transfer | [rsna-knee-p6-p2-transfer](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-transfer) | GPU T4 x2 | Ready to launch; validated P6 epoch-2 localization checkpoint, otherwise matched to control |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -136,6 +138,13 @@ cache-signature hash, and array hashes before training.
   `docs/P5_SUBMISSION_PROTOCOL.md`; downloaded canary outputs:
   `outputs/kaggle/rsna-p5-submission-v1/` (ignored by Git); compact tracked result:
   `experiments/results/P5-SUBMISSION.json`
+- P6 matched-comparison builder and canonical source:
+  `scripts/build_p6_p2_kernels.py` and `scripts/p2_coatnet_ddp.py`; Kaggle bundles:
+  `kaggle/rsna-p6-p2-matched-control/` and `kaggle/rsna-p6-p2-transfer/`
+- P6 source checkpoint payload: private Kaggle Dataset
+  `vallepuvamsikrishna/rsna-p6-fastmri-localization-init`; it contains only the
+  selected backbone and hash-pinned manifests, never fastMRI images. Compact source
+  result: `experiments/results/P6-B.json`; frozen protocol: `docs/P6_PROTOCOL.md`
 
 All five P4 folds completed and independently passed their artifact, split, report
 purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively

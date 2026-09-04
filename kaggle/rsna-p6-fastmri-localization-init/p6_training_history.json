@@ -1,0 +1,97 @@
+[
+  {
+    "epoch": 0,
+    "train_loss": null,
+    "validation_lesion_center_recall_topk_radius_2": 0.0008003201280512205,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 4.117923207126313
+  },
+  {
+    "backbone_lr": 2.994239326156425e-05,
+    "epoch": 1,
+    "epoch_seconds": 334.56689147699944,
+    "head_lr": 0.0002994239326156425,
+    "train_images_per_second": 25.920078229247547,
+    "train_loss": 1.6538783125991752,
+    "validation_lesion_center_recall_topk_radius_2": 0.4289715886354542,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 1.2170056514616863
+  },
+  {
+    "backbone_lr": 2.7987369150655026e-05,
+    "epoch": 2,
+    "epoch_seconds": 286.2085483709998,
+    "head_lr": 0.0002798736915065502,
+    "train_images_per_second": 30.299584164617126,
+    "train_loss": 0.9435403763808008,
+    "validation_lesion_center_recall_topk_radius_2": 0.46418567426970786,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 1.056846882395901
+  },
+  {
+    "backbone_lr": 2.3598725570217728e-05,
+    "epoch": 3,
+    "epoch_seconds": 286.0555112010006,
+    "head_lr": 0.00023598725570217726,
+    "train_images_per_second": 30.31579417432201,
+    "train_loss": 0.7122026799294782,
+    "validation_lesion_center_recall_topk_radius_2": 0.49019607843137253,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 1.0657758245445752
+  },
+  {
+    "backbone_lr": 1.7598825978169507e-05,
+    "epoch": 4,
+    "epoch_seconds": 285.526139652,
+    "head_lr": 0.00017598825978169507,
+    "train_images_per_second": 30.372000302912568,
+    "train_loss": 0.49965653997395754,
+    "validation_lesion_center_recall_topk_radius_2": 0.4961984793917567,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 1.1892735395632998
+  },
+  {
+    "backbone_lr": 1.111195811518415e-05,
+    "epoch": 5,
+    "epoch_seconds": 286.075529341997,
+    "head_lr": 0.0001111195811518415,
+    "train_images_per_second": 30.31367282600678,
+    "train_loss": 0.3311066613755983,
+    "validation_lesion_center_recall_topk_radius_2": 0.49899959983993597,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 1.4960387542214193
+  },
+  {
+    "backbone_lr": 5.3536599918295336e-06,
+    "epoch": 6,
+    "epoch_seconds": 286.2004043570014,
+    "head_lr": 5.3536599918295336e-05,
+    "train_images_per_second": 30.300446358498846,
+    "train_loss": 0.218246473762382,
+    "validation_lesion_center_recall_topk_radius_2": 0.4957983193277311,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 1.8688389160101928
+  },
+  {
+    "backbone_lr": 1.4029469962652504e-06,
+    "epoch": 7,
+    "epoch_seconds": 286.49666512399926,
+    "head_lr": 1.4029469962652504e-05,
+    "train_images_per_second": 30.269113241672997,
+    "train_loss": 0.15135962076182735,
+    "validation_lesion_center_recall_topk_radius_2": 0.506202480992397,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 2.210232421189564
+  },
+  {
+    "backbone_lr": 1.2121516627636328e-10,
+    "epoch": 8,
+    "epoch_seconds": 286.75112352499855,
+    "head_lr": 1.2121516627636327e-09,
+    "train_images_per_second": 30.242252910454553,
+    "train_loss": 0.12098720371448246,
+    "validation_lesion_center_recall_topk_radius_2": 0.5086034413765507,
+    "validation_lesion_centers": 2499,
+    "validation_loss": 2.3665929030339528
+  }
+]

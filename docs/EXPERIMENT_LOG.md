@@ -22,14 +22,15 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P1-D | validated | Global regularization screen and matched repeated seeds | Three-seed candidate/default ensemble both 0.7982239 | No regularization promoted; P1 closed with P0-B configuration |
 | P6-A | validated | fastMRI+ provenance, schema, access, and transfer audit | Official annotation hashes, release invariants, and user access validated | P6-B advances to secure private Kaggle image staging; unofficial mirrors rejected |
 | P6-B-SMOKE | validated | Official single-coil HDF5 data, visual, and localization GPU smoke | 128/128 decoded; 16/16 overlays passed; 99.44% GPU; 31.68 images/s; 6.89 GiB peak | All gates passed; stage official training archive for source pretraining |
+| P6-B | validated | Full fastMRI+ class-agnostic localization pretraining | Epoch 2: validation loss 1.056847, lesion recall 0.464186; strict P2 backbone compatibility passed | Advance selected source checkpoint to a matched P2 transfer comparison; no promotion yet |
 
 ## Active experiment
 
 ### P6 — fastMRI+ localization transfer
 
-- **Status:** P6-A and P6-B's HDF5 data, visual, and GPU smoke gates passed on
-  private AWS. The official single-coil training archive is downloading for full
-  source pretraining.
+- **Status:** P6-A, all P6-B smoke gates, and the full P6-B source run passed on
+  private AWS. The selected epoch-2 backbone and matched ImageNet control are ready
+  for concurrent P2 reruns on Kaggle T4 x2.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -126,10 +127,24 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   held-out localization loss selects the backbone; top-K lesion-center recall at
   radius two breaks exact ties. The separate validator must replay selection and
   prove strict P2 backbone compatibility before downstream transfer.
+- **Full-source result:** corrected commit `e2be22d` completed in 0.687 hours. Epoch 2
+  minimized held-out loss at `1.0568469` (baseline `4.1179232`) with lesion-center
+  recall `0.4641857` (baseline `0.0008003`). Mean L4 utilization was `97.66%`, peak
+  observed NVIDIA memory was 7,628 MiB, and all hashes, selection replay, data gates,
+  and strict compatibility of 480 backbone tensors passed independent validation.
+  The selected checkpoint SHA-256 is
+  `5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195`.
+- **Downstream staging:** the selected checkpoint and two small manifests, but no
+  medical images, are in the private ready Kaggle Dataset
+  `vallepuvamsikrishna/rsna-p6-fastmri-localization-init`. The matched kernels
+  `rsna-knee-p6-p2-matched-control` and `rsna-knee-p6-p2-transfer` use the same source,
+  P2 cache, seeds, optimizer, batches, epochs, checkpoint-selection boundary, and
+  five-fold expert OOF procedure; initialization is their only intended difference.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
   Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
   First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).
   Validated GPU smoke: [`experiments/results/P6-B-GPU-SMOKE-v2.json`](../experiments/results/P6-B-GPU-SMOKE-v2.json).
+  Validated full source run: [`experiments/results/P6-B.json`](../experiments/results/P6-B.json).
 
 ### B04 target-wise OOF AUC
 
@@ -213,7 +228,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
-| P6–P9 | queued | Auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
+| P6 | **active** | fastMRI+ localization transfer into matched P2 reruns | Source pretraining validated; control and transfer arms ready for Kaggle execution |
+| P7–P9 | queued | Report-image auxiliary, relabelling/ensemble, and 3D stages | Gates in the roadmap |
 
 ## Completed P5 run
 

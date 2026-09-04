@@ -4,9 +4,9 @@ Frozen audit stage: 2026-09-04
 
 P6 tests whether supervised knee-pathology localization before RSNA training can
 improve the promoted CoAtNet representation. P6-A is an annotation, provenance,
-access, and transferability audit. The P6-B HDF5 data smoke has run on private AWS
-compute, but full localization training remains gated on complete overlay review and
-a measured GPU training smoke. A Kaggle mirror is not a substitute for those gates.
+access, and transferability audit. P6-B source pretraining has completed and passed
+independent validation on private AWS. Its selected backbone is now an input to the
+matched downstream comparison, not a promoted RSNA model.
 
 ## Hypothesis and parent
 
@@ -17,8 +17,7 @@ a measured GPU training smoke. A Kaggle mirror is not a substitute for those gat
   public score `0.916`. P2 remains the standalone architecture used for the controlled
   initialization comparison.
 - **P6-A run ID:** `P6A-FASTMRI-PLUS-AUDIT-v1`.
-- **P6-B run ID:** reserved as `P6B-FASTMRI-PLUS-LOCALIZATION-v1`; it does not yet
-  denote an authorized or launched training run.
+- **P6-B run ID:** `P6B-FASTMRI-PLUS-LOCALIZATION-v1`.
 
 ## P6-A provenance and access gate
 
@@ -169,6 +168,30 @@ Before the training archive completes, the full source run is frozen as follows:
 
 The full run cannot change these settings in response to its validation curve. Any
 change would be a separately declared repeat rather than an overwrite of P6-B v1.
+
+## Validated full-source result
+
+The corrected full run at commit `e2be22d` completed all eight epochs in 0.687 hours
+on one NVIDIA L4. It used 973 training and 199 held-out volumes with zero overlap,
+8,673 training samples and 1,700 validation samples, retained 16,153 boxes, discarded
+the one audited zero-area box, and excluded exactly five artifact-only volumes. The
+independent validator passed every input/output hash and strict-load checked all 480
+backbone tensors against the unchanged P2 architecture.
+
+Epoch 2 was selected by the frozen primary criterion: held-out localization loss
+improved from 4.117923 to 1.056847 and lesion-center recall improved from 0.000800 to
+0.464186. Mean GPU utilization was 97.66% and peak observed NVIDIA memory was
+7,628 MiB. The selected 295,695,280-byte backbone has SHA-256
+`5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195`.
+The compact result is [`P6-B.json`](../experiments/results/P6-B.json).
+
+For downstream execution, only that checkpoint and its hash-pinned manifests were
+copied—no fastMRI images—to the private, ready Kaggle Dataset
+`vallepuvamsikrishna/rsna-p6-fastmri-localization-init`. Two self-contained T4 x2
+kernels implement the matched comparison: `rsna-knee-p6-p2-matched-control` starts
+from the original ImageNet checkpoint and `rsna-knee-p6-p2-transfer` starts from the
+selected P6 checkpoint. They share the P2 cache, code, seeds, batches, optimizer,
+epochs, pseudo-validation selection, and expert-OOF procedure.
 
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret

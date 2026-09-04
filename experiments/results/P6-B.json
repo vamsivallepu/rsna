@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P6-B",
+  "run_id": "P6B-FASTMRI-PLUS-LOCALIZATION-v1",
+  "status": "validated",
+  "date": "2026-09-04",
+  "code_commit": "e2be22d",
+  "raw_artifact_path": "/mnt/rsna/outputs/experiments/P6-B-localization-full-e2be22d",
+  "execution": {
+    "provider": "AWS",
+    "region": "ap-south-1",
+    "instance_type": "g6.2xlarge",
+    "gpu": "NVIDIA L4",
+    "training_ssm_command_id": "f22a94b0-5e43-4a05-b6cd-aae0e15fb764",
+    "training_seconds": 2473.3817144560016,
+    "training_hours": 0.6870504762377783
+  },
+  "data": {
+    "train_volumes": 973,
+    "validation_volumes": 199,
+    "volume_overlap": 0,
+    "train_samples": 8673,
+    "validation_samples": 1700,
+    "study_level_artifact_volumes": 13,
+    "excluded_artifact_only_volumes": 5,
+    "boxes_kept": 16153,
+    "boxes_discarded": 1
+  },
+  "selection": {
+    "best_epoch": 2,
+    "baseline_validation_loss": 4.117923207126313,
+    "best_validation_loss": 1.056846882395901,
+    "baseline_lesion_center_recall_topk_radius_2": 0.0008003201280512205,
+    "best_lesion_center_recall_topk_radius_2": 0.46418567426970786
+  },
+  "utilization": {
+    "gpu_utilization_mean_percent": 97.66477961989486,
+    "gpu_utilization_p10_percent": 100.0,
+    "gpu_utilization_max_percent": 100.0,
+    "nvidia_memory_used_max_mib": 7628.0
+  },
+  "artifacts": {
+    "backbone_filename": "p6_localization_backbone_best.safetensors",
+    "backbone_bytes": 295695280,
+    "backbone_sha256": "5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195",
+    "training_manifest_sha256": "f6fb96ee2434ee8ead9e9e586be7d85bb8cae3fd6c71e059f552a67fb02452ef",
+    "training_history_sha256": "7b94a65787d45e84589b5f77134bdc405fcf5e72019ccd8504e00be5a82a6d5c"
+  },
+  "validation": {
+    "independent_validator_passed": true,
+    "input_and_output_hashes_passed": true,
+    "selection_replayed": true,
+    "strict_p2_backbone_compatibility": true,
+    "backbone_tensors": 480,
+    "localization_head_tensors": 32
+  },
+  "downstream": {
+    "checkpoint_dataset": "vallepuvamsikrishna/rsna-p6-fastmri-localization-init",
+    "checkpoint_dataset_visibility": "private",
+    "checkpoint_dataset_status": "ready",
+    "matched_control_kernel": "vallepuvamsikrishna/rsna-knee-p6-p2-matched-control",
+    "transfer_kernel": "vallepuvamsikrishna/rsna-knee-p6-p2-transfer",
+    "state": "ready_to_launch"
+  },
+  "decision": "The full localization source run passed every frozen data, selection, utilization, artifact, and strict-backbone-compatibility check. Advance to the matched P2 ImageNet-control versus P6-initialized comparison; the source result alone does not promote P6."
+}
