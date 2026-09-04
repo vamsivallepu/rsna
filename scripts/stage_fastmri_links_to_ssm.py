@@ -20,6 +20,24 @@ import boto3
 
 EXPECTED_HOST = "fastmri-dataset.s3.amazonaws.com"
 PACKAGES = {
+    "knee_singlecoil_train.tar.xz": "/rsna/p6/fastmri/knee-singlecoil-train-url",
+    "knee_singlecoil_val.tar.xz": "/rsna/p6/fastmri/knee-singlecoil-val-url",
+    "knee_multicoil_train_batch_0.tar.xz": (
+        "/rsna/p6/fastmri/knee-multicoil-train-batch-0-url"
+    ),
+    "knee_multicoil_train_batch_1.tar.xz": (
+        "/rsna/p6/fastmri/knee-multicoil-train-batch-1-url"
+    ),
+    "knee_multicoil_train_batch_2.tar.xz": (
+        "/rsna/p6/fastmri/knee-multicoil-train-batch-2-url"
+    ),
+    "knee_multicoil_train_batch_3.tar.xz": (
+        "/rsna/p6/fastmri/knee-multicoil-train-batch-3-url"
+    ),
+    "knee_multicoil_train_batch_4.tar.xz": (
+        "/rsna/p6/fastmri/knee-multicoil-train-batch-4-url"
+    ),
+    "knee_multicoil_val.tar.xz": "/rsna/p6/fastmri/knee-multicoil-val-url",
     "knee_DICOMs_batch1.tar.xz": "/rsna/p6/fastmri/knee-dicoms-batch1-url",
     "knee_DICOMs_batch2.tar.xz": "/rsna/p6/fastmri/knee-dicoms-batch2-url",
 }
@@ -42,7 +60,9 @@ def extract_urls(pdf: Path) -> dict[str, tuple[str, int]]:
         text=True,
     )
     candidates = re.findall(
-        r'curl\s+-C\s+-\s+"(https://.*?)"\s+--output', result.stdout, flags=re.DOTALL
+        r'"(https://fastmri-dataset\.s3\.amazonaws\.com/[^\"]+)"',
+        result.stdout,
+        flags=re.DOTALL,
     )
     selected: dict[str, tuple[str, int]] = {}
     for candidate in candidates:

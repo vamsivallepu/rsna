@@ -26,8 +26,8 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 
 ### P6 — fastMRI+ localization transfer
 
-- **Status:** P6-A validated; P6-B official DICOM batch 2 and reproducible GPU
-  environment are staging on private AWS compute.
+- **Status:** P6-A validated; P6-B matching single-coil validation HDF5 and the
+  reproducible GPU environment are staging on private AWS compute.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -74,12 +74,20 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   and no inbound security-group rules. This removes Kaggle runtime and secret
   inheritance friction without changing the frozen source task, matched P2 control,
   or promotion gate.
-- **AWS data state:** both temporary NYU URLs are encrypted SSM SecureStrings and are
-  never logged. The pinned public annotations passed their official SHA-256 checks on
-  the instance. DICOM batch 2 is downloading resumably to persistent EBS and must
-  match official SHA-256 `91efa0626c1ce7af68915bbd0589fc02f1aab5101569abdfbe7815fa265d5e89`
-  before extraction. Batch 1 is deliberately deferred until the 128-volume smoke
-  passes.
+- **AWS data correction:** `knee_DICOMs_batch2.tar.xz` completed at 30,570,247,404
+  bytes and passed official SHA-256
+  `91efa0626c1ce7af68915bbd0589fc02f1aab5101569abdfbe7815fa265d5e89`.
+  Archive and header inspection then showed anonymized clinical-series paths, JPEG
+  2000 DICOMs, no `file<digits>` value in the probed header, and a PatientID that was
+  not a fastMRI file ID. Because no verified mapping to the annotation identities was
+  present, that package is excluded from P6-B localization rather than guessed.
+- **Correct P6-B image source:** the official fastMRI+ example reads `file*.h5`
+  `reconstruction_rss` and applies `pixels[:, ::-1, :]`. P6 therefore uses the
+  official `knee_singlecoil_val.tar.xz` for the 128-volume smoke: 16,050,975,296 bytes,
+  official SHA-256
+  `cd65a27f25d11369ad73fd329ff0c68ea8d2510f98e9f46aaeff7fcaf0dba43b`.
+  Its signed URL is an encrypted SSM SecureString and is never logged. Full source
+  pretraining will add `knee_singlecoil_train.tar.xz` only after the smoke passes.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
 
 ### B04 target-wise OOF AUC

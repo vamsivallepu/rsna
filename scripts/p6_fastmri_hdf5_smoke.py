@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Validate a deterministic fastMRI+ DICOM smoke cohort for P6-B.
+"""Validate a deterministic fastMRI+ HDF5 smoke cohort for P6-B.
 
-The official DICOM package already contains the up/down flip used during labeling.
-This script therefore evaluates boxes in the released pixel frame without another
-flip. It never copies source images into the repository; output overlays belong in
-an ignored, private experiment directory.
+fastMRI+ labels refer to ``file*.h5`` volumes and were drawn on
+``reconstruction_rss`` after an up/down flip. This script reproduces that exact
+frame, validates every selected volume, sanitizes the released boxes, and writes
+private overlay artifacts to an ignored output directory.
 """
 
 from __future__ import annotations
@@ -17,10 +17,10 @@ import platform
 import re
 from pathlib import Path
 
+import h5py
 import matplotlib
 import numpy as np
 import pandas as pd
-import pydicom
 import torch
 
 matplotlib.use("Agg")
@@ -31,12 +31,12 @@ from matplotlib.patches import Rectangle  # noqa: E402
 ANNOTATION_SHA256 = "c1f4a083646cec815b67f005f8d7764313d1b82a028b90c272a4d000330d065b"
 REVIEWED_SHA256 = "4b09e5523709815d5314a4f652882c40f8c14af26b67a00ea769054ca7e1d6b7"
 SOURCE_COMMIT = "67ed9a68ee33d3197f93893e8125688470c4a577"
-FILE_RE = re.compile(r"^(file\d+)_(\d+)\.dcm$", flags=re.IGNORECASE)
+FILE_RE = re.compile(r"^(file\d+)\.h5$", flags=re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dicom-root", type=Path, required=True)
+    parser.add_argument("--hdf5-root", type=Path, required=True)
     parser.add_argument("--annotations", type=Path, required=True)
     parser.add_argument("--reviewed-files", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -93,28 +93,28 @@ def load_release(
     return annotations, reviewed
 
 
-def index_dicom_paths(dicom_root: Path) -> tuple[pd.DataFrame, list[str]]:
+def index_hdf5_paths(hdf5_root: Path) -> tuple[pd.DataFrame, list[str]]:
     rows: list[dict[str, object]] = []
     malformed: list[str] = []
-    for path in sorted(dicom_root.rglob("*.dcm")):
+    for path in sorted(hdf5_root.rglob("*.h5")):
         match = FILE_RE.fullmatch(path.name)
         if match is None:
-            malformed.append(path.relative_to(dicom_root).as_posix())
+            malformed.append(path.relative_to(hdf5_root).as_posix())
             continue
         rows.append(
             {
                 "file": match.group(1),
-                "slice": int(match.group(2)),
-                "path": path.relative_to(dicom_root).as_posix(),
+                "path": path.relative_to(hdf5_root).as_posix(),
+                "file_bytes": path.stat().st_size,
             }
         )
     if not rows:
-        raise ValueError(f"No DICOM files found below {dicom_root}")
-    index = pd.DataFrame(rows).sort_values(["file", "slice", "path"]).reset_index(drop=True)
-    duplicated = index.duplicated(["file", "slice"], keep=False)
+        raise ValueError(f"No file-ID HDF5 volumes found below {hdf5_root}")
+    index = pd.DataFrame(rows).sort_values(["file", "path"]).reset_index(drop=True)
+    duplicated = index["file"].duplicated(keep=False)
     if duplicated.any():
-        examples = index.loc[duplicated, ["file", "slice", "path"]].head(10).to_dict("records")
-        raise ValueError(f"Duplicate volume/slice identities: {examples}")
+        examples = index.loc[duplicated, ["file", "path"]].head(10).to_dict("records")
+        raise ValueError(f"Duplicate fastMRI file identities: {examples}")
     return index, malformed
 
 
@@ -163,66 +163,52 @@ def select_smoke_cohort(
 
 
 def validate_and_decode(
-    dicom_root: Path, selected_index: pd.DataFrame
-) -> tuple[pd.DataFrame, dict[str, tuple[int, int]]]:
+    hdf5_root: Path, selected_index: pd.DataFrame
+) -> tuple[pd.DataFrame, dict[str, tuple[int, int, int]]]:
     audited_rows: list[dict[str, object]] = []
-    geometry: dict[str, tuple[int, int]] = {}
-
-    for volume_id, group in selected_index.groupby("file", sort=True):
-        slices = group["slice"].tolist()
-        if slices != list(range(len(slices))):
-            raise ValueError(
-                f"Noncontiguous or non-zero-based slices for {volume_id}: "
-                f"first={slices[:3]}, last={slices[-3:]}"
-            )
-        expected_depth = len(group)
-        for row in group.itertuples(index=False):
-            path = dicom_root / row.path
-            dataset = pydicom.dcmread(path, force=False)
-            transfer_syntax = str(dataset.file_meta.TransferSyntaxUID)
-            rows = int(dataset.Rows)
-            columns = int(dataset.Columns)
-            instance = int(dataset.InstanceNumber)
-            images = int(dataset.ImagesInAcquisition)
-            patient_id = str(dataset.PatientID)
-            patient_name = str(dataset.PatientName)
-            if transfer_syntax != "1.2.840.10008.1.2.1":
-                raise ValueError(f"Unexpected transfer syntax for {row.path}: {transfer_syntax}")
-            if dataset.PhotometricInterpretation != "MONOCHROME2" or int(dataset.SamplesPerPixel) != 1:
-                raise ValueError(f"Unexpected pixel interpretation for {row.path}")
-            if instance != int(row.slice) + 1 or images != expected_depth:
+    geometry: dict[str, tuple[int, int, int]] = {}
+    for row in selected_index.itertuples(index=False):
+        path = hdf5_root / row.path
+        with h5py.File(path, "r") as handle:
+            required = {"kspace", "reconstruction_rss", "reconstruction_esc", "ismrmrd_header"}
+            missing = sorted(required - set(handle.keys()))
+            if missing:
+                raise ValueError(f"Missing HDF5 fields in {row.path}: {missing}")
+            reconstruction = handle["reconstruction_rss"]
+            if reconstruction.ndim != 3:
                 raise ValueError(
-                    f"Slice metadata mismatch for {row.path}: "
-                    f"instance={instance}, images={images}, expected_depth={expected_depth}"
+                    f"Unexpected reconstruction_rss shape in {row.path}: {reconstruction.shape}"
                 )
-            if patient_id != volume_id or patient_name != volume_id:
-                raise ValueError(f"Volume identity mismatch for {row.path}")
-            if volume_id in geometry and geometry[volume_id] != (rows, columns):
-                raise ValueError(f"Inconsistent geometry within {volume_id}")
-            geometry[volume_id] = (rows, columns)
-
-            pixels = np.asarray(dataset.pixel_array)
-            if pixels.shape != (rows, columns) or not np.isfinite(pixels).all():
-                raise ValueError(f"Invalid decoded pixels for {row.path}: shape={pixels.shape}")
+            depth, image_rows, image_columns = map(int, reconstruction.shape)
+            pixels = np.asarray(reconstruction[:])
+            if pixels.shape != (depth, image_rows, image_columns) or not np.isfinite(pixels).all():
+                raise ValueError(f"Invalid reconstruction_rss pixels in {row.path}")
+            # This is the exact transform in the pinned fastMRI+ example notebook.
+            label_frame = pixels[:, ::-1, :]
+            if not np.isfinite(label_frame).all():
+                raise ValueError(f"Invalid pixels after labeling-frame flip in {row.path}")
+            geometry[row.file] = (depth, image_rows, image_columns)
             audited_rows.append(
                 {
-                    "file": volume_id,
-                    "slice": int(row.slice),
+                    "file": row.file,
                     "path": row.path,
-                    "rows": rows,
-                    "columns": columns,
-                    "instance_number": instance,
-                    "images_in_acquisition": images,
-                    "transfer_syntax_uid": transfer_syntax,
-                    "pixel_min": float(pixels.min()),
-                    "pixel_max": float(pixels.max()),
+                    "file_bytes": int(row.file_bytes),
+                    "slices": depth,
+                    "rows": image_rows,
+                    "columns": image_columns,
+                    "reconstruction_dtype": str(reconstruction.dtype),
+                    "pixel_min": float(label_frame.min()),
+                    "pixel_max": float(label_frame.max()),
+                    "kspace_shape": json.dumps(list(map(int, handle["kspace"].shape))),
                 }
             )
     return pd.DataFrame(audited_rows), geometry
 
 
 def sanitize_boxes(
-    annotations: pd.DataFrame, selected: set[str], geometry: dict[str, tuple[int, int]]
+    annotations: pd.DataFrame,
+    selected: set[str],
+    geometry: dict[str, tuple[int, int, int]],
 ) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     boxes = annotations.loc[
@@ -231,7 +217,12 @@ def sanitize_boxes(
     for annotation_index, row in boxes.iterrows():
         volume_id = str(row["file"])
         slice_index = int(row["slice"])
-        image_rows, image_columns = geometry[volume_id]
+        depth, image_rows, image_columns = geometry[volume_id]
+        if not 0 <= slice_index < depth:
+            raise ValueError(
+                f"Annotation row {annotation_index} references slice {slice_index} "
+                f"outside depth {depth} for {volume_id}"
+            )
         x = float(row["x"])
         y = float(row["y"])
         width = float(row["width"])
@@ -274,8 +265,8 @@ def sanitize_boxes(
 
 
 def render_overlays(
-    dicom_root: Path,
-    dicom_index: pd.DataFrame,
+    hdf5_root: Path,
+    volume_index: pd.DataFrame,
     sanitation: pd.DataFrame,
     output_dir: Path,
     count: int,
@@ -284,17 +275,17 @@ def render_overlays(
     kept = sanitation.loc[sanitation["kept"]].copy()
     identities = [f"{row.file}:{row.slice}" for row in kept.itertuples(index=False)]
     selected_identities = stable_sort(sorted(set(identities)), seed, "overlay")[:count]
+    path_lookup = {row.file: row.path for row in volume_index.itertuples(index=False)}
     overlay_dir = output_dir / "overlays"
     overlay_dir.mkdir(parents=True, exist_ok=True)
     records: list[dict[str, object]] = []
-    path_lookup = {
-        (row.file, int(row.slice)): row.path for row in dicom_index.itertuples(index=False)
-    }
     for identity in selected_identities:
         volume_id, raw_slice = identity.split(":")
         slice_index = int(raw_slice)
-        source_path = dicom_root / path_lookup[(volume_id, slice_index)]
-        pixels = np.asarray(pydicom.dcmread(source_path).pixel_array, dtype=np.float32)
+        with h5py.File(hdf5_root / path_lookup[volume_id], "r") as handle:
+            pixels = np.asarray(
+                handle["reconstruction_rss"][slice_index, ::-1, :], dtype=np.float32
+            )
         low, high = np.percentile(pixels, [0.5, 99.5])
         if high <= low:
             normalized = np.zeros_like(pixels, dtype=np.uint8)
@@ -304,7 +295,6 @@ def render_overlays(
         slice_boxes = kept.loc[
             kept["file"].eq(volume_id) & kept["slice"].eq(slice_index)
         ]
-
         figure, axis = plt.subplots(figsize=(6, 6))
         axis.imshow(normalized, cmap="gray", vmin=0, vmax=255)
         for box in slice_boxes.itertuples(index=False):
@@ -326,7 +316,7 @@ def render_overlays(
                 fontsize=6,
                 bbox={"facecolor": "black", "alpha": 0.55, "pad": 1},
             )
-        axis.set_title(f"{volume_id} slice {slice_index} — released DICOM frame")
+        axis.set_title(f"{volume_id} slice {slice_index} — fastMRI+ labeling frame")
         axis.axis("off")
         output_path = overlay_dir / f"{volume_id}_{slice_index:03d}.png"
         figure.savefig(output_path, dpi=130, bbox_inches="tight")
@@ -347,7 +337,7 @@ def main() -> None:
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     annotations, reviewed = load_release(args.annotations, args.reviewed_files)
-    path_index, malformed = index_dicom_paths(args.dicom_root)
+    path_index, malformed = index_hdf5_paths(args.hdf5_root)
     available = set(path_index["file"]) & reviewed
     annotation_volumes = set(
         annotations.loc[annotations["study_level"].eq("No"), "file"].astype(str)
@@ -362,27 +352,18 @@ def main() -> None:
     )
     selected = set(cohort["file"])
     selected_index = path_index.loc[path_index["file"].isin(selected)].copy()
-    decoded_index, geometry = validate_and_decode(args.dicom_root, selected_index)
-
+    audited_index, geometry = validate_and_decode(args.hdf5_root, selected_index)
     sanitation = sanitize_boxes(annotations, selected, geometry)
-    known_slices = set(zip(decoded_index["file"], decoded_index["slice"], strict=True))
-    missing_box_slices = [
-        (row.file, int(row.slice), int(row.annotation_row))
-        for row in sanitation.itertuples(index=False)
-        if (row.file, int(row.slice)) not in known_slices
-    ]
-    if missing_box_slices:
-        raise ValueError(f"Annotations reference absent DICOM slices: {missing_box_slices[:10]}")
 
     cohort_path = args.output_dir / "p6_smoke_volumes.csv"
-    index_path = args.output_dir / "p6_dicom_index.csv"
+    index_path = args.output_dir / "p6_hdf5_index.csv"
     sanitation_path = args.output_dir / "p6_box_sanitation.csv"
     cohort.to_csv(cohort_path, index=False)
-    decoded_index.to_csv(index_path, index=False)
+    audited_index.to_csv(index_path, index=False)
     sanitation.to_csv(sanitation_path, index=False)
     overlays = render_overlays(
-        args.dicom_root,
-        decoded_index,
+        args.hdf5_root,
+        selected_index,
         sanitation,
         args.output_dir,
         args.overlay_count,
@@ -391,28 +372,28 @@ def main() -> None:
 
     manifest = {
         "schema_version": 1,
-        "experiment_id": "P6B-FASTMRI-PLUS-DICOM-SMOKE-v1",
+        "experiment_id": "P6B-FASTMRI-PLUS-HDF5-SMOKE-v1",
         "status": "validated",
         "source": {
             "fastmri_plus_commit": SOURCE_COMMIT,
             "annotations_sha256": ANNOTATION_SHA256,
             "reviewed_files_sha256": REVIEWED_SHA256,
-            "dicom_frame": "official released DICOM; labeling-time up/down flip already applied",
-            "additional_flip_applied": False,
+            "image_field": "reconstruction_rss",
+            "labeling_frame_transform": "pixels[:, ::-1, :]",
+            "flip_applied_exactly_once": True,
         },
         "environment": {
             "python": platform.python_version(),
+            "h5py": h5py.__version__,
             "numpy": np.__version__,
             "pandas": pd.__version__,
-            "pydicom": pydicom.__version__,
             "torch": torch.__version__,
             "cuda": torch.version.cuda,
             "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         },
         "archive_inventory": {
-            "dicom_files": int(len(path_index)),
-            "archive_volumes": int(path_index["file"].nunique()),
-            "malformed_dicom_filenames": malformed,
+            "hdf5_files": int(len(path_index)),
+            "malformed_hdf5_filenames": malformed,
             "reviewed_volumes_available": int(len(available)),
             "unreviewed_archive_volumes_excluded": int(
                 len(set(path_index["file"]) - reviewed)
@@ -431,7 +412,7 @@ def main() -> None:
                     & set(cohort.loc[cohort["split"].eq("validation"), "file"])
                 )
             ),
-            "decoded_slices": int(len(decoded_index)),
+            "decoded_volumes": int(len(audited_index)),
             "decoded_pixel_failures": 0,
             "selection_signature": sha256_jsonable(cohort.to_dict("records")),
         },
@@ -448,11 +429,11 @@ def main() -> None:
         "overlays": overlays,
         "artifacts": {
             "cohort_sha256": sha256_file(cohort_path),
-            "dicom_index_sha256": sha256_file(index_path),
+            "hdf5_index_sha256": sha256_file(index_path),
             "box_sanitation_sha256": sha256_file(sanitation_path),
         },
     }
-    manifest_path = args.output_dir / "p6_dicom_smoke.json"
+    manifest_path = args.output_dir / "p6_hdf5_smoke.json"
     with manifest_path.open("w", encoding="utf-8") as stream:
         json.dump(manifest, stream, indent=2, sort_keys=True)
         stream.write("\n")

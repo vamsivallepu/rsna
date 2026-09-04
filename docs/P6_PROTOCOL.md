@@ -74,12 +74,12 @@ The tracked crosswalk exists to expose ambiguity, not hide it.
 
 ## Frozen P6-B design after authorized image access
 
-P6-B will use only the official validation knee volumes corresponding to the
-hash-pinned reviewed-file list. Reconstruct the source image exactly as documented by
-fastMRI+, including the labeling-time up/down flip, and verify random overlays before
-training. Split by volume, never slice. The split manifest must be hash-pinned and no
-volume may cross train/validation. Apply the declared whitespace and box sanitation
-only after retaining the original row values for auditability.
+P6-B will use only official knee HDF5 volumes corresponding to the hash-pinned
+reviewed-file list. Read `reconstruction_rss` and reproduce the pinned fastMRI+
+example's labeling frame exactly with `pixels[:, ::-1, :]`; verify random overlays
+before training. Split by volume, never slice. The split manifest must be hash-pinned
+and no volume may cross train/validation. Apply the declared whitespace and box
+sanitation only after retaining the original row values for auditability.
 
 The source task initializes the same CoAtNet-RMLP2 backbone used by P2. A lightweight
 feature-pyramid head predicts a class-agnostic lesion-center heatmap plus box size on
@@ -108,8 +108,8 @@ the remaining checks pass:
    SecureString by the least-privilege EC2 role rather than embedded in code;
 2. source filenames match the official reviewed list and remain private;
 3. annotation and reviewed-list hashes match P6-A;
-4. the official DICOM archive matches NYU's published SHA-256 and overlays pass in
-   the exact released DICOM coordinate frame;
+4. the official HDF5 archive matches NYU's published SHA-256 and overlays pass after
+   applying the documented labeling-time up/down flip exactly once;
 5. a 128-volume smoke establishes decoding correctness, memory use, GPU utilization,
    throughput, and a viable projected full runtime.
 
@@ -129,8 +129,15 @@ The cache smoke would have required the authenticated Kaggle editor rather than
 described in [`AWS_P6_RUNBOOK.md`](AWS_P6_RUNBOOK.md): an on-demand `g6.2xlarge`
 with SSM-only access and persistent encrypted EBS. The signed NYU links are encrypted
 SSM parameters, the official archive hashes are checked before extraction, and no
-fastMRI image is copied into Git, public S3, or a Kaggle Dataset. This changes the
-execution environment, not the frozen source task, matched control, or promotion gate.
+fastMRI image is copied into Git, public S3, or a Kaggle Dataset.
+
+The initially selected `knee_DICOMs_batch2.tar.xz` downloaded and matched NYU's
+published hash, but inspection found anonymized clinical-series paths rather than the
+`file*.h5` identities used by fastMRI+; a privacy-preserving header probe found no
+`file<digits>` mapping. It is therefore excluded from P6-B localization. The smoke
+uses `knee_singlecoil_val.tar.xz`, whose `file*.h5` volumes contain the same
+`reconstruction_rss` field used by the official fastMRI+ example. This execution-data
+correction does not change the frozen source task, matched control, or promotion gate.
 
 Promotion requires a positive matched change on report-grouped pseudo validation,
 followed by at least `+0.003` macro AUC in expert OOF or a positive fixed 25% rank-blend

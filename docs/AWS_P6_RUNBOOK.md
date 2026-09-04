@@ -70,6 +70,8 @@ SecureString values:
 
 - `/rsna/p6/fastmri/knee-dicoms-batch1-url`
 - `/rsna/p6/fastmri/knee-dicoms-batch2-url`
+- `/rsna/p6/fastmri/knee-singlecoil-train-url`
+- `/rsna/p6/fastmri/knee-singlecoil-val-url`
 
 The supplied links expire on 2026-12-03 at 08:14:31 UTC. Scripts may retrieve them at
 runtime but must never print command tracing, URLs, or query strings. The official
@@ -78,11 +80,19 @@ archive checksums are:
 ```text
 1b8a149897326931efb868448a81038320d23be7a651a0199de98ae641a61fba  knee_DICOMs_batch1.tar.xz
 91efa0626c1ce7af68915bbd0589fc02f1aab5101569abdfbe7815fa265d5e89  knee_DICOMs_batch2.tar.xz
+1e8ab7f602bb0fea649736020aa9317ebf3ba9c417c211b286b85c81a28bce5f  knee_singlecoil_train.tar.xz
+cd65a27f25d11369ad73fd329ff0c68ea8d2510f98e9f46aaeff7fcaf0dba43b  knee_singlecoil_val.tar.xz
 ```
 
-Archives live in `/mnt/rsna/data/fastmri/archives`. Verify the complete archive before
-extracting it. Extract selected volumes to `/opt/dlami/nvme` for fast iteration, then
-write only compact, reproducible caches and manifests back to `/mnt/rsna`.
+The DICOM batch-2 archive was downloaded and verified, but it contains anonymized
+clinical-series paths with no verified mapping to the `file*.h5` annotation IDs. It
+is excluded from P6-B localization. The 128-volume smoke instead uses the 16.05 GB
+single-coil validation archive, whose HDF5 files contain `reconstruction_rss` in the
+exact identity space used by fastMRI+.
+
+Archives live in `/mnt/rsna/data/fastmri/archives`. Verify each complete archive
+before extracting it. Extract HDF5 volumes to `/opt/dlami/nvme` for fast iteration,
+then write only compact, reproducible caches and manifests back to `/mnt/rsna`.
 
 The hash-pinned public fastMRI+ annotations live in
 `/mnt/rsna/data/fastmri/annotations`. Their source commit and hashes remain frozen in
@@ -103,14 +113,15 @@ points to the active immutable source snapshot.
 
 ## P6 execution order
 
-1. Complete and checksum batch 2 on persistent EBS.
-2. Inspect archive paths and match them against the 1,172 hash-pinned reviewed IDs.
+1. Complete and checksum the single-coil validation HDF5 archive on persistent EBS.
+2. Match its `file*.h5` paths against the 1,172 hash-pinned reviewed IDs.
 3. Extract a deterministic 128-volume smoke cohort to the disposable NVMe.
-4. Validate DICOM decoding, slice numbering, image geometry, box sanitation, and
-   random overlays in the exact released DICOM frame.
+4. Validate `reconstruction_rss`, slice numbering, image geometry, box sanitation,
+   and random overlays after applying the labeling-time up/down flip exactly once.
 5. Run a short localization overfit/speed smoke and measure GPU utilization,
    throughput, memory, and projected full-run time.
-6. Only after those gates pass, download batch 1 and run full source pretraining.
+6. Only after those gates pass, download the single-coil training archive and run
+   full source pretraining.
 7. Transfer the selected backbone into the unchanged P2 contract and run the matched
    ImageNet-initialized control.
 
