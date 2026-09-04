@@ -4,8 +4,9 @@ Frozen audit stage: 2026-09-04
 
 P6 tests whether supervised knee-pathology localization before RSNA training can
 improve the promoted CoAtNet representation. P6-A is an annotation, provenance,
-access, and transferability audit. P6-B is not authorized to launch until the image
-access gate below is satisfied. A Kaggle mirror is not a substitute for that gate.
+access, and transferability audit. The P6-B HDF5 data smoke has run on private AWS
+compute, but full localization training remains gated on complete overlay review and
+a measured GPU training smoke. A Kaggle mirror is not a substitute for those gates.
 
 ## Hypothesis and parent
 
@@ -112,6 +113,18 @@ the remaining checks pass:
    applying the documented labeling-time up/down flip exactly once;
 5. a 128-volume smoke establishes decoding correctness, memory use, GPU utilization,
    throughput, and a viable projected full runtime.
+
+On 2026-09-04, the official single-coil validation archive passed its published
+SHA-256, extracted to 199 reviewed `file*.h5` volumes, and completed the deterministic
+128-volume data smoke at code commit `2cc14e7`. All 128 volumes decoded, the 103/25
+volume-level train/validation split had zero overlap, all 1,605 selected boxes mapped
+to present slices, and no box was discarded after clamping. Sixteen private overlays
+were generated. One representative overlay was transferred through a loopback-only
+SSM tunnel and passed visual alignment; the other 15 remain on the private instance
+pending explicit transfer authorization. This validates the data path but does not
+yet satisfy the GPU utilization, peak-memory, throughput, or projected-runtime part
+of gate 5. The tracked partial-gate result is
+[`P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
 
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret

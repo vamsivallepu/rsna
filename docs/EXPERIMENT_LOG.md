@@ -21,13 +21,14 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P1-C | validated | Official-default asymmetric loss with fixed soft labels | 0.8000455 purged expert OOF | Do not promote; positive point estimate is inconclusive and Fracture declined |
 | P1-D | validated | Global regularization screen and matched repeated seeds | Three-seed candidate/default ensemble both 0.7982239 | No regularization promoted; P1 closed with P0-B configuration |
 | P6-A | validated | fastMRI+ provenance, schema, access, and transfer audit | Official annotation hashes, release invariants, and user access validated | P6-B advances to secure private Kaggle image staging; unofficial mirrors rejected |
+| P6-B-SMOKE | running | Official single-coil HDF5 identity, geometry, split, and overlay smoke | 128/128 volumes decoded; 1,605/1,605 boxes retained; zero split overlap; 1/16 overlays visually passed | Complete private overlay review and measured GPU training smoke before localization pretraining |
 
 ## Active experiment
 
 ### P6 — fastMRI+ localization transfer
 
-- **Status:** P6-A validated; P6-B matching single-coil validation HDF5 and the
-  reproducible GPU environment are staging on private AWS compute.
+- **Status:** P6-A validated; P6-B's programmatic HDF5 smoke passed on private AWS.
+  Full overlay review and the GPU utilization/runtime smoke remain open.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -88,7 +89,15 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   `cd65a27f25d11369ad73fd329ff0c68ea8d2510f98e9f46aaeff7fcaf0dba43b`.
   Its signed URL is an encrypted SSM SecureString and is never logged. Full source
   pretraining will add `knee_singlecoil_train.tar.xz` only after the smoke passes.
+- **HDF5 smoke result:** the archive passed its official hash and extracted to 199
+  reviewed HDF5 volumes. Commit `2cc14e7` decoded a deterministic 128-volume cohort
+  (96 annotated, 32 reviewed negatives), produced a 103/25 volume-isolated split,
+  retained all 1,605 selected boxes with no missing slice, and generated 16 overlays.
+  One representative overlay passed visual alignment. The other 15 remain private on
+  EC2 pending explicit transfer authorization; GPU utilization, peak memory,
+  throughput, and full-runtime projection are still unmeasured.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
+  Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
 
 ### B04 target-wise OOF AUC
 

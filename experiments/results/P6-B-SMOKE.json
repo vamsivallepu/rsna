@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P6-B-SMOKE",
+  "run_id": "P6B-FASTMRI-PLUS-HDF5-SMOKE-v1",
+  "status": "programmatic_validation_passed_visual_review_pending",
+  "date": "2026-09-04",
+  "description": "Private AWS audit of official fastMRI single-coil validation HDF5 volumes and fastMRI+ box alignment",
+  "code_commit": "2cc14e7",
+  "source": {
+    "fastmri_plus_commit": "67ed9a68ee33d3197f93893e8125688470c4a577",
+    "archive": "knee_singlecoil_val.tar.xz",
+    "archive_bytes": 16050975296,
+    "archive_sha256": "cd65a27f25d11369ad73fd329ff0c68ea8d2510f98e9f46aaeff7fcaf0dba43b",
+    "annotations_sha256": "c1f4a083646cec815b67f005f8d7764313d1b82a028b90c272a4d000330d065b",
+    "reviewed_files_sha256": "4b09e5523709815d5314a4f652882c40f8c14af26b67a00ea769054ca7e1d6b7",
+    "image_field": "reconstruction_rss",
+    "labeling_frame_transform": "pixels[:, ::-1, :]",
+    "flip_applied_exactly_once": true
+  },
+  "environment": {
+    "instance_id": "i-0952ebd05fab9e563",
+    "instance_type": "g6.2xlarge",
+    "gpu": "NVIDIA L4",
+    "python": "3.10.12",
+    "torch": "2.10.0+cu128",
+    "cuda": "12.8",
+    "h5py": "3.13.0",
+    "numpy": "2.2.6",
+    "pandas": "2.2.3"
+  },
+  "archive_inventory": {
+    "hdf5_files": 199,
+    "reviewed_volumes_available": 199,
+    "malformed_hdf5_filenames": 0,
+    "unreviewed_archive_volumes_excluded": 0,
+    "extracted_bytes": 19375407976
+  },
+  "smoke": {
+    "seed": 20260904,
+    "volumes": 128,
+    "annotated_volumes": 96,
+    "reviewed_negative_volumes": 32,
+    "train_volumes": 103,
+    "validation_volumes": 25,
+    "train_validation_overlap": 0,
+    "decoded_volumes": 128,
+    "decoded_pixel_failures": 0,
+    "selection_signature": "4eadb1d871c29a314080bd718c7578c73b33412151813aecd622c61733c673b8"
+  },
+  "sanitation": {
+    "selected_raw_boxes": 1605,
+    "kept_boxes": 1605,
+    "coordinate_adjustments": 1,
+    "label_whitespace_adjustments": 139,
+    "discarded_zero_area_after_clamp": 0,
+    "missing_box_slices": 0
+  },
+  "visual_gate": {
+    "overlays_generated": 16,
+    "overlays_reviewed": 1,
+    "overlays_passing": 1,
+    "representative_review": "file1000735 slice 19: anatomy orientation coherent and box aligned over the proximal tibial lesion region",
+    "remaining_overlays": 15,
+    "full_private_transfer_authorized": false
+  },
+  "artifacts": {
+    "remote_path": "/mnt/rsna/outputs/experiments/P6-B-hdf5-smoke-2cc14e7",
+    "hdf5_index_sha256": "e04fbae294b85e214441b94f1b807c68ab4828407e59402f97f5d8fa6af0a333",
+    "cohort_sha256": "cbd03d737395aa23f3ba3fd182a7572fb407ba4c614bedf51f2622ee52955598",
+    "box_sanitation_sha256": "02eb96b91bdbf19c748155608d961ea5901247212f2597e70322c8d88e308fd1",
+    "ssm_download_command_id": "ac971138-68fd-4765-a825-8d94d1c85217",
+    "ssm_extract_command_id": "adce2f34-b09b-4ba3-ae42-efb89afdc53c",
+    "ssm_smoke_command_id": "6b4b8aaf-f727-43ef-bee1-d8bc25a97998"
+  },
+  "decision": "The official archive, identities, hashes, geometry, decode path, split isolation, and box sanitation pass. One representative overlay passes visual review. Do not start full localization pretraining until the remaining private overlays are explicitly authorized for local review and a GPU training smoke measures utilization, memory, throughput, and projected runtime."
+}
