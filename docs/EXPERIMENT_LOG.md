@@ -102,7 +102,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
-| P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
+| P5 | **active / speed gate** | OrthoFoundation-L frozen single-slice feature probe | Protocol frozen; exact 1.213 GB checkpoint and two-T4 extraction path under smoke validation |
+| P6–P9 | queued | Auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
 ## Completed P2 run
 
