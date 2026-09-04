@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P6-AUDIT",
+  "run_id": "P6A-FASTMRI-PLUS-AUDIT-v1",
+  "status": "validated_blocked_on_authorized_images",
+  "date": "2026-09-04",
+  "description": "Provenance, schema, target-transfer, and image-access audit for fastMRI+ knee localization supervision",
+  "code_commit": null,
+  "source": {
+    "repository": "https://github.com/microsoft/fastmri-plus",
+    "commit": "67ed9a68ee33d3197f93893e8125688470c4a577",
+    "annotations_sha256": "c1f4a083646cec815b67f005f8d7764313d1b82a028b90c272a4d000330d065b",
+    "reviewed_files_sha256": "4b09e5523709815d5314a4f652882c40f8c14af26b67a00ea769054ca7e1d6b7",
+    "kaggle_annotation_copy_matches_official": true
+  },
+  "observed": {
+    "annotation_rows": 16167,
+    "bounding_boxes": 16154,
+    "study_level_artifact_rows": 13,
+    "released_labels_including_artifact": 22,
+    "slice_level_labels": 21,
+    "labels_with_surrounding_whitespace": 1,
+    "annotated_volumes": 974,
+    "reviewed_volumes": 1173,
+    "reviewed_without_any_annotation": 199,
+    "paper_reported_reviewed_volumes": 1172,
+    "negative_coordinate_boxes": 6,
+    "nonpositive_width_boxes": 0,
+    "nonpositive_height_boxes": 1
+  },
+  "validation": {
+    "hashes_verified": true,
+    "schema_verified": true,
+    "reviewed_ids_unique": true,
+    "all_annotated_volumes_reviewed": true,
+    "target_crosswalk_covers_12_targets": true,
+    "annotation_only_spatial_prior_approved": false
+  },
+  "artifacts": {
+    "raw_artifact_path": "outputs/experiments/P6-A-fastmri-plus-audit",
+    "audit_json_sha256": "c39f912965922fa0e6d0bdaaa8287c76e156e34ff415effe15c4ab7010f07602",
+    "label_stats_sha256": "0e9ab6837c1eeafbb115d1af3617f30e198580257e639b2b3e234bbf88433a57",
+    "target_crosswalk_sha256": "ad3695de2b62a06715493c406254adfacbc23c56097882c32ee493edc98e3526",
+    "crosswalk_signature": "f718b0818f3dafb7bf1cde47295b6ae89d1f606e26f052635a53375424779d47"
+  },
+  "access_gate": {
+    "annotations_mit_licensed": true,
+    "image_data_included": false,
+    "official_fastmri_agreement_required_for_images": true,
+    "official_image_access_confirmed": false,
+    "unofficial_kaggle_image_mirror_approved": false
+  },
+  "decision": "P6-A is complete. Do not derive RSNA coordinate priors from the CSV alone and do not use unofficial image mirrors. P6-B can launch after the user confirms official fastMRI access and supplies the private source images to Kaggle without redistribution."
+}

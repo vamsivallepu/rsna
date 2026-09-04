@@ -1,6 +1,6 @@
 # Experiment log
 
-Last updated: 2026-09-03
+Last updated: 2026-09-04
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
@@ -20,6 +20,40 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P1-B | validated | Shared attention, masked mean, and masked max controls | Best control 0.7946578 purged expert OOF | No control promoted; retain P0-B target queries |
 | P1-C | validated | Official-default asymmetric loss with fixed soft labels | 0.8000455 purged expert OOF | Do not promote; positive point estimate is inconclusive and Fracture declined |
 | P1-D | validated | Global regularization screen and matched repeated seeds | Three-seed candidate/default ensemble both 0.7982239 | No regularization promoted; P1 closed with P0-B configuration |
+| P6-A | blocked | fastMRI+ provenance, schema, access, and transfer audit | Official annotation hashes and release invariants validated | P6-B awaits user-confirmed official fastMRI image access; unofficial mirrors rejected |
+
+## Active experiment
+
+### P6-A — fastMRI+ annotation and access audit
+
+- **Status:** annotation audit validated; P6-B blocked on authorized image access.
+- **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
+  P2 CoAtNet backbone's sensitivity to small abnormalities.
+- **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
+  the controlled initialization comparison reruns the standalone P2 architecture.
+- **Provenance:** Microsoft `microsoft/fastmri-plus` commit
+  `67ed9a68ee33d3197f93893e8125688470c4a577`. The small Kaggle annotation package
+  exactly matches the official `knee.csv` and `knee_file_list.csv` SHA-256 hashes.
+- **Release audit:** 16,167 rows comprise 16,154 boxes and 13 study-level artifact
+  rows; 22 labels including artifact; 974 annotated volumes; 1,173 unique reviewed
+  volumes, of which 199 have no annotation row. The paper's 1,172-volume count differs
+  from the current released list, so execution follows the hash-pinned CSV. The audit
+  also found six negative-coordinate boxes, one zero-height box, and one label with
+  trailing whitespace; P6-B will sanitize and log them explicitly.
+- **Transfer audit:** ACL, MCL, and Effusion have grouped direct relationships. The
+  meniscus, OA, Baker's, Contusion, and Fracture mappings are ambiguous or proxy-only;
+  Synovitis has no direct label. The annotation CSV also omits image geometry and the
+  boxes follow a documented up/down image flip. Direct annotation-only spatial priors
+  are rejected.
+- **Access decision:** annotation files are MIT-licensed, but underlying images require
+  the official fastMRI data-use agreement and access path. Do not use or republish an
+  unofficial Kaggle image mirror. P6-B launches only after the user confirms official
+  access and the private images pass filename/hash/overlay checks.
+- **Frozen next arm:** class-agnostic lesion-center and box-size pretraining of the P2
+  CoAtNet backbone, followed by a matched ImageNet-versus-localization initialization
+  comparison under the existing report-grouped pseudo and five-fold expert OOF
+  contract. Full details: [`P6_PROTOCOL.md`](P6_PROTOCOL.md).
+- **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
 
 ### B04 target-wise OOF AUC
 
