@@ -1,0 +1,22 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p5-submission",
+  "title": "RSNA Knee P5 Diagnostic Submission",
+  "code_file": "rsna-p5-submission.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [
+    "yanisbelami/orthofoundation-l-official-runtime"
+  ],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen"
+  ],
+  "model_sources": []
+}

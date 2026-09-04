@@ -149,6 +149,10 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Decision:** reject P5-A and do not run P5-B LoRA because the predeclared advance
   gate failed. Preserve the frozen features and positive target diagnostics for P8,
   but do not tune target-specific weights on the 58-row expert set. Advance to P6.
+- **Diagnostic submission:** requested for leaderboard information only. The frozen
+  five-fold probability mean is isolated under `P5-DIAGNOSTIC-SUBMISSION-v1`; its
+  public score cannot promote P5 or authorize target/weight tuning. A two-T4 private
+  canary and independent output validation are required before spending a submission.
 
 ## Completed P2 run
 
