@@ -107,7 +107,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ## Active P5 run
 
-- **Run ID:** `P5A-ORTHOFOUNDATION-FROZEN-v1`.
+- **Run ID:** `P5A-ORTHOFOUNDATION-FROZEN-v2`.
 - **Frozen protocol:** [`P5_PROTOCOL.md`](P5_PROTOCOL.md).
 - **Speed smoke version 1:** failed before inference because the official released
   checkpoint stores backbone tensors under `backbone.*` while the raw DINOv3 model
@@ -130,6 +130,9 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   script upload retained only the declared `code_file` and omitted the builder's
   helper sidecar. This is a packaging failure with no experimental result. Version
   2 embeds the same canonical helper source into one compiled Kaggle script.
+- **Full run version 2:** launched on 2026-09-04 with two T4 GPUs. Kaggle reports
+  `RUNNING`; the run has passed the 9.6-second point where version 1 failed, but no
+  experimental result is recorded until the artifacts complete and validate.
 
 ## Completed P2 run
 
