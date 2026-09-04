@@ -119,11 +119,11 @@ SHA-256, extracted to 199 reviewed `file*.h5` volumes, and completed the determi
 128-volume data smoke at code commit `2cc14e7`. All 128 volumes decoded, the 103/25
 volume-level train/validation split had zero overlap, all 1,605 selected boxes mapped
 to present slices, and no box was discarded after clamping. Sixteen private overlays
-were generated. One representative overlay was transferred through a loopback-only
-SSM tunnel and passed visual alignment; the other 15 remain on the private instance
-pending explicit transfer authorization. This validates the data path but does not
-yet satisfy the GPU utilization, peak-memory, throughput, or projected-runtime part
-of gate 5. The tracked partial-gate result is
+were generated, transferred through a loopback-only SSM tunnel after explicit user
+authorization, and verified against their manifest hashes. All 16 passed visual
+alignment with no systematic flip, mirror, slice offset, or coordinate shift. This
+validates the data and visual paths but does not yet satisfy the GPU utilization,
+peak-memory, throughput, or projected-runtime part of gate 5. The tracked gate result is
 [`P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
 
 The private secret entry notebook is

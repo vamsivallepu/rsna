@@ -2,7 +2,7 @@
   "schema_version": 1,
   "experiment_id": "P6-B-SMOKE",
   "run_id": "P6B-FASTMRI-PLUS-HDF5-SMOKE-v1",
-  "status": "programmatic_validation_passed_visual_review_pending",
+  "status": "data_and_visual_validation_passed_gpu_smoke_pending",
   "date": "2026-09-04",
   "description": "Private AWS audit of official fastMRI single-coil validation HDF5 volumes and fastMRI+ box alignment",
   "code_commit": "2cc14e7",
@@ -57,11 +57,14 @@
   },
   "visual_gate": {
     "overlays_generated": 16,
-    "overlays_reviewed": 1,
-    "overlays_passing": 1,
-    "representative_review": "file1000735 slice 19: anatomy orientation coherent and box aligned over the proximal tibial lesion region",
-    "remaining_overlays": 15,
-    "full_private_transfer_authorized": false
+    "overlays_reviewed": 16,
+    "overlays_passing": 16,
+    "review": "All overlays had coherent anatomy orientation and boxes aligned to the labeled meniscus, ligament, cartilage, marrow, effusion, or cyst region; no systematic flip, mirror, slice offset, or coordinate shift was observed",
+    "remaining_overlays": 0,
+    "full_private_transfer_authorized": true,
+    "private_local_review_path": "/tmp/p6-overlays-review",
+    "transferred_bytes": 4913365,
+    "all_transferred_hashes_match_manifest": true
   },
   "artifacts": {
     "remote_path": "/mnt/rsna/outputs/experiments/P6-B-hdf5-smoke-2cc14e7",
@@ -72,5 +75,5 @@
     "ssm_extract_command_id": "adce2f34-b09b-4ba3-ae42-efb89afdc53c",
     "ssm_smoke_command_id": "6b4b8aaf-f727-43ef-bee1-d8bc25a97998"
   },
-  "decision": "The official archive, identities, hashes, geometry, decode path, split isolation, and box sanitation pass. One representative overlay passes visual review. Do not start full localization pretraining until the remaining private overlays are explicitly authorized for local review and a GPU training smoke measures utilization, memory, throughput, and projected runtime."
+  "decision": "The official archive, identities, hashes, geometry, decode path, split isolation, box sanitation, and all 16 visual overlays pass. Advance to the bounded GPU localization smoke; do not start full source pretraining until it measures acceptable utilization, memory, throughput, loss reduction, and projected runtime."
 }
