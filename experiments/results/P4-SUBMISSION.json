@@ -2,13 +2,22 @@
   "schema_version": 1,
   "experiment_id": "P4-SUBMISSION",
   "run_id": "P4-BLEND-SUBMISSION-v1",
-  "status": "pending",
+  "status": "scored",
   "date": "2026-09-03",
+  "completed_date": "2026-09-04",
   "code_commit": "d1e9f1548cb0e2c0844eed5dc8f8a58bc21dde22",
   "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p4-blend-submission",
   "kaggle_kernel_version": 3,
   "competition_submission_ref": 55990677,
   "submission_description": "P2 plus five-fold P4 equal-rank blend, validated canary v3, commit d1e9f15",
+  "leaderboard": {
+    "public_score": 0.916,
+    "p2_public_score": 0.908,
+    "public_score_delta": 0.008,
+    "leading_public_score_at_verification": 0.952,
+    "gap_to_leader": 0.036,
+    "private_score": null
+  },
   "source_oof": {
     "p2_macro_auc": 0.8911253543643616,
     "p4_macro_auc": 0.89116089660126,
@@ -51,5 +60,5 @@
       "decision": "Do not submit: three-study batching was slower and projected beyond nine hours."
     }
   },
-  "decision": "Submit exact Kaggle kernel version 3. Kaggle accepted reference 55990677; wait for the hidden rerun and public score before judging leaderboard value."
+  "decision": "Submission 55990677 completed at public score 0.916, improving P2 by 0.008 and reducing the observed gap to the 0.952 leader from 0.044 to 0.036. Retain the fixed P2+P4 rank blend as the current submitted leader and proceed to P5 without tuning this blend on the public leaderboard."
 }

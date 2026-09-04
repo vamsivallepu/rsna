@@ -24,8 +24,8 @@ public dependencies are kept locally and are excluded from version control.
    **0.8912**, while the predeclared equal-rank P2+P4 blend reached **0.8958** and
    passed its promotion gate. Only the blend is promoted; P2 remains a required
    member. Its optimized six-model submission canary passed with a projected
-   **7.28-hour** hidden runtime, and submission `55990677` is pending. P5 is the next
-   model-research stage.
+   **7.28-hour** hidden runtime, and submission `55990677` scored **0.916** publicly,
+   improving P2 by **0.008**. P5 is the next model-research stage.
 8. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

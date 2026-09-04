@@ -70,4 +70,5 @@ weights. It reproduced the exact same canary `submission.csv`, passed the indepe
 validator, and reduced the three-study inference segment to `1.0076` minutes. The
 linear 1,300-study projection is `7.28` hours, leaving `1.72` hours below the limit.
 Exact notebook version 3 from commit `d1e9f15` was submitted as reference `55990677`;
-its score is pending.
+it completed with public score `0.916`, improving canonical P2 by `0.008`. The live
+leader remained `0.952` at verification, leaving a `0.036` public gap.

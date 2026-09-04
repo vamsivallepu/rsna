@@ -101,6 +101,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P2-SUB | **validated / scored** | Five-head P2 hidden-test inference and `submission.csv` | Public leaderboard 0.908; both identical submissions completed successfully |
 | P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
+| P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5–P9 | queued | Foundation, auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
 ## Completed P2 run
@@ -357,9 +358,12 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   1,300 hidden studies, leaving `1.72` hours or 19% below the nine-hour ceiling.
   Version 3 passes the release gate.
 - **Leaderboard submission:** exact notebook version 3 from commit `d1e9f15` was
-  accepted as competition submission `55990677` on 2026-09-03. It is `PENDING` while
-  Kaggle performs the hidden rerun; four submission slots remained after acceptance.
-  Tracked evidence: [`experiments/results/P4-SUBMISSION.json`](../experiments/results/P4-SUBMISSION.json).
+  accepted as competition submission `55990677` on 2026-09-03 and completed on
+  2026-09-04 with public score `0.916`. This improves canonical P2's `0.908` by
+  `0.008`. The verified live leader remains `0.952`, reducing our observed gap from
+  `0.044` to `0.036`. Retain this as the current submitted leader and do not tune the
+  fixed blend from public feedback. Tracked evidence:
+  [`experiments/results/P4-SUBMISSION.json`](../experiments/results/P4-SUBMISSION.json).
 
 ## Previous completed run
 
