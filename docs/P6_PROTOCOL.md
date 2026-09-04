@@ -142,6 +142,34 @@ single-coil training archive may therefore be staged for full source pretraining
 The tracked result is
 [`P6-B-GPU-SMOKE-v2.json`](../experiments/results/P6-B-GPU-SMOKE-v2.json).
 
+## Frozen full-source execution
+
+Before the training archive completes, the full source run is frozen as follows:
+
+- the official archive boundary is the split: 973 training volumes and 199 held-out
+  validation volumes, together matching all 1,172 reviewed file IDs with zero overlap;
+- use every unique annotated slice plus four fixed 20–80% depth samples from each
+  reviewed volume with no annotation row; exclude the five volumes containing only
+  study-level artifact rows rather than treating them as negatives;
+- sanitize all 16,154 released boxes under the audited rules, retaining 16,153 and
+  discarding the single zero-area box after clamping;
+- train the exact 73,881,264-parameter P2 CoAtNet-RMLP2 backbone and the validated
+  985,859-parameter four-level class-agnostic FPN for eight epochs at batch 8;
+- use FP16, channels-last tensors, fused AdamW, OneCycleLR, backbone learning rate
+  `3e-5`, head learning rate `3e-4`, weight decay `0.02`, background weight `0.10`,
+  and box-size loss weight `0.10`;
+- allow intensity gain/offset only. No geometric or left/right augmentation is used,
+  so the audited box geometry cannot drift;
+- select the checkpoint by minimum held-out-volume localization loss, with top-K
+  lesion-center recall within radius two as the deterministic tie-breaker;
+- save the full backbone and localization head separately as safetensors, hash every
+  input/output manifest, and require the independent validator to prove archive
+  coverage, zero volume leakage, box counts, selection replay, finite tensors, and
+  strict state-key/shape compatibility with the unchanged P2 backbone.
+
+The full run cannot change these settings in response to its validation curve. Any
+change would be a separately declared repeat rather than an overwrite of P6-B v1.
+
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
 availability and validates the official host/package path; it does not display the

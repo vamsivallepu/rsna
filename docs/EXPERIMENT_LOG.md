@@ -119,6 +119,13 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   `knee_singlecoil_train.tar.xz` download to encrypted persistent EBS. Expected size
   is 78,016,052,604 bytes and SHA-256 is
   `1e8ab7f602bb0fea649736020aa9317ebf3ba9c417c211b286b85c81a28bce5f`.
+- **Frozen full run:** eight epochs, batch 8, official 973/199 archive split, every
+  unique positive slice, four fixed slices per reviewed negative volume, five
+  artifact-only volumes excluded, intensity-only augmentation, FP16/channels-last,
+  fused AdamW plus OneCycleLR, `3e-5` backbone LR, and `3e-4` FPN LR. Minimum
+  held-out localization loss selects the backbone; top-K lesion-center recall at
+  radius two breaks exact ties. The separate validator must replay selection and
+  prove strict P2 backbone compatibility before downstream transfer.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
   Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
   First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).
