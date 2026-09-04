@@ -125,6 +125,11 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Decision:** pass the speed, memory, utilization, model-integrity, and numerical
   gates. Proceed to the full frozen feature and fold-safe OOF run. LoRA remains
   prohibited until the frozen representation passes its separate signal gate.
+- **Full run version 1:** failed at 9.6 seconds, before GPU allocation or input
+  access, with `ModuleNotFoundError: p5_orthofoundation_speed_smoke`. Kaggle's
+  script upload retained only the declared `code_file` and omitted the builder's
+  helper sidecar. This is a packaging failure with no experimental result. Version
+  2 embeds the same canonical helper source into one compiled Kaggle script.
 
 ## Completed P2 run
 

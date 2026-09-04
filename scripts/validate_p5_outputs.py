@@ -42,7 +42,7 @@ def main() -> int:
     root = args.output_dir
     manifest = json.loads((root / "p5_manifest.json").read_text())
     assert manifest["run_id"] == "P5A-ORTHOFOUNDATION-FROZEN-v1"
-    assert manifest["execution_revision"] == "p5a_frozen_t4x2_full_v1"
+    assert manifest["execution_revision"] == "p5a_frozen_t4x2_full_v2"
     assert manifest["studies"] == 4_407
     assert manifest["pseudo_studies"] == 4_349
     assert manifest["expert_studies"] == 58

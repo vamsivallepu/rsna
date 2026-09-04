@@ -28,7 +28,7 @@ import p5_orthofoundation_speed_smoke as common
 
 
 RUN_ID = common.RUN_ID
-EXECUTION_REVISION = "p5a_frozen_t4x2_full_v1"
+EXECUTION_REVISION = "p5a_frozen_t4x2_full_v2"
 FOLD_SEED = 20260831
 N_FOLDS = 5
 PSEUDO_EPOCHS = 40

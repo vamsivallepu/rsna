@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 
 
@@ -17,8 +16,19 @@ def main() -> int:
         if not path.is_file():
             raise FileNotFoundError(path)
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(SOURCE, OUTPUT_ROOT / "rsna-p5-orthofoundation-frozen.py")
-    shutil.copyfile(COMMON, OUTPUT_ROOT / "p5_orthofoundation_speed_smoke.py")
+    source = SOURCE.read_text()
+    needle = "import p5_orthofoundation_speed_smoke as common\n"
+    if source.count(needle) != 1:
+        raise ValueError("unexpected P5 full source import structure")
+    common_source = COMMON.read_text()
+    bootstrap = (
+        "import types as _p5_types\n"
+        "common = _p5_types.ModuleType('p5_orthofoundation_embedded_common')\n"
+        "common.__file__ = '<embedded-p5-common>'\n"
+        f"exec(compile({common_source!r}, common.__file__, 'exec'), common.__dict__)\n"
+    )
+    output = OUTPUT_ROOT / "rsna-p5-orthofoundation-frozen.py"
+    output.write_text(source.replace(needle, bootstrap, 1))
     print(OUTPUT_ROOT)
     return 0
 
