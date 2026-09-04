@@ -58,6 +58,7 @@ The URL will remain outside source code, notebook output, Git, and cache manifes
             """
 from __future__ import annotations
 
+import json
 import platform
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -98,6 +99,9 @@ result = {
     "secret_value_logged": False,
     "download_started": False,
 }
+if ON_KAGGLE:
+    output_path = Path("/kaggle/working/p6_secret_check.json")
+    output_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\\n")
 result
 """
         ),
@@ -108,6 +112,8 @@ result
 - Before the secret is enabled: `secret_available` is `False`; this is expected.
 - After it is enabled: rerun the cell and confirm `secret_available` is `True`.
 - Do not display the secret or paste it into another cell.
+- The notebook writes only the boolean result above to `p6_secret_check.json` so it
+  can be verified through the Kaggle CLI; the URL is never included.
 - Tell Codex once the secret is enabled. The subsequent staging version will add
   streaming download, annotation/hash validation, DICOM overlay checks, and the
   128-volume CPU cache smoke.

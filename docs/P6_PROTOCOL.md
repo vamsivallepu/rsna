@@ -118,6 +118,14 @@ availability and validates the official host/package path; it does not display t
 value or start a download. The required secret name is
 `FASTMRI_KNEE_DICOM_BATCH2_URL`.
 
+Kaggle API/CLI-pushed runs do not inherit editor-attached secrets. Versions 3 and 4
+therefore returned `ConnectionError` from `UserSecretsClient` despite the enabled
+editor toggle. An authenticated interactive execution on 2026-09-04 passed all three
+checks: the secret was available, its host was the official fastMRI S3 host, and its
+path selected `knee_DICOMs_batch2.tar.xz`; the value was neither printed nor written.
+The cache smoke must be launched through the authenticated Kaggle editor rather than
+`kaggle kernels push`.
+
 Promotion requires a positive matched change on report-grouped pseudo validation,
 followed by at least `+0.003` macro AUC in expert OOF or a positive fixed 25% rank-blend
 delta versus P2+P4, paired-bootstrap probability of improvement at least `0.80`, at

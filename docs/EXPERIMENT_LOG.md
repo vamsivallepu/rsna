@@ -60,7 +60,13 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging` version 1 was pushed on
   2026-09-04. It checks only whether `FASTMRI_KNEE_DICOM_BATCH2_URL` is enabled and
   whether it targets the official host and expected package; it never prints the
-  secret or downloads data. Streaming cache code follows after the secret is enabled.
+  secret or downloads data. CLI-pushed validation versions 3 and 4 both returned a
+  Kaggle `ConnectionError` because API-launched runs do not inherit editor-attached
+  secrets. The same cell then ran successfully in the authenticated editor session:
+  `secret_available`, `secret_official_host`, and `secret_expected_package` were all
+  `True`, while `secret_value_logged` and `download_started` remained `False`. Future
+  secret-dependent cache runs must be started from that editor session or with its
+  **Save & Run All** flow, not through `kaggle kernels push`.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
 
 ### B04 target-wise OOF AUC
