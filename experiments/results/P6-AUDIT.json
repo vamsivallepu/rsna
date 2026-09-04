@@ -5,7 +5,7 @@
   "status": "validated_blocked_on_authorized_images",
   "date": "2026-09-04",
   "description": "Provenance, schema, target-transfer, and image-access audit for fastMRI+ knee localization supervision",
-  "code_commit": null,
+  "code_commit": "139b16f",
   "source": {
     "repository": "https://github.com/microsoft/fastmri-plus",
     "commit": "67ed9a68ee33d3197f93893e8125688470c4a577",
