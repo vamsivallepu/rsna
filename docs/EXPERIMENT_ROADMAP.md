@@ -53,7 +53,7 @@ later expensive stage advances only after its prerequisites pass.
 | 3 | **P3** | **rejected** | DINOv2-small at 336 px with fuller coverage, final-two-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse `P2-CACHE-v1` | Failed: 0.805988 OOF and 0.863908 fixed rank blend both underperformed P2 |
 | 4 | **P4** | **validated / blend promoted / scored** | Five end-to-end folds of the winning P2 configuration | Five Kaggle T4 x2 jobs; `P2-CACHE-v1` | Fixed P2+P4 blend passed at 0.895821 OOF and scored 0.916 public, +0.008 over P2 |
 | 5 | **P5** | **validated / rejected** | OrthoFoundation-L frozen 2D-slice probe; limited LoRA only if the frozen probe is useful | Kaggle T4 x2; reuse `P2-CACHE-v1` | Failed: 0.768822 OOF and 0.886740 fixed blend; LoRA advance gate failed |
-| 6 | **P6** | **active / staging** | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Annotation audit and official-access confirmation complete; private Kaggle image staging next | P6-A passed; P6-B must securely stage official images, then matched ROI transfer must improve held-out pseudo groups |
+| 6 | **P6** | **active / AWS staging** | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Private on-demand AWS `g6.2xlarge` with persistent EBS; official DICOM batch 2 staging | P6-A passed; P6-B must pass filename, geometry, overlay, and 128-volume smoke gates before full source training |
 | 7 | **P7** | queued | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
 | 8 | **P8** | queued | Noisy-student relabelling and a rank ensemble of genuinely diverse finalists | Kaggle GPU | Each member independently clears validation; ensemble diversity is measured |
 | 9 | **P9** | queued | OrthoDiffusion or compact 3D specialist for complementary targets | Kaggle GPU; high cost | Pursue only if 2.5D finalists plateau and licensing/runtime are acceptable |
@@ -191,8 +191,10 @@ validates 16,154 boxes over 974 annotated volumes plus a 1,172-volume reviewed l
 The annotations are MIT-licensed, but the underlying MRI images require separate
 official fastMRI agreement and access. The user's official NYU download email confirms
 that access; its temporary URLs are not tracked. P6 still rejects unofficial Kaggle
-image mirrors and direct CSV-only coordinate priors. After the official images are
-securely staged in a private Kaggle runtime, pretrain the P2 CoAtNet backbone on
+image mirrors and direct CSV-only coordinate priors. Kaggle secret inheritance made
+repeatable automated runs unnecessarily fragile, so P6 moved to the private AWS host
+recorded in [`AWS_P6_RUNBOOK.md`](AWS_P6_RUNBOOK.md). After the official images are
+checksum-verified on persistent EBS, pretrain the P2 CoAtNet backbone on
 class-agnostic lesion localization, then compare it with the original ImageNet
 initialization under the unchanged report-grouped pseudo and expert-OOF contract.
 

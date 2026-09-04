@@ -24,10 +24,10 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 
 ## Active experiment
 
-### P6-A — fastMRI+ annotation and access audit
+### P6 — fastMRI+ localization transfer
 
-- **Status:** annotation and official-access gates validated; secure Kaggle image
-  staging is next.
+- **Status:** P6-A validated; P6-B official DICOM batch 2 and reproducible GPU
+  environment are staging on private AWS compute.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -65,8 +65,21 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   secrets. The same cell then ran successfully in the authenticated editor session:
   `secret_available`, `secret_official_host`, and `secret_expected_package` were all
   `True`, while `secret_value_logged` and `download_started` remained `False`. Future
-  secret-dependent cache runs must be started from that editor session or with its
-  **Save & Run All** flow, not through `kaggle kernels push`.
+  Kaggle secret-dependent runs would need that editor session rather than
+  `kaggle kernels push`.
+- **AWS execution decision (2026-09-04):** move P6 execution to the private on-demand
+  `g6.2xlarge` in `ap-south-1` documented in
+  [`AWS_P6_RUNBOOK.md`](AWS_P6_RUNBOOK.md). It has one 24 GB NVIDIA L4, 32 GiB host
+  memory, SSM-only access, encrypted persistent EBS, a least-privilege instance role,
+  and no inbound security-group rules. This removes Kaggle runtime and secret
+  inheritance friction without changing the frozen source task, matched P2 control,
+  or promotion gate.
+- **AWS data state:** both temporary NYU URLs are encrypted SSM SecureStrings and are
+  never logged. The pinned public annotations passed their official SHA-256 checks on
+  the instance. DICOM batch 2 is downloading resumably to persistent EBS and must
+  match official SHA-256 `91efa0626c1ce7af68915bbd0589fc02f1aab5101569abdfbe7815fa265d5e89`
+  before extraction. Batch 1 is deliberately deferred until the 128-volume smoke
+  passes.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
 
 ### B04 target-wise OOF AUC

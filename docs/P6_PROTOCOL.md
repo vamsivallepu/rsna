@@ -104,13 +104,14 @@ agreement/access confirmation gate is satisfied. Its temporary signed URLs are n
 stored in Git, tracked artifacts, notebook source, or logs. P6-B may launch only when
 the remaining checks pass:
 
-1. the selected official download URL is supplied to the private Kaggle runtime as a
-   Kaggle Secret rather than embedded in code;
+1. the selected official download URL is retrieved only from an encrypted AWS SSM
+   SecureString by the least-privilege EC2 role rather than embedded in code;
 2. source filenames match the official reviewed list and remain private;
 3. annotation and reviewed-list hashes match P6-A;
-4. overlays pass in the exact DICOM coordinate frame or after the documented HDF5
-   up/down flip, depending on the selected official package;
-5. a 128-volume smoke stays within Kaggle memory/runtime limits.
+4. the official DICOM archive matches NYU's published SHA-256 and overlays pass in
+   the exact released DICOM coordinate frame;
+5. a 128-volume smoke establishes decoding correctness, memory use, GPU utilization,
+   throughput, and a viable projected full runtime.
 
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
@@ -123,8 +124,13 @@ therefore returned `ConnectionError` from `UserSecretsClient` despite the enable
 editor toggle. An authenticated interactive execution on 2026-09-04 passed all three
 checks: the secret was available, its host was the official fastMRI S3 host, and its
 path selected `knee_DICOMs_batch2.tar.xz`; the value was neither printed nor written.
-The cache smoke must be launched through the authenticated Kaggle editor rather than
-`kaggle kernels push`.
+The cache smoke would have required the authenticated Kaggle editor rather than
+`kaggle kernels push`. On 2026-09-04 execution moved to the private AWS environment
+described in [`AWS_P6_RUNBOOK.md`](AWS_P6_RUNBOOK.md): an on-demand `g6.2xlarge`
+with SSM-only access and persistent encrypted EBS. The signed NYU links are encrypted
+SSM parameters, the official archive hashes are checked before extraction, and no
+fastMRI image is copied into Git, public S3, or a Kaggle Dataset. This changes the
+execution environment, not the frozen source task, matched control, or promotion gate.
 
 Promotion requires a positive matched change on report-grouped pseudo validation,
 followed by at least `+0.003` macro AUC in expert OOF or a positive fixed 25% rank-blend

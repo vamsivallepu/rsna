@@ -43,6 +43,7 @@ cached_data/
 *.tar
 *.tar.gz
 *.tgz
+*.xz
 *.7z
 
 # Python environments, bytecode, packaging, and test caches
