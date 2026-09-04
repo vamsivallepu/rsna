@@ -107,7 +107,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 
 ## Active P5 run
 
-- **Run ID:** `P5A-ORTHOFOUNDATION-FROZEN-v2`.
+- **Run ID:** `P5A-ORTHOFOUNDATION-FROZEN-v1`.
 - **Frozen protocol:** [`P5_PROTOCOL.md`](P5_PROTOCOL.md).
 - **Speed smoke version 1:** failed before inference because the official released
   checkpoint stores backbone tensors under `backbone.*` while the raw DINOv3 model
@@ -130,9 +130,15 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   script upload retained only the declared `code_file` and omitted the builder's
   helper sidecar. This is a packaging failure with no experimental result. Version
   2 embeds the same canonical helper source into one compiled Kaggle script.
-- **Full run version 2:** launched on 2026-09-04 with two T4 GPUs. Kaggle reports
-  `RUNNING`; the run has passed the 9.6-second point where version 1 failed, but no
-  experimental result is recorded until the artifacts complete and validate.
+- **Full run version 2:** the self-contained bundle passed startup and all input
+  integrity checks. Both T4s sustained 99–100% utilization; rank 1 completed
+  2,203/2,203 studies and rank 0 reached 2,000/2,204. The launcher had mistakenly
+  supplied CLI `--timeout 1200`, so Kaggle returned `CANCEL_ACKNOWLEDGED` at about
+  20 minutes. This was an external runtime cap, not a code or data failure, and its
+  incomplete artifacts are not used.
+- **Full run version 3:** relaunched on 2026-09-04 with the unchanged self-contained
+  code and no CLI timeout. Kaggle reports `RUNNING`; no experimental result is
+  recorded until the completed artifacts pass independent validation.
 
 ## Completed P2 run
 
