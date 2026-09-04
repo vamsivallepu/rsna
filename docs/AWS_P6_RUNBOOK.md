@@ -125,6 +125,14 @@ points to the active immutable source snapshot.
 7. Transfer the selected backbone into the unchanged P2 contract and run the matched
    ImageNet-initialized control.
 
+The version-2 localization GPU smoke on 2026-09-04 passed all five execution gates:
+99.44% mean GPU utilization, 31.68 images/s, 6.89 GiB peak allocated memory, 79.21%
+fixed-batch loss reduction, and a 43.66-minute projection for eight source epochs.
+The projection excludes the one-time 78.02 GB training archive download and
+extraction. The official single-coil training archive may now be staged; it must
+match 78,016,052,604 bytes and SHA-256
+`1e8ab7f602bb0fea649736020aa9317ebf3ba9c417c211b286b85c81a28bce5f`.
+
 The experimental promotion gate remains unchanged; moving compute from Kaggle to AWS
 does not permit selecting architecture, weights, or hyperparameters on leaderboard
 feedback.

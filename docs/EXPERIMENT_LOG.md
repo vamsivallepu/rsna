@@ -21,14 +21,15 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P1-C | validated | Official-default asymmetric loss with fixed soft labels | 0.8000455 purged expert OOF | Do not promote; positive point estimate is inconclusive and Fracture declined |
 | P1-D | validated | Global regularization screen and matched repeated seeds | Three-seed candidate/default ensemble both 0.7982239 | No regularization promoted; P1 closed with P0-B configuration |
 | P6-A | validated | fastMRI+ provenance, schema, access, and transfer audit | Official annotation hashes, release invariants, and user access validated | P6-B advances to secure private Kaggle image staging; unofficial mirrors rejected |
-| P6-B-SMOKE | running | Official single-coil HDF5 identity, geometry, split, and overlay smoke | 128/128 volumes decoded; 1,605/1,605 boxes retained; zero split overlap; 16/16 overlays visually passed | Run measured GPU localization smoke before full source pretraining |
+| P6-B-SMOKE | validated | Official single-coil HDF5 data, visual, and localization GPU smoke | 128/128 decoded; 16/16 overlays passed; 99.44% GPU; 31.68 images/s; 6.89 GiB peak | All gates passed; stage official training archive for source pretraining |
 
 ## Active experiment
 
 ### P6 — fastMRI+ localization transfer
 
-- **Status:** P6-A and P6-B's HDF5 data/visual smoke passed on private AWS. The GPU
-  utilization/runtime smoke remains open.
+- **Status:** P6-A and P6-B's HDF5 data, visual, and GPU smoke gates passed on
+  private AWS. The official single-coil training archive is downloading for full
+  source pretraining.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -106,9 +107,22 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   evidence. Version 2 starts workers before CUDA/model construction, monitors only
   timed optimizer steps, compares fixed-batch loss in evaluation mode over 30 steps,
   and uses a safer `3e-4` localization-head learning rate.
+- **GPU smoke version 2:** commit `2888ee4` passed every gate. Batch 8 sustained
+  31.68 images/s with 99.44% mean GPU utilization (99% p10, 100% max), 6.89 GiB
+  peak allocated memory, and finite losses. The evaluation-mode fixed-batch loss fell
+  from 3.4640 to 0.7201 (`79.21%`), and the unchanged throughput projects 82,984
+  images over eight source epochs to 43.66 minutes. This estimate excludes the
+  one-time training-archive download and extraction. SSM command
+  `71de23d3-270d-4c02-99c1-fbf9890366ec` produced the validated manifest.
+- **Full-source staging:** after version 2 passed, SSM command
+  `1d6ef4e8-a253-4192-a8e7-a4b7c81c23fd` started the resumable official
+  `knee_singlecoil_train.tar.xz` download to encrypted persistent EBS. Expected size
+  is 78,016,052,604 bytes and SHA-256 is
+  `1e8ab7f602bb0fea649736020aa9317ebf3ba9c417c211b286b85c81a28bce5f`.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
   Partial P6-B gate result: [`experiments/results/P6-B-SMOKE.json`](../experiments/results/P6-B-SMOKE.json).
   First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).
+  Validated GPU smoke: [`experiments/results/P6-B-GPU-SMOKE-v2.json`](../experiments/results/P6-B-GPU-SMOKE-v2.json).
 
 ### B04 target-wise OOF AUC
 

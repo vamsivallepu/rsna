@@ -133,6 +133,15 @@ worker startup and the fixed-batch loss comparison used training-mode running
 statistics. Version 2 corrects those measurements without changing the source task,
 cohort, backbone, FPN, loss, or promotion contract.
 
+GPU smoke version 2 at commit `2888ee4` passed every gate. It sustained 31.68
+images/s at batch 8 with 99.44% mean GPU utilization (99% p10), 6.89 GiB peak
+allocated memory, finite losses, and a 79.21% fixed-batch loss reduction. At that
+measured rate, 82,984 images across eight projected source epochs take approximately
+43.66 minutes, excluding one-time archive download and extraction. The official
+single-coil training archive may therefore be staged for full source pretraining.
+The tracked result is
+[`P6-B-GPU-SMOKE-v2.json`](../experiments/results/P6-B-GPU-SMOKE-v2.json).
+
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
 availability and validates the official host/package path; it does not display the

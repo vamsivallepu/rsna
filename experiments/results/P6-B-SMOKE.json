@@ -2,7 +2,7 @@
   "schema_version": 1,
   "experiment_id": "P6-B-SMOKE",
   "run_id": "P6B-FASTMRI-PLUS-HDF5-SMOKE-v1",
-  "status": "data_and_visual_validation_passed_gpu_smoke_pending",
+  "status": "data_visual_and_gpu_smokes_validated",
   "date": "2026-09-04",
   "description": "Private AWS audit of official fastMRI single-coil validation HDF5 volumes and fastMRI+ box alignment",
   "code_commit": "2cc14e7",
@@ -75,5 +75,5 @@
     "ssm_extract_command_id": "adce2f34-b09b-4ba3-ae42-efb89afdc53c",
     "ssm_smoke_command_id": "6b4b8aaf-f727-43ef-bee1-d8bc25a97998"
   },
-  "decision": "The official archive, identities, hashes, geometry, decode path, split isolation, box sanitation, and all 16 visual overlays pass. Advance to the bounded GPU localization smoke; do not start full source pretraining until it measures acceptable utilization, memory, throughput, loss reduction, and projected runtime."
+  "decision": "The official archive, identities, hashes, geometry, decode path, split isolation, box sanitation, and all 16 visual overlays pass. GPU-smoke v2 also passed utilization, memory, throughput, overfit, and projected-runtime gates; advance to official single-coil training data staging and full source pretraining."
 }
