@@ -163,8 +163,9 @@ def cache_part(part: str) -> dict[str, object]:
 
 
 class GpuTelemetry:
-    def __init__(self, output_path: Path) -> None:
+    def __init__(self, output_path: Path, interval_seconds: int = 1) -> None:
         self.output_path = output_path
+        self.interval_seconds = interval_seconds
         self.stop = threading.Event()
         self.thread: threading.Thread | None = None
 
@@ -199,7 +200,7 @@ class GpuTelemetry:
                 print({"P5_GPU": rows}, flush=True)
             except Exception as error:
                 print({"P5_GPU_TELEMETRY_ERROR": repr(error)}, flush=True)
-            self.stop.wait(1)
+            self.stop.wait(self.interval_seconds)
 
     def close(self) -> None:
         self.stop.set()

@@ -52,7 +52,7 @@ later expensive stage advances only after its prerequisites pass.
 | 2 | **P2** | **validated / promoted / scored** | Strong compact convolutional baseline: CoAtNet-RMLP2 at 384 px with fuller physical slice coverage | Kaggle CPU cache + GPU training; `P2-CACHE-v1` | Passed at 0.891125 OOF with +0.094337 over P0-B; first public leaderboard score 0.908 |
 | 3 | **P3** | **rejected** | DINOv2-small at 336 px with fuller coverage, final-two-block adaptation, and hierarchical diagnosis-query MIL | Kaggle GPU; reuse `P2-CACHE-v1` | Failed: 0.805988 OOF and 0.863908 fixed rank blend both underperformed P2 |
 | 4 | **P4** | **validated / blend promoted / scored** | Five end-to-end folds of the winning P2 configuration | Five Kaggle T4 x2 jobs; `P2-CACHE-v1` | Fixed P2+P4 blend passed at 0.895821 OOF and scored 0.916 public, +0.008 over P2 |
-| 5 | **P5** | **active: P5-A speed gate** | OrthoFoundation-L frozen 2D-slice probe; limited LoRA only if the frozen probe is useful | Kaggle T4 x2; reuse `P2-CACHE-v1` | MIT + DINOv3 terms audited; full run follows a 128-study speed gate; LoRA remains gated |
+| 5 | **P5** | **active: P5-A full run** | OrthoFoundation-L frozen 2D-slice probe; limited LoRA only if the frozen probe is useful | Kaggle T4 x2; reuse `P2-CACHE-v1` | Speed gate passed at 159.45 images/s and 1.85 GiB/GPU; frozen OOF signal gate pending |
 | 6 | **P6** | queued | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Kaggle GPU | Dataset agreement/license verified and ROI pretraining improves held-out pseudo groups |
 | 7 | **P7** | queued | Multilingual report-image contrastive auxiliary loss during training | Kaggle GPU | Image-only inference preserved; no report identity leakage; robust improvement |
 | 8 | **P8** | queued | Noisy-student relabelling and a rank ensemble of genuinely diverse finalists | Kaggle GPU | Each member independently clears validation; ensemble diversity is measured |
@@ -178,6 +178,10 @@ but encodes 32 individual MRI slices per study with the released OrthoFoundation
 ViT-L/16 checkpoint. The backbone remains frozen; a report-group-safe hierarchical
 MIL head determines whether this knee-MRI-specific representation adds signal to the
 current P2+P4 blend. A two-T4 speed/memory smoke precedes the full feature extraction.
+The corrected version-2 smoke passed: both T4s reached 100% utilization during
+extraction, peak allocation was 1.85 GiB per rank, and the measured two-GPU rate of
+159.45 images/s projects the 4,407-study feature pass to 14.74 minutes. P5-A may
+therefore proceed to the full frozen extraction and fold-safe OOF head evaluation.
 
 ## Stop, go, and reprioritization rules
 

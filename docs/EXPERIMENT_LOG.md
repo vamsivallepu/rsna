@@ -102,8 +102,29 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
-| P5 | **active / speed gate** | OrthoFoundation-L frozen single-slice feature probe | Protocol frozen; exact 1.213 GB checkpoint and two-T4 extraction path under smoke validation |
+| P5 | **active / full frozen run** | OrthoFoundation-L frozen single-slice feature probe | V2 speed gate passed: 159.45 images/s, 14.74 min full-feature projection, 1.85 GiB/rank; OOF pending |
 | P6–P9 | queued | Auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
+
+## Active P5 run
+
+- **Run ID:** `P5A-ORTHOFOUNDATION-FROZEN-v1`.
+- **Frozen protocol:** [`P5_PROTOCOL.md`](P5_PROTOCOL.md).
+- **Speed smoke version 1:** failed before inference because the official released
+  checkpoint stores backbone tensors under `backbone.*` while the raw DINOv3 model
+  expects unprefixed keys. The exact checkpoint hash and provenance had already
+  passed; no metric or speed result was produced.
+- **Speed smoke version 2:** normalized that single namespace deterministically,
+  asserted exact equality of checkpoint/model key sets, then loaded strictly. The
+  remote run completed and the downloaded artifacts independently passed
+  [`validate_p5_speed_smoke.py`](../scripts/validate_p5_speed_smoke.py).
+- **Measured result:** 128 studies and 4,096 slices completed at 159.4534 images/s
+  across two T4s. Full 4,407-study feature extraction projects to 14.7404 minutes;
+  1,300-study hidden feature inference projects to 4.3482 minutes. Peak allocated
+  memory was 1,847.16 MiB on each rank. Both GPUs reached 100% utilization during
+  extraction, all features/losses were finite, and five head backward updates passed.
+- **Decision:** pass the speed, memory, utilization, model-integrity, and numerical
+  gates. Proceed to the full frozen feature and fold-safe OOF run. LoRA remains
+  prohibited until the frozen representation passes its separate signal gate.
 
 ## Completed P2 run
 

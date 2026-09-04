@@ -22,6 +22,8 @@
 | P4 CoAtNet E2E fold 3 | [rsna-knee-p4-coatnet-e2e-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-3) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.461624, 140.98 min representation |
 | P4 CoAtNet E2E fold 4 | [rsna-knee-p4-coatnet-e2e-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-coatnet-e2e-fold-4) | GPU T4 x2 | Version 1 complete and independently validated; epoch 8, BCE 0.464586, 126.86 min representation |
 | P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | V3 validated; submission `55990677` complete with public score 0.916, +0.008 over P2 |
+| P5 OrthoFoundation speed smoke | [rsna-knee-p5-orthofoundation-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-speed-smoke) | GPU T4 x2 | V2 independently passed: 159.45 images/s, 14.74 min full-feature projection, 1,847 MiB/rank, both GPUs 100% peak |
+| P5 OrthoFoundation frozen | [rsna-knee-p5-orthofoundation-frozen](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen) | GPU T4 x2 | Full P5-A frozen feature and fold-safe OOF run prepared; launch pending |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -115,6 +117,16 @@ cache-signature hash, and array hashes before training.
   (ignored by Git); aggregate validation outputs:
   `outputs/experiments/P4-coatnet-e2e-oof/` (ignored by Git); compact validated
   result: `experiments/results/P4.json`
+- P5 canonical sources, builders, and validators:
+  `scripts/p5_orthofoundation_speed_smoke.py`,
+  `scripts/p5_orthofoundation_frozen.py`, `scripts/build_p5_speed_smoke.py`,
+  `scripts/build_p5_orthofoundation_frozen.py`,
+  `scripts/validate_p5_speed_smoke.py`, and `scripts/validate_p5_outputs.py`
+- P5 Kaggle bundles: `kaggle/rsna-p5-orthofoundation-speed-smoke/` and
+  `kaggle/rsna-p5-orthofoundation-frozen/`; frozen protocol:
+  `docs/P5_PROTOCOL.md`; downloaded validated smoke outputs:
+  `outputs/kaggle/rsna-p5-orthofoundation-speed-smoke-v2/` (ignored by Git);
+  compact tracked result: `experiments/results/P5-SPEED-SMOKE.json`
 
 All five P4 folds completed and independently passed their artifact, split, report
 purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively
