@@ -25,8 +25,11 @@ public dependencies are kept locally and are excluded from version control.
    passed its promotion gate. Only the blend is promoted; P2 remains a required
    member. Its optimized six-model submission canary passed with a projected
    **7.28-hour** hidden runtime, and submission `55990677` scored **0.916** publicly,
-   improving P2 by **0.008**. P5 is the next model-research stage.
-8. Promote only repeatable OOF improvements through the canonical ordered roadmap in
+   improving P2 by **0.008**.
+8. P5 tested frozen OrthoFoundation-L knee-MRI features. Its independently validated
+   OOF score was **0.7688**, and the fixed 25% P5 rank blend reduced P2+P4 to
+   **0.8867**. P5 and its gated LoRA continuation were rejected; P6 is next.
+9. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
 

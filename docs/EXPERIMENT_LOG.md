@@ -102,10 +102,10 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P3 | **rejected** | DINOv2-small 336 px final-two-block adaptation and hierarchical diagnosis-query MIL | Valid run, but OOF 0.805988 and fixed P2+P3 rank blend 0.863908 both underperformed P2 |
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
-| P5 | **active / full frozen run** | OrthoFoundation-L frozen single-slice feature probe | V2 speed gate passed: 159.45 images/s, 14.74 min full-feature projection, 1.85 GiB/rank; OOF pending |
+| P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6–P9 | queued | Auxiliary, relabelling, ensemble, and 3D stages | Gates in the roadmap |
 
-## Active P5 run
+## Completed P5 run
 
 - **Run ID:** `P5A-ORTHOFOUNDATION-FROZEN-v1`.
 - **Frozen protocol:** [`P5_PROTOCOL.md`](P5_PROTOCOL.md).
@@ -136,9 +136,19 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   supplied CLI `--timeout 1200`, so Kaggle returned `CANCEL_ACKNOWLEDGED` at about
   20 minutes. This was an external runtime cap, not a code or data failure, and its
   incomplete artifacts are not used.
-- **Full run version 3:** relaunched on 2026-09-04 with the unchanged self-contained
-  code and no CLI timeout. Kaggle reports `RUNNING`; no experimental result is
-  recorded until the completed artifacts pass independent validation.
+- **Full run version 3:** completed in 38.03 minutes with the unchanged
+  self-contained code and no CLI timeout. All 4,407 studies were encoded; the
+  slowest feature rank took 15.85 minutes and peak allocation was 1,839.09 MiB on
+  each T4. The downloaded artifacts, hashes, five fold heads, 58-row OOF coverage,
+  and reported metrics independently passed `validate_p5_outputs.py`.
+- **Result:** direct expert macro AUC `0.765714`; fold-safe P5 OOF macro AUC
+  `0.768822`. The fixed 25% P5 rank blend reduced the promoted P2+P4 comparator
+  from `0.895821` to `0.886740` (`-0.009081`). Its paired-bootstrap probability of
+  improvement was `0.028` with 95% interval `[-0.018692, 0.000147]`; only four of
+  twelve targets were nonnegative.
+- **Decision:** reject P5-A and do not run P5-B LoRA because the predeclared advance
+  gate failed. Preserve the frozen features and positive target diagnostics for P8,
+  but do not tune target-specific weights on the 58-row expert set. Advance to P6.
 
 ## Completed P2 run
 

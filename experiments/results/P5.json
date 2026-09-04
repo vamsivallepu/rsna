@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P5",
+  "run_id": "P5A-ORTHOFOUNDATION-FROZEN-v1",
+  "execution_revision": "p5a_frozen_t4x2_full_v2",
+  "status": "validated_rejected",
+  "date": "2026-09-04",
+  "description": "Frozen OrthoFoundation-L single-slice features with a fold-safe hierarchical MIL head",
+  "code_commit": "2ff1860",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen",
+  "kaggle_version": 3,
+  "raw_artifact_path": "outputs/kaggle/rsna-p5-orthofoundation-frozen-v3",
+  "manifest_sha256": "3b739d18f85347bbc457885bba72b1a20712d2ab56dda67ac68fc35840b3163d",
+  "validator": "scripts/validate_p5_outputs.py",
+  "validated": true,
+  "validation": {
+    "artifact_hashes_verified": true,
+    "saved_heads_replayed": true,
+    "expert_oof_rows": 58,
+    "expert_oof_coverage_exactly_once": true,
+    "forbidden_report_overlap": 0,
+    "representation_gold_rows": 0,
+    "world_size": 2,
+    "peak_memory_mib_by_rank": [1839.0859375, 1839.0859375]
+  },
+  "runtime": {
+    "input_validation_minutes": 3.3399806102116902,
+    "feature_extraction_minutes_slowest_rank": 15.847002641359965,
+    "head_training_minutes": 10.003391639391582,
+    "kernel_elapsed_minutes": 38.03425555378333
+  },
+  "result": {
+    "direct_expert_macro_auc": 0.765714107944786,
+    "p5_oof_macro_auc": 0.7688217022757898,
+    "current_p2_p4_macro_auc": 0.8958210633119559,
+    "primary_p5_25pct_macro_auc": 0.8867402558952083,
+    "primary_delta": -0.00908080741674755,
+    "diagnostic_equal_three_way_macro_auc": 0.8798055452717118,
+    "bootstrap_probability_positive": 0.028,
+    "bootstrap_ci95": [-0.0186919481706478, 0.0001471770281055907],
+    "nonnegative_target_count": 4,
+    "worst_target_delta": -0.04421768707482998,
+    "positive_primary_target_deltas": {
+      "Lateral Meniscus": 0.0149068322981366,
+      "Lateral OA": 0.0241779497098643,
+      "Effusion": 0.0142857142857142,
+      "Synovitis": 0.0059737156511353
+    }
+  },
+  "promotion_gate": {
+    "passed": false,
+    "macro_delta_at_least_0_003": false,
+    "bootstrap_probability_at_least_0_80": false,
+    "at_least_seven_nonnegative_targets": false,
+    "worst_target_above_minus_0_05": true
+  },
+  "lora_gate": {
+    "passed": false,
+    "standalone_macro_at_least_0_84": false,
+    "primary_delta_above_0_001": false,
+    "bootstrap_probability_at_least_0_65": false,
+    "runtime_gate": true
+  },
+  "decision": "Reject P5-A as a standalone model and ensemble member. Do not run P5-B LoRA because the predeclared advance gate failed. Keep P2+P4 as the promoted system and proceed to P6."
+}
