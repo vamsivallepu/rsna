@@ -54,6 +54,8 @@
     "official_image_access_confirmed": true,
     "access_confirmation": "Official NYU fastMRI download email dated 2026-09-04 reviewed locally; temporary URLs are intentionally untracked",
     "kaggle_secret_configured": false,
+    "kaggle_staging_notebook": "vallepuvamsikrishna/rsna-knee-p6-fastmri-staging",
+    "kaggle_staging_version": 1,
     "unofficial_kaggle_image_mirror_approved": false
   },
   "decision": "P6-A is complete and official image access is confirmed. Do not derive RSNA coordinate priors from the CSV alone and do not use unofficial image mirrors. Securely stage an official image package in Kaggle through a Secret, then run the filename, geometry, overlay, and 128-volume P6-B smoke gates."

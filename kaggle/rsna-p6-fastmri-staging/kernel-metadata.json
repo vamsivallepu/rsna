@@ -1,0 +1,17 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p6-fastmri-staging",
+  "title": "RSNA Knee P6 fastMRI Staging",
+  "code_file": "rsna-p6-fastmri-staging.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "competition_sources": [],
+  "dataset_sources": [
+    "bharath111l/fastmri-plus-official-knee-annotations"
+  ],
+  "kernel_sources": [],
+  "model_sources": []
+}

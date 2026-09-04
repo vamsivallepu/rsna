@@ -112,6 +112,12 @@ the remaining checks pass:
    up/down flip, depending on the selected official package;
 5. a 128-volume smoke stays within Kaggle memory/runtime limits.
 
+The private secret entry notebook is
+`vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
+availability and validates the official host/package path; it does not display the
+value or start a download. The required secret name is
+`FASTMRI_KNEE_DICOM_BATCH2_URL`.
+
 Promotion requires a positive matched change on report-grouped pseudo validation,
 followed by at least `+0.003` macro AUC in expert OOF or a positive fixed 25% rank-blend
 delta versus P2+P4, paired-bootstrap probability of improvement at least `0.80`, at

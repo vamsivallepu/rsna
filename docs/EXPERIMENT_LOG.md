@@ -56,6 +56,11 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   CoAtNet backbone, followed by a matched ImageNet-versus-localization initialization
   comparison under the existing report-grouped pseudo and five-fold expert OOF
   contract. Full details: [`P6_PROTOCOL.md`](P6_PROTOCOL.md).
+- **Secure staging:** private CPU notebook
+  `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging` version 1 was pushed on
+  2026-09-04. It checks only whether `FASTMRI_KNEE_DICOM_BATCH2_URL` is enabled and
+  whether it targets the official host and expected package; it never prints the
+  secret or downloads data. Streaming cache code follows after the secret is enabled.
 - **Tracked result:** [`experiments/results/P6-AUDIT.json`](../experiments/results/P6-AUDIT.json).
 
 ### B04 target-wise OOF AUC
