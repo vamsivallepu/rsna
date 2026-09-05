@@ -58,3 +58,13 @@ Before spending a competition submission:
 - Builder: `scripts/build_p6_blend_submission.py`.
 - Independent validator: `scripts/validate_p6_blend_submission.py`.
 - Kaggle bundle: `kaggle/rsna-p6-blend-canary/`.
+
+## Execution record
+
+Version 1 independently validated the complete prediction path but projected to
+`8.2136` hours, leaving only `0.7864` hours below the limit, and therefore failed the
+frozen margin gate. Version 2 cast the shared normalized input once to the same FP16
+dtype already used by autocast. It produced a byte-identical `submission.csv`, passed
+independent replay, and reduced the projection to `7.6087` hours with `1.3913` hours
+of headroom. Exact version 2 from commit `ac8aa92` was accepted as competition
+submission `56026228` on 2026-09-05 and is pending scoring.

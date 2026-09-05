@@ -252,8 +252,26 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
-| P6 | **validated / blend promoted; canary prepared** | fastMRI+ localization transfer into matched P2 reruns | Fixed 75% P2+P4 plus 25% P6 rank blend passed at 0.905421 OOF; seven-backbone T4 x2 runtime gate is next |
+| P6 | **validated / blend submitted; score pending** | fastMRI+ localization transfer into matched P2 reruns | V2 canary passed at 7.61 h projected; exact fixed blend submitted as `56026228` |
 | P7–P9 | queued | Report-image auxiliary, relabelling/ensemble, and 3D stages | Gates in the roadmap |
+
+## Current P6 submission
+
+- **Frozen candidate:** 75% of the P2+P4 equal-rank baseline plus 25% P6-transfer
+  target rank; OOF `0.905421` versus `0.895821`, delta `+0.009600`.
+- **Canary v1:** all hashes and predictions validated, but `1.137270` inference
+  minutes projected to `8.2136` hidden hours and only `0.7864` hours of headroom.
+  This missed the predeclared `0.9`-hour safety gate and was not submitted.
+- **Canary v2:** converted the shared normalized tensor to FP16 once per device,
+  avoiding a repeated identical input cast for every resident backbone. It completed
+  the inference segment in `1.053519` minutes, projecting to `7.6087` hours and
+  `1.3913` hours of headroom. The final `submission.csv` remained byte-identical to
+  v1 (`f31fa1d...`) and independent replay passed every source, blend, schema, and
+  runtime check.
+- **Leaderboard submission:** exact private Kaggle kernel version 2 from commit
+  `ac8aa92` was accepted on 2026-09-05 as submission `56026228`; authoritative state
+  is `PENDING`. Tracked evidence:
+  [`experiments/results/P6-SUBMISSION.json`](../experiments/results/P6-SUBMISSION.json).
 
 ## Completed P5 run
 

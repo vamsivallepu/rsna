@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P6-SUBMISSION",
+  "run_id": "P6-BLEND-SUBMISSION-v1",
+  "status": "submitted_pending_score",
+  "date": "2026-09-05",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p6-blend-canary",
+  "kaggle_kernel_version": 2,
+  "code_commit": "ac8aa92",
+  "competition_submission_ref": 56026228,
+  "submission_description": "P2+P4 75pct plus P6 transfer 25pct rank blend, validated canary v2, commit ac8aa92",
+  "competition_status": "PENDING",
+  "public_score": null,
+  "private_score": null,
+  "daily_submissions_remaining_after_submit": 4,
+  "frozen_oof": {
+    "p2_p4_equal_rank_macro_auc": 0.8958210633119559,
+    "p2_p4_plus_p6_macro_auc": 0.9054205862136073,
+    "delta": 0.009599522901651447
+  },
+  "canary": {
+    "version": 2,
+    "validated": true,
+    "studies": 3,
+    "series": 15,
+    "visible_gpus": 2,
+    "batch_size": 2,
+    "model_load_minutes": 0.20205674568812051,
+    "dicom_and_seven_model_inference_minutes": 1.0535186409950257,
+    "total_minutes": 1.5453584392865498,
+    "projected_hidden_studies": 1300,
+    "projected_hidden_inference_hours": 7.6087457405196295,
+    "nine_hour_headroom_hours": 1.3912542594803705,
+    "minimum_required_headroom_hours": 0.9,
+    "runtime_gate_passed": true,
+    "five_p4_fold_mean_recomputed": true,
+    "fixed_p6_blend_recomputed": true,
+    "manifest_sha256": "33b3448913c4e13b6f9ac879fc329497c40259d127b7b170290d08e1bf93600e",
+    "submission_sha256": "f31fa1d9800d25f538ca968274e5e6f41d029e9f9972b529be67c476a24caf22"
+  },
+  "earlier_canary": {
+    "version": 1,
+    "code_commit": "4842f78",
+    "validated_predictions": true,
+    "dicom_and_seven_model_inference_minutes": 1.137270438671112,
+    "projected_hidden_inference_hours": 8.21361983484692,
+    "nine_hour_headroom_hours": 0.78638016515308,
+    "runtime_gate_passed": false,
+    "manifest_sha256": "64e7d0c74ebcb73fcbd6a9f20597322f1a8e628bc86ce3fdd728b34ded337494",
+    "submission_sha256": "f31fa1d9800d25f538ca968274e5e6f41d029e9f9972b529be67c476a24caf22"
+  },
+  "decision": "Version 2 independently passed all source hashes, component replay, final-blend, schema, and runtime gates. Submit that exact Kaggle kernel version and wait for hidden rerun scoring; do not tune from the public result."
+}

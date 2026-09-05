@@ -28,8 +28,12 @@ public dependencies are kept locally and are excluded from version control.
    improving P2 by **0.008**.
 8. P5 tested frozen OrthoFoundation-L knee-MRI features. Its independently validated
    OOF score was **0.7688**, and the fixed 25% P5 rank blend reduced P2+P4 to
-   **0.8867**. P5 and its gated LoRA continuation were rejected; P6 is next.
-9. Promote only repeatable OOF improvements through the canonical ordered roadmap in
+   **0.8867**. P5 and its gated LoRA continuation were rejected.
+9. P6 transferred fastMRI+ localization pretraining into a matched P2 rerun. The
+   frozen 75% P2+P4 plus 25% P6 rank blend reached **0.9054** OOF, and its validated
+   seven-model canary projects to **7.61 hours**. Exact submission `56026228` is
+   pending Kaggle scoring.
+10. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
 
