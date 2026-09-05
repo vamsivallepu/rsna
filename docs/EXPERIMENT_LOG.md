@@ -253,7 +253,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
-| P7 | **P7-A and P7-B smoke validated; full run next** | BGE-M3 report-image auxiliary training | 64-study smoke passed with finite report loss, 8,148 MiB/rank, and acceptable runtime projections; launch the full frozen candidate |
+| P7 | **P7-A and P7-B smoke validated; full V1 running** | BGE-M3 report-image auxiliary training | 64-study smoke passed; full frozen candidate launched on Kaggle T4 x2 |
 | P8–P9 | queued | Relabelling/ensemble and compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -290,6 +290,10 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   groups, report InfoNCE was finite at `1.0142`, both ranks peaked at 8,148 MiB, and
   no traceback or CUDA OOM occurred. The post-warmup representation projection is
   1.89 hours; the all-in conservative projection is 5.62 hours.
+- **Full P7-B:** version 1 launched on 2026-09-05 at
+  `vallepuvamsikrishna/rsna-knee-p7-report-image-auxiliary`; the live state was
+  `RUNNING` immediately after launch. The notebook uses the exact trainer frozen in
+  commit `6dbbc05`.
 - **Tracked evidence:**
   [`experiments/results/P7-A.json`](../experiments/results/P7-A.json),
   [`experiments/results/P7-B-SMOKE.json`](../experiments/results/P7-B-SMOKE.json),

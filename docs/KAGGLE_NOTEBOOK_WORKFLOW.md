@@ -30,7 +30,7 @@
 | P6 blend submission | [rsna-knee-p6-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-blend-canary) | GPU T4 x2 | V2 independently validated; submission `56026228` complete at public 0.923, +0.007 over P4 |
 | P7 BGE-M3 report embeddings | [rsna-knee-p7-report-embeddings](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-embeddings) | GPU T4 x2 | V1 complete and independently validated; 4,407 x 1,024 embeddings, zero truncation, 1,260/1,231 MiB peak |
 | P7 report-image speed smoke | [rsna-knee-p7-report-image-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-speed-smoke) | GPU T4 x2 | V1 complete and independently validated; report loss 1.0142, 8,148 MiB/rank, 1.89–5.62 h representation projection |
-| P7 report-image auxiliary | [rsna-knee-p7-report-image-aux](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-aux) | GPU T4 x2 | Prepared; launch only after the speed/memory smoke passes |
+| P7 report-image auxiliary | [rsna-knee-p7-report-image-auxiliary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-auxiliary) | GPU T4 x2 | V1 running after all P7-A and P7-B smoke gates passed |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

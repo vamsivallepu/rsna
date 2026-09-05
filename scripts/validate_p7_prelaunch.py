@@ -97,6 +97,9 @@ def main() -> int:
 
     full = validate_kernel(FULL, speed_smoke=False)
     smoke = validate_kernel(SMOKE, speed_smoke=True)
+    assert full["id"] == (
+        "vallepuvamsikrishna/rsna-knee-p7-report-image-auxiliary"
+    )
     print(
         json.dumps(
             {
