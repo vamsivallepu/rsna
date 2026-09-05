@@ -24,9 +24,10 @@
 | P4 blend submission | [rsna-knee-p4-blend-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p4-blend-submission) | GPU T4 x2 | V3 validated; submission `55990677` complete with public score 0.916, +0.008 over P2 |
 | P5 OrthoFoundation speed smoke | [rsna-knee-p5-orthofoundation-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-speed-smoke) | GPU T4 x2 | V2 independently passed: 159.45 images/s, 14.74 min full-feature projection, 1,847 MiB/rank, both GPUs 100% peak |
 | P5 OrthoFoundation frozen | [rsna-knee-p5-orthofoundation-frozen](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen) | GPU T4 x2 | V3 complete and independently validated; OOF 0.768822, fixed P5 blend 0.886740; rejected and LoRA gate failed |
-| P5 diagnostic submission | [rsna-knee-p5-diagnostic-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission) | GPU T4 x2 | Canary v1 independently validated; exact version submitted as `56008122`, currently pending |
+| P5 diagnostic submission | [rsna-knee-p5-diagnostic-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission) | GPU T4 x2 | Canary v1 independently validated; diagnostic submission `56008122` complete with public score 0.789 |
 | P6 P2 matched control | [rsna-knee-p6-p2-matched-control](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-matched-control) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.899966, pseudo BCE 0.473681, both GPUs verified |
 | P6 P2 transfer | [rsna-knee-p6-p2-transfer](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-transfer) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.909878, pseudo BCE 0.462599; fixed 25% blend promoted at 0.905421 |
+| P6 blend canary | [rsna-knee-p6-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-blend-canary) | GPU T4 x2 | Prepared; exact seven-backbone runtime and output-integrity gate pending |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -145,6 +146,10 @@ cache-signature hash, and array hashes before training.
   `vallepuvamsikrishna/rsna-p6-fastmri-localization-init`; it contains only the
   selected backbone and hash-pinned manifests, never fastMRI images. Compact source
   result: `experiments/results/P6-B.json`; frozen protocol: `docs/P6_PROTOCOL.md`
+- P6 blend submission source, builder, validator, bundle, and frozen protocol:
+  `scripts/p4_blend_submission.py`, `scripts/build_p6_blend_submission.py`,
+  `scripts/validate_p6_blend_submission.py`, `kaggle/rsna-p6-blend-canary/`, and
+  `docs/P6_SUBMISSION_PROTOCOL.md`
 
 All five P4 folds completed and independently passed their artifact, split, report
 purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively

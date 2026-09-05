@@ -42,6 +42,7 @@ from p2_submission import (
 
 
 RUN_ID = "P4-BLEND-SUBMISSION-v1"
+ENABLE_P6 = False  # The P6 deployment builder changes this immutable switch.
 EXPECTED_P2_MANIFEST_SHA256 = (
     "ce537b678242cecab9e63b3e98a3d62f33a4487107379d26c741750a12396508"
 )
@@ -62,6 +63,11 @@ EXPECTED_P4_CHECKPOINT_SHA256 = {
 P2_OOF_MACRO_AUC = 0.8911253543643616
 P4_OOF_MACRO_AUC = 0.89116089660126
 BLEND_OOF_MACRO_AUC = 0.8958210633119559
+EXPECTED_P6_MANIFEST_SHA256 = (
+    "885b58c5a9af1bffaac1f52c9703db3538d25f8d9660b036b563b351b1067bce"
+)
+P6_OOF_MACRO_AUC = 0.9098782108453899
+P6_BLEND_OOF_MACRO_AUC = 0.9054205862136073
 ON_KAGGLE = Path("/kaggle/working").is_dir()
 OUTPUT_ROOT = Path("/kaggle/working") if ON_KAGGLE else Path(
     "outputs/p4_blend_submission_smoke"
@@ -100,6 +106,33 @@ def find_p4_roots() -> dict[int, Path]:
     return roots
 
 
+def find_p6_root() -> Path:
+    direct = [
+        Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p6-p2-transfer"
+        ),
+        Path("outputs/kaggle/rsna-p6-p2-transfer-v1"),
+    ]
+    selected = next(
+        (
+            candidate.resolve()
+            for candidate in direct
+            if (candidate / "p6_transfer_manifest.json").is_file()
+        ),
+        None,
+    )
+    if selected is None and Path("/kaggle/input").is_dir():
+        matches = list(
+            Path("/kaggle/input").glob("**/p6_transfer_manifest.json")
+        )
+        if len(matches) == 1:
+            selected = matches[0].parent.resolve()
+    if selected is None:
+        raise FileNotFoundError("validated P6 transfer output")
+    return selected
+
+
 def rank_columns(predictions: np.ndarray) -> np.ndarray:
     return np.column_stack(
         [
@@ -126,14 +159,14 @@ def load_full_model(checkpoint: Path, device: torch.device) -> CoAtNetMIL:
     return model
 
 
-def load_p2_heads(
-    p2_root: Path, device: torch.device
+def load_fold_heads(
+    model_root: Path, device: torch.device
 ) -> list[TargetAttentionHead]:
     heads: list[TargetAttentionHead] = []
     for fold in range(5):
         head = TargetAttentionHead().to(device)
         state = torch.load(
-            p2_root / f"p2_fold_{fold}_head.pt",
+            model_root / f"p2_fold_{fold}_head.pt",
             map_location="cpu",
             weights_only=True,
         )
@@ -153,12 +186,20 @@ def infer_device_group(
     p2_model: CoAtNetMIL | None,
     p2_heads: list[TargetAttentionHead],
     p4_models: list[tuple[int, CoAtNetMIL]],
-) -> tuple[np.ndarray | None, dict[int, np.ndarray]]:
+    p6_model: CoAtNetMIL | None = None,
+    p6_heads: list[TargetAttentionHead] | None = None,
+) -> tuple[np.ndarray | None, dict[int, np.ndarray], np.ndarray | None]:
     windows = windows_cpu.to(device, non_blocking=device.type == "cuda")
     mask = mask_cpu.to(device, non_blocking=device.type == "cuda").bool()
-    reference = p2_model if p2_model is not None else p4_models[0][1]
+    reference = (
+        p2_model
+        if p2_model is not None
+        else (p4_models[0][1] if p4_models else p6_model)
+    )
+    assert reference is not None
     batch, count = windows.shape[:2]
     p2_result: np.ndarray | None = None
+    p6_result: np.ndarray | None = None
     p4_result: dict[int, np.ndarray] = {}
     with torch.inference_mode(), torch.autocast(
         device_type=device.type,
@@ -191,7 +232,15 @@ def infer_device_group(
             probabilities = torch.sigmoid(model.head(features, mask))
             p4_result[fold] = probabilities.float().cpu().numpy()
             del features, probabilities
-    return p2_result, p4_result
+        if p6_model is not None:
+            assert p6_heads
+            features = p6_model.backbone(pixels).reshape(batch, count, -1)
+            probabilities = torch.stack(
+                [torch.sigmoid(head(features, mask)) for head in p6_heads]
+            ).mean(dim=0)
+            p6_result = probabilities.float().cpu().numpy()
+            del features, probabilities
+    return p2_result, p4_result, p6_result
 
 
 def prediction_frame(study_ids: list[str], values: np.ndarray) -> pd.DataFrame:
@@ -253,6 +302,27 @@ def main() -> int:
         )
         p4_manifests[fold] = manifest
 
+    p6_root: Path | None = None
+    p6_manifest: dict[str, object] | None = None
+    if ENABLE_P6:
+        p6_root = find_p6_root()
+        p6_manifest_path = p6_root / "p6_transfer_manifest.json"
+        assert sha256_file(p6_manifest_path) == EXPECTED_P6_MANIFEST_SHA256
+        p6_manifest = json.loads(p6_manifest_path.read_text())
+        assert p6_manifest["run_id"] == "P6-P2-TRANSFER-v1"
+        assert p6_manifest["best_epoch"] == 8
+        assert p6_manifest["cache_signature_sha256"] == EXPECTED_CACHE_SIGNATURE
+        assert p6_manifest["initialization"]["arm"] == (
+            "p6_fastmri_localization_transfer"
+        )
+        for name in [
+            "p2_coatnet_pseudo_best.pt",
+            *[f"p2_fold_{fold}_head.pt" for fold in range(5)],
+        ]:
+            path = p6_root / name
+            assert path.is_file()
+            assert sha256_file(path) == p6_manifest["artifacts_sha256"][name]
+
     if ON_KAGGLE:
         data_root = find_competition_root()
         dicom_root = data_root / "test_series"
@@ -311,12 +381,20 @@ def main() -> int:
 
     print(
         {
-            "P4_BLEND_SUBMISSION_START": True,
+            (
+                "P6_BLEND_SUBMISSION_START"
+                if ENABLE_P6
+                else "P4_BLEND_SUBMISSION_START"
+            ): True,
             "on_kaggle": ON_KAGGLE,
             "studies": len(study_ids),
             "series": len(series),
             "p2_manifest_sha256": EXPECTED_P2_MANIFEST_SHA256,
             "p4_manifest_sha256": EXPECTED_P4_MANIFEST_SHA256,
+            "p6_enabled": ENABLE_P6,
+            "p6_manifest_sha256": (
+                EXPECTED_P6_MANIFEST_SHA256 if ENABLE_P6 else None
+            ),
             "python": platform.python_version(),
             "torch": torch.__version__,
             "timm": timm.__version__,
@@ -330,7 +408,7 @@ def main() -> int:
     p2_model = load_full_model(
         p2_root / "p2_coatnet_pseudo_best.pt", p2_device
     )
-    p2_heads = load_p2_heads(p2_root, p2_device)
+    p2_heads = load_fold_heads(p2_root, p2_device)
     if len(devices) == 2:
         assignments = {0: [0, 2], 1: [1, 3, 4]}
     else:
@@ -347,14 +425,32 @@ def main() -> int:
             )
             for fold in folds
         ]
+    p6_models: dict[int, CoAtNetMIL] = {}
+    p6_heads_by_device: dict[int, list[TargetAttentionHead]] = {}
+    if ENABLE_P6:
+        assert p6_root is not None
+        # Duplicate the relatively small resident weights so alternating batches
+        # can distribute the seventh backbone evenly across both GPUs. Each
+        # device executor remains single-threaded, so CUDA work never overlaps
+        # unsafely on the same device.
+        for device_index, device in enumerate(devices):
+            p6_models[device_index] = load_full_model(
+                p6_root / "p2_coatnet_pseudo_best.pt", device
+            )
+            p6_heads_by_device[device_index] = load_fold_heads(p6_root, device)
     print(
         {
-            "P4_BLEND_MODELS_READY": True,
+            (
+                "P6_BLEND_MODELS_READY"
+                if ENABLE_P6
+                else "P4_BLEND_MODELS_READY"
+            ): True,
             "execution_mode": "resident dual-device inference",
             "device_assignments": {
                 str(devices[index]): [
                     *(["P2"] if index == 0 else []),
                     *[f"P4-fold-{fold}" for fold in assignments[index]],
+                    *(["P6-alternating-batches"] if ENABLE_P6 else []),
                 ]
                 for index in assignments
             },
@@ -386,20 +482,67 @@ def main() -> int:
     p4_fold_predictions = np.zeros(
         (5, len(test), len(TARGETS)), dtype=np.float32
     )
+    p6_predictions = (
+        np.zeros((len(test), len(TARGETS)), dtype=np.float32)
+        if ENABLE_P6
+        else None
+    )
     feature_mask = np.zeros((len(test), K_EVAL), dtype=np.uint8)
     positions = np.full((len(test), K_EVAL), -1, dtype=np.int16)
     selection_rows: list[dict[str, object]] = []
     inference_started = time.time()
-    executor = ThreadPoolExecutor(max_workers=len(devices))
+    executors = [ThreadPoolExecutor(max_workers=1) for _ in devices]
+
+    def resolve_batch(
+        pending_batch: tuple[
+            np.ndarray,
+            torch.Tensor,
+            torch.Tensor,
+            list[str],
+            list[object],
+        ]
+    ) -> int:
+        (
+            batch_indices,
+            window_mask,
+            centers,
+            selections_json,
+            futures,
+        ) = pending_batch
+        batch_results = [future.result() for future in futures]
+        p6_batches = []
+        for p2_batch, p4_batches, p6_batch in batch_results:
+            if p2_batch is not None:
+                p2_predictions[batch_indices] = p2_batch
+            for fold, values in p4_batches.items():
+                p4_fold_predictions[fold, batch_indices] = values
+            if p6_batch is not None:
+                p6_batches.append(p6_batch)
+        if ENABLE_P6:
+            assert p6_predictions is not None and len(p6_batches) == 1
+            p6_predictions[batch_indices] = p6_batches[0]
+
+        masks = window_mask.numpy().astype(bool)
+        center_values = centers.numpy()
+        feature_mask[batch_indices] = masks.astype(np.uint8)
+        for batch_offset, index in enumerate(batch_indices):
+            positions[index, masks[batch_offset]] = center_values[
+                batch_offset, masks[batch_offset]
+            ]
+            for selection in json.loads(selections_json[batch_offset]):
+                selection_rows.append({ID: study_ids[index], **selection})
+        return len(batch_indices)
+
     try:
         processed = 0
-        for batch in loader:
+        pending: list[tuple[object, ...]] = []
+        for batch_number, batch in enumerate(loader):
             indices, windows, window_mask, centers, selections_json = batch
             batch_indices = indices.numpy().astype(np.int64)
             futures = []
             for device_index, device in enumerate(devices):
                 futures.append(
-                    executor.submit(
+                    executors[device_index].submit(
                         infer_device_group,
                         device,
                         windows,
@@ -407,27 +550,33 @@ def main() -> int:
                         p2_model if device_index == 0 else None,
                         p2_heads if device_index == 0 else [],
                         p4_by_device[device_index],
+                        (
+                            p6_models[device_index]
+                            if ENABLE_P6
+                            and device_index == batch_number % len(devices)
+                            else None
+                        ),
+                        (
+                            p6_heads_by_device[device_index]
+                            if ENABLE_P6
+                            and device_index == batch_number % len(devices)
+                            else None
+                        ),
                     )
                 )
-            batch_results = [future.result() for future in futures]
-            for p2_batch, p4_batches in batch_results:
-                if p2_batch is not None:
-                    p2_predictions[batch_indices] = p2_batch
-                for fold, values in p4_batches.items():
-                    p4_fold_predictions[fold, batch_indices] = values
-
-            masks = window_mask.numpy().astype(bool)
-            center_values = centers.numpy()
-            feature_mask[batch_indices] = masks.astype(np.uint8)
-            for batch_offset, index in enumerate(batch_indices):
-                positions[index, masks[batch_offset]] = center_values[
-                    batch_offset, masks[batch_offset]
-                ]
-                for selection in json.loads(selections_json[batch_offset]):
-                    selection_rows.append(
-                        {ID: study_ids[index], **selection}
-                    )
-            processed += len(batch_indices)
+            pending.append(
+                (
+                    batch_indices,
+                    window_mask,
+                    centers,
+                    list(selections_json),
+                    futures,
+                )
+            )
+            # Bounded pipelining lets each device advance independently while
+            # capping host RAM to a few decoded study batches.
+            if len(pending) >= 4:
+                processed += resolve_batch(pending.pop(0))
             if processed % 50 == 0 or processed == len(test):
                 print(
                     {
@@ -441,18 +590,41 @@ def main() -> int:
                     },
                     flush=True,
                 )
+        while pending:
+            processed += resolve_batch(pending.pop(0))
+        print(
+            {
+                "P4_BLEND_SUBMISSION_PROGRESS": f"{processed}/{len(test)}",
+                "elapsed_minutes": (time.time() - inference_started) / 60.0,
+                "gpu": gpu_snapshot(),
+            },
+            flush=True,
+        )
     finally:
-        executor.shutdown(wait=True)
+        for executor in executors:
+            executor.shutdown(wait=True)
 
     assert np.isfinite(p2_predictions).all()
     assert np.isfinite(p4_fold_predictions).all()
+    if ENABLE_P6:
+        assert p6_predictions is not None
+        assert np.isfinite(p6_predictions).all()
     assert feature_mask.any(axis=1).all()
     assert (positions[feature_mask.astype(bool)] >= 1).all()
     p4_predictions = p4_fold_predictions.mean(axis=0)
-    blend_predictions = np.clip(
+    p2_p4_predictions = np.clip(
         (rank_columns(p2_predictions) + rank_columns(p4_predictions)) / 2.0,
         1e-6,
         1.0 - 1e-6,
+    )
+    blend_predictions = (
+        np.clip(
+            0.75 * p2_p4_predictions + 0.25 * rank_columns(p6_predictions),
+            1e-6,
+            1.0 - 1e-6,
+        )
+        if ENABLE_P6
+        else p2_p4_predictions
     )
     assert blend_predictions.shape == (len(test), len(TARGETS))
     assert np.isfinite(blend_predictions).all()
@@ -460,6 +632,9 @@ def main() -> int:
     if len(test) > 1:
         assert (np.ptp(p2_predictions, axis=0) > 0).all()
         assert (np.ptp(p4_predictions, axis=0) > 0).all()
+        if ENABLE_P6:
+            assert p6_predictions is not None
+            assert (np.ptp(p6_predictions, axis=0) > 0).all()
 
     submission = sample.copy()
     submission.loc[:, TARGETS] = blend_predictions
@@ -467,34 +642,43 @@ def main() -> int:
     assert submission[ID].tolist() == study_ids
     submission_path = OUTPUT_ROOT / "submission.csv"
     submission.to_csv(submission_path, index=False)
+    output_prefix = "p6_blend" if ENABLE_P6 else "p4_blend"
     prediction_frame(study_ids, p2_predictions).to_csv(
-        OUTPUT_ROOT / "p4_blend_p2_predictions.csv", index=False
+        OUTPUT_ROOT / f"{output_prefix}_p2_predictions.csv", index=False
     )
     prediction_frame(study_ids, p4_predictions).to_csv(
-        OUTPUT_ROOT / "p4_blend_p4_predictions.csv", index=False
+        OUTPUT_ROOT / f"{output_prefix}_p4_predictions.csv", index=False
     )
+    if ENABLE_P6:
+        assert p6_predictions is not None
+        prediction_frame(study_ids, p6_predictions).to_csv(
+            OUTPUT_ROOT / "p6_blend_p6_predictions.csv", index=False
+        )
     np.save(
-        OUTPUT_ROOT / "p4_blend_p4_predictions_by_fold.npy",
+        OUTPUT_ROOT / f"{output_prefix}_p4_predictions_by_fold.npy",
         p4_fold_predictions,
     )
-    np.save(OUTPUT_ROOT / "p4_blend_feature_mask.npy", feature_mask)
-    np.save(OUTPUT_ROOT / "p4_blend_feature_positions.npy", positions)
+    np.save(OUTPUT_ROOT / f"{output_prefix}_feature_mask.npy", feature_mask)
+    np.save(OUTPUT_ROOT / f"{output_prefix}_feature_positions.npy", positions)
     pd.DataFrame(selection_rows).to_csv(
-        OUTPUT_ROOT / "p4_blend_test_selections.csv", index=False
+        OUTPUT_ROOT / f"{output_prefix}_test_selections.csv", index=False
     )
 
     artifacts = [
         "submission.csv",
-        "p4_blend_p2_predictions.csv",
-        "p4_blend_p4_predictions.csv",
-        "p4_blend_p4_predictions_by_fold.npy",
-        "p4_blend_feature_mask.npy",
-        "p4_blend_feature_positions.npy",
-        "p4_blend_test_selections.csv",
+        f"{output_prefix}_p2_predictions.csv",
+        f"{output_prefix}_p4_predictions.csv",
+        f"{output_prefix}_p4_predictions_by_fold.npy",
+        f"{output_prefix}_feature_mask.npy",
+        f"{output_prefix}_feature_positions.npy",
+        f"{output_prefix}_test_selections.csv",
     ]
+    if ENABLE_P6:
+        artifacts.append("p6_blend_p6_predictions.csv")
+    effective_run_id = "P6-BLEND-SUBMISSION-v1" if ENABLE_P6 else RUN_ID
     manifest = {
         "schema_version": 1,
-        "run_id": RUN_ID,
+        "run_id": effective_run_id,
         "studies": len(test),
         "series": len(series),
         "targets": TARGETS,
@@ -514,9 +698,24 @@ def main() -> int:
             }
             for fold in range(5)
         },
+        "source_p6": (
+            {
+                "run_id": p6_manifest["run_id"],
+                "manifest_sha256": EXPECTED_P6_MANIFEST_SHA256,
+                "checkpoint_sha256": p6_manifest["artifacts_sha256"][
+                    "p2_coatnet_pseudo_best.pt"
+                ],
+                "oof_macro_auc": P6_OOF_MACRO_AUC,
+            }
+            if ENABLE_P6 and p6_manifest is not None
+            else None
+        ),
         "oof": {
             "p4_macro_auc": P4_OOF_MACRO_AUC,
             "equal_rank_p2_p4_macro_auc": BLEND_OOF_MACRO_AUC,
+            "fixed_75pct_p2_p4_25pct_p6_macro_auc": (
+                P6_BLEND_OOF_MACRO_AUC if ENABLE_P6 else None
+            ),
         },
         "geometry": {
             "cache_signature_sha256": EXPECTED_CACHE_SIGNATURE,
@@ -531,15 +730,31 @@ def main() -> int:
         "ensemble": {
             "p2": "mean probabilities from five report-purged P2 heads",
             "p4": "mean probabilities from five end-to-end P4 folds",
+            "p6": (
+                "mean probabilities from five P6-transfer report-purged heads"
+                if ENABLE_P6
+                else None
+            ),
             "final": (
-                "equal-rank mean of P2 and P4 by target, clipped to "
+                "75% P2+P4 equal-rank mean plus 25% P6 target rank, "
+                "clipped to [1e-6, 1-1e-6]"
+                if ENABLE_P6
+                else "equal-rank mean of P2 and P4 by target, clipped to "
                 "[1e-6, 1-1e-6]"
             ),
-            "weights": {"p2": 0.5, "p4": 0.5},
+            "weights": (
+                {"p2_p4_equal_rank": 0.75, "p6_rank": 0.25}
+                if ENABLE_P6
+                else {"p2": 0.5, "p4": 0.5}
+            ),
         },
         "inference_optimization": (
-            "two-study batches; resident FP16 inference weights; one shared "
-            "resize and normalization per device group"
+            "two-study batches; resident FP16 inference weights; bounded "
+            "asynchronous per-device pipeline; one shared resize and "
+            "normalization per device group; alternating P6 batches"
+            if ENABLE_P6
+            else "two-study batches; resident FP16 inference weights; one "
+            "shared resize and normalization per device group"
         ),
         "submission_file": "submission.csv",
         "test_metadata_sha256": {
@@ -561,6 +776,9 @@ def main() -> int:
             "dicom_and_six_model_inference_minutes": (
                 time.time() - inference_started
             ) / 60.0,
+            "dicom_and_model_inference_minutes": (
+                time.time() - inference_started
+            ) / 60.0,
             "total_minutes": (time.time() - started) / 60.0,
         },
         "environment": {
@@ -576,16 +794,25 @@ def main() -> int:
                 str(devices[index]): [
                     *(["P2"] if index == 0 else []),
                     *[f"P4-fold-{fold}" for fold in assignments[index]],
+                    *(["P6-alternating-batches"] if ENABLE_P6 else []),
                 ]
                 for index in assignments
             },
         },
     }
-    manifest_path = OUTPUT_ROOT / "p4_blend_submission_manifest.json"
+    manifest_path = OUTPUT_ROOT / (
+        "p6_blend_submission_manifest.json"
+        if ENABLE_P6
+        else "p4_blend_submission_manifest.json"
+    )
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     print(
         {
-            "P4_BLEND_SUBMISSION_COMPLETE": True,
+            (
+                "P6_BLEND_SUBMISSION_COMPLETE"
+                if ENABLE_P6
+                else "P4_BLEND_SUBMISSION_COMPLETE"
+            ): True,
             "studies": len(submission),
             "submission_sha256": sha256_file(submission_path),
             "manifest_sha256": sha256_file(manifest_path),

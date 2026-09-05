@@ -210,6 +210,11 @@ targets are nonnegative and the worst decline is only `-0.0071685`. It passes ev
 frozen gate and is promoted for a hidden-test inference canary. The tracked result is
 [`P6.json`](../experiments/results/P6.json).
 
+The frozen hidden-inference and runtime-gating procedure is documented in
+[`P6_SUBMISSION_PROTOCOL.md`](P6_SUBMISSION_PROTOCOL.md). It preserves the exact
+75/25 blend and requires a hash-validated T4 x2 canary with at least 0.9 hours of
+projected headroom before a competition submission is spent.
+
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
 availability and validates the official host/package path; it does not display the

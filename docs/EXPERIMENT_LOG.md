@@ -252,7 +252,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
-| P6 | **validated / blend promoted** | fastMRI+ localization transfer into matched P2 reruns | Fixed 75% P2+P4 plus 25% P6 rank blend passed at 0.905421 OOF; hidden-test canary is next |
+| P6 | **validated / blend promoted; canary prepared** | fastMRI+ localization transfer into matched P2 reruns | Fixed 75% P2+P4 plus 25% P6 rank blend passed at 0.905421 OOF; seven-backbone T4 x2 runtime gate is next |
 | P7–P9 | queued | Report-image auxiliary, relabelling/ensemble, and 3D stages | Gates in the roadmap |
 
 ## Completed P5 run
