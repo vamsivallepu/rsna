@@ -27,7 +27,8 @@
 | P5 diagnostic submission | [rsna-knee-p5-diagnostic-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission) | GPU T4 x2 | Canary v1 independently validated; diagnostic submission `56008122` complete with public score 0.789 |
 | P6 P2 matched control | [rsna-knee-p6-p2-matched-control](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-matched-control) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.899966, pseudo BCE 0.473681, both GPUs verified |
 | P6 P2 transfer | [rsna-knee-p6-p2-transfer](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-transfer) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.909878, pseudo BCE 0.462599; fixed 25% blend promoted at 0.905421 |
-| P6 blend canary | [rsna-knee-p6-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-blend-canary) | GPU T4 x2 | V2 independently validated at 7.61 h projected runtime; exact version submitted as `56026228`, pending |
+| P6 blend submission | [rsna-knee-p6-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-blend-canary) | GPU T4 x2 | V2 independently validated; submission `56026228` complete at public 0.923, +0.007 over P4 |
+| P7 BGE-M3 report embeddings | [rsna-knee-p7-report-embeddings](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-embeddings) | GPU T4 x2 | Prepared; immutable multilingual report-embedding preflight is next |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -150,6 +151,10 @@ cache-signature hash, and array hashes before training.
   `scripts/p4_blend_submission.py`, `scripts/build_p6_blend_submission.py`,
   `scripts/validate_p6_blend_submission.py`, `kaggle/rsna-p6-blend-canary/`, and
   `docs/P6_SUBMISSION_PROTOCOL.md`
+- P7 report-embedding source, builder, validator, bundle, and frozen protocol:
+  `scripts/p7_report_embeddings.py`, `scripts/build_p7_report_embeddings.py`,
+  `scripts/validate_p7_report_embeddings.py`,
+  `kaggle/rsna-p7-report-embeddings/`, and `docs/P7_PROTOCOL.md`
 
 All five P4 folds completed and independently passed their artifact, split, report
 purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively

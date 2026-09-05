@@ -2,15 +2,15 @@
   "schema_version": 1,
   "experiment_id": "P6-SUBMISSION",
   "run_id": "P6-BLEND-SUBMISSION-v1",
-  "status": "submitted_pending_score",
+  "status": "scored",
   "date": "2026-09-05",
   "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p6-blend-canary",
   "kaggle_kernel_version": 2,
   "code_commit": "ac8aa92",
   "competition_submission_ref": 56026228,
   "submission_description": "P2+P4 75pct plus P6 transfer 25pct rank blend, validated canary v2, commit ac8aa92",
-  "competition_status": "PENDING",
-  "public_score": null,
+  "competition_status": "COMPLETE",
+  "public_score": 0.923,
   "private_score": null,
   "daily_submissions_remaining_after_submit": 4,
   "frozen_oof": {
@@ -49,5 +49,13 @@
     "manifest_sha256": "64e7d0c74ebcb73fcbd6a9f20597322f1a8e628bc86ce3fdd728b34ded337494",
     "submission_sha256": "f31fa1d9800d25f538ca968274e5e6f41d029e9f9972b529be67c476a24caf22"
   },
-  "decision": "Version 2 independently passed all source hashes, component replay, final-blend, schema, and runtime gates. Submit that exact Kaggle kernel version and wait for hidden rerun scoring; do not tune from the public result."
+  "leaderboard": {
+    "p2_public_score": 0.908,
+    "p4_blend_public_score": 0.916,
+    "delta_vs_p2": 0.015,
+    "delta_vs_p4_blend": 0.007,
+    "leading_public_score_at_verification": 0.954,
+    "gap_to_leader": 0.031
+  },
+  "decision": "Submission 56026228 completed at public score 0.923, improving P2 by 0.015 and the prior P2+P4 leader by 0.007. Retain it as the current submitted leader and proceed to the frozen P7 report-image auxiliary experiment without tuning from the public result."
 }

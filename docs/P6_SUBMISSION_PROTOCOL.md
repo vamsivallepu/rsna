@@ -67,4 +67,5 @@ frozen margin gate. Version 2 cast the shared normalized input once to the same 
 dtype already used by autocast. It produced a byte-identical `submission.csv`, passed
 independent replay, and reduced the projection to `7.6087` hours with `1.3913` hours
 of headroom. Exact version 2 from commit `ac8aa92` was accepted as competition
-submission `56026228` on 2026-09-05 and is pending scoring.
+submission `56026228` on 2026-09-05. It completed at public score `0.923`, improving
+the prior P2+P4 submission by `0.007`.

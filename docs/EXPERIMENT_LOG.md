@@ -252,8 +252,9 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
-| P6 | **validated / blend submitted; score pending** | fastMRI+ localization transfer into matched P2 reruns | V2 canary passed at 7.61 h projected; exact fixed blend submitted as `56026228` |
-| P7–P9 | queued | Report-image auxiliary, relabelling/ensemble, and 3D stages | Gates in the roadmap |
+| P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
+| P7 | **protocol frozen; preflight prepared** | BGE-M3 report-image auxiliary training | Extract and validate immutable report embeddings before the image-training smoke |
+| P8–P9 | queued | Relabelling/ensemble and compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
 
@@ -269,8 +270,9 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   v1 (`f31fa1d...`) and independent replay passed every source, blend, schema, and
   runtime check.
 - **Leaderboard submission:** exact private Kaggle kernel version 2 from commit
-  `ac8aa92` was accepted on 2026-09-05 as submission `56026228`; authoritative state
-  is `PENDING`. Tracked evidence:
+  `ac8aa92` completed on 2026-09-05 as submission `56026228` with public score
+  `0.923`. This is `+0.007` over P4 and `+0.015` over P2; the live leader was `0.954`
+  at verification, leaving a `0.031` gap. Tracked evidence:
   [`experiments/results/P6-SUBMISSION.json`](../experiments/results/P6-SUBMISSION.json).
 
 ## Completed P5 run
