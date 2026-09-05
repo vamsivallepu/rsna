@@ -80,7 +80,8 @@ for direct expert inference, OOF inference, or hidden-test inference.
 
 1. Build and independently validate P7-A report embeddings. **Complete.**
 2. Run a 64-study, one-epoch T4 x2 speed/memory smoke with the full report bank and
-   auxiliary loss.
+   auxiliary loss. **Complete:** finite report loss `1.0142`, 8,148 MiB peak per rank,
+   1.89-hour steady/full projection and 5.62-hour conservative/full projection.
 3. Launch one full matched P7 candidate only if the smoke is finite, both GPUs are
    active, peak allocation is safe, and projected runtime is acceptable.
 4. Independently replay the saved direct and five fold heads.

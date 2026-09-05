@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import math
 from pathlib import Path
+
+import numpy as np
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,6 +36,11 @@ def main() -> int:
     assert result["elapsed_minutes"] < 20
     assert len(result["peak_memory_mib_by_rank"]) == 2
     assert max(result["peak_memory_mib_by_rank"]) < 14_500
+    bank_indices = np.load(root / "p7_report_bank_indices.npy")
+    group_ids = np.load(root / "p7_report_group_ids.npy")
+    assert len(bank_indices) == result["p7_report_bank_rows"] == 3_926
+    assert group_ids.shape == (4_407,)
+    assert len(np.unique(group_ids[bank_indices])) == 3_761
 
     logs = list(root.glob("*.log"))
     assert len(logs) == 1
@@ -40,19 +48,41 @@ def main() -> int:
     assert "P7_REPORT_EMBEDDINGS_VALIDATED" in log
     assert "P7_REPORT_BANK_READY" in log
     assert "P2_SPEED_SMOKE_COMPLETE" in log
+    assert "'rank': 0" in log and "'rank': 1" in log
     assert "Traceback" not in log and "CUDA out of memory" not in log
 
+    progress = []
+    for event in json.loads(log):
+        data = str(event.get("data", "")).strip()
+        if "P2_SPEED_SMOKE_PROGRESS" in data:
+            progress.append(ast.literal_eval(data)["P2_SPEED_SMOKE_PROGRESS"])
+    assert [row["step"] for row in progress] == list(range(4, 33, 4))
+    steady_seconds_per_global_step = (
+        progress[-1]["elapsed_seconds"] - progress[0]["elapsed_seconds"]
+    ) / (progress[-1]["step"] - progress[0]["step"])
+    assert 0 < steady_seconds_per_global_step < result["seconds_per_global_step"]
+
     full_global_steps = math.ceil(result["p7_report_bank_rows"] / 2) * 8
-    projected_representation_hours = (
+    conservative_projection_hours = (
         result["seconds_per_global_step"] * full_global_steps / 3_600
     )
+    steady_projection_hours = (
+        progress[0]["elapsed_seconds"]
+        + steady_seconds_per_global_step * (full_global_steps - progress[0]["step"])
+    ) / 3_600
     summary = {
         "validated": True,
         "world_size": result["world_size"],
         "report_bank_rows": result["p7_report_bank_rows"],
         "report_contrastive_loss": result["train_report_contrastive"],
         "seconds_per_global_step": result["seconds_per_global_step"],
-        "projected_representation_hours": projected_representation_hours,
+        "steady_seconds_per_global_step_after_warmup": (
+            steady_seconds_per_global_step
+        ),
+        "projected_representation_hours": {
+            "steady_after_warmup": steady_projection_hours,
+            "conservative_all_in": conservative_projection_hours,
+        },
         "peak_memory_mib_by_rank": result["peak_memory_mib_by_rank"],
     }
     print(json.dumps(summary, indent=2))

@@ -253,7 +253,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
-| P7 | **P7-A validated; P7-B smoke prepared** | BGE-M3 report-image auxiliary training | P7-A produced all 4,407 x 1,024 embeddings with no truncation; run the frozen two-GPU image-training smoke |
+| P7 | **P7-A and P7-B smoke validated; full run next** | BGE-M3 report-image auxiliary training | 64-study smoke passed with finite report loss, 8,148 MiB/rank, and acceptable runtime projections; launch the full frozen candidate |
 | P8–P9 | queued | Relabelling/ensemble and compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -285,10 +285,15 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **P7-B:** the matched report-image trainer and 64-study speed-smoke bundles are
   generated from one canonical source. BGE-M3 is absent from both; they consume only
   the 8.6 MiB embedding matrix. The report projection is training-only and excluded
-  from the deployable image checkpoint.
+  from the deployable image checkpoint. Smoke version 1 completed and independently
+  validated: the full fixed bank contains 3,926 pseudo-training rows/3,761 report
+  groups, report InfoNCE was finite at `1.0142`, both ranks peaked at 8,148 MiB, and
+  no traceback or CUDA OOM occurred. The post-warmup representation projection is
+  1.89 hours; the all-in conservative projection is 5.62 hours.
 - **Tracked evidence:**
-  [`experiments/results/P7-A.json`](../experiments/results/P7-A.json) and the frozen
-  [`P7_PROTOCOL.md`](P7_PROTOCOL.md).
+  [`experiments/results/P7-A.json`](../experiments/results/P7-A.json),
+  [`experiments/results/P7-B-SMOKE.json`](../experiments/results/P7-B-SMOKE.json),
+  and the frozen [`P7_PROTOCOL.md`](P7_PROTOCOL.md).
 
 ## Completed P5 run
 

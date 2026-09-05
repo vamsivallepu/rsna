@@ -1,0 +1,47 @@
+{
+  "experiment_id": "P7-B-SMOKE",
+  "status": "validated",
+  "run_id": "P7-REPORT-IMAGE-AUX-SPEED-SMOKE-v1",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p7-report-image-speed-smoke",
+  "kaggle_version": 1,
+  "launch_commit": "6dbbc05",
+  "execution": {
+    "accelerator": "NvidiaTeslaT4 x2",
+    "world_size": 2,
+    "global_study_batch": 2,
+    "gradient_accumulation": 4,
+    "global_steps": 32,
+    "elapsed_minutes": 0.9587672392527262,
+    "seconds_per_global_step": 1.2890111804008484,
+    "steady_seconds_per_global_step_after_warmup": 0.43180969783238005,
+    "peak_memory_mib_by_rank": [
+      8148.3857421875,
+      8148.3857421875
+    ]
+  },
+  "report_auxiliary": {
+    "embedding_manifest_sha256": "f82ddf5f5b95224a21cb83b2f1e8b3ed1bf3bad2e8495396d5c398956a9556a8",
+    "bank_rows": 3926,
+    "bank_unique_report_groups": 3761,
+    "bank_expert_rows": 0,
+    "selection_report_overlap": 0,
+    "temperature": 0.07,
+    "loss_weight": 0.1,
+    "train_report_contrastive": 1.014206680469215,
+    "train_combined_loss": 0.8535897061358156
+  },
+  "runtime_projection_hours": {
+    "representation_steady_after_warmup": 1.8912531876469416,
+    "representation_conservative_all_in": 5.622953215837478,
+    "kaggle_limit": 9.0
+  },
+  "integrity": {
+    "finite_auxiliary_loss": true,
+    "both_ddp_ranks_initialized": true,
+    "both_rank_memory_safe": true,
+    "traceback_absent": true,
+    "cuda_oom_absent": true,
+    "independent_validation": true
+  },
+  "decision": "All frozen smoke gates passed; launch the full matched P7 candidate."
+}
