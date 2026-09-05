@@ -638,6 +638,11 @@ def infer_device_group(
         if device.type == "cuda":
             pixels = pixels.contiguous(memory_format=torch.channels_last)
         pixels = (pixels - reference.mean) / reference.std
+        if device.type == "cuda":
+            # Every resident backbone consumes the same normalized tensor. Cast
+            # once to the dtype autocast would use for the first convolution,
+            # instead of repeating that large input conversion for 3-4 models.
+            pixels = pixels.to(dtype=torch.float16)
         if p2_model is not None:
             features = p2_model.backbone(pixels).reshape(
                 batch, count, -1
@@ -1171,7 +1176,8 @@ def main() -> int:
         "inference_optimization": (
             "two-study batches; resident FP16 inference weights; bounded "
             "asynchronous per-device pipeline; one shared resize and "
-            "normalization per device group; alternating P6 batches"
+            "normalization and FP16 input cast per device group; alternating "
+            "P6 batches"
             if ENABLE_P6
             else "two-study batches; resident FP16 inference weights; one "
             "shared resize and normalization per device group"

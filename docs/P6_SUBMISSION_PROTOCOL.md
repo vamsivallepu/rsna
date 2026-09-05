@@ -37,7 +37,9 @@ limit. The canary uses two-study batches, resident FP16 models, one preprocessin
 pass per device, and two independent single-thread device queues. P6 weights are
 resident on both GPUs, while P6 batches alternate between devices. This balances
 the seventh backbone over consecutive batches without a per-batch cross-device
-barrier.
+barrier. The shared normalized image tensor is converted to FP16 once per device
+group, matching the dtype autocast supplies to each first convolution while avoiding
+the same large input conversion inside every resident backbone.
 
 Before spending a competition submission:
 
