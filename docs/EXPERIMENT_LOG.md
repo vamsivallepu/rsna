@@ -23,14 +23,15 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 | P6-A | validated | fastMRI+ provenance, schema, access, and transfer audit | Official annotation hashes, release invariants, and user access validated | P6-B advances to secure private Kaggle image staging; unofficial mirrors rejected |
 | P6-B-SMOKE | validated | Official single-coil HDF5 data, visual, and localization GPU smoke | 128/128 decoded; 16/16 overlays passed; 99.44% GPU; 31.68 images/s; 6.89 GiB peak | All gates passed; stage official training archive for source pretraining |
 | P6-B | validated | Full fastMRI+ class-agnostic localization pretraining | Epoch 2: validation loss 1.056847, lesion recall 0.464186; strict P2 backbone compatibility passed | Advance selected source checkpoint to a matched P2 transfer comparison; no promotion yet |
+| P6-C | validated | Matched ImageNet-control versus P6-initialized P2 reruns | Control 0.899966 OOF; transfer 0.909878; fixed 25% P6 blend 0.905421 | Standalone fails Effusion stability floor; promote the fixed 75% P2+P4 plus 25% P6 rank blend |
 
 ## Active experiment
 
 ### P6 — fastMRI+ localization transfer
 
-- **Status:** P6-A, all P6-B smoke gates, and the full P6-B source run passed on
-  private AWS. The selected epoch-2 backbone and matched ImageNet control launched
-  concurrently as Kaggle version-1 T4 x2 runs from commit `679e531`.
+- **Status:** P6 source pretraining and both matched downstream Kaggle version-1 arms
+  completed and independently validated. The fixed 75% P2+P4 plus 25% P6 rank blend
+  passed every frozen gate and is promoted for hidden-test inference validation.
 - **Hypothesis:** lesion-localization supervision on sagittal knee MRI can improve the
   P2 CoAtNet backbone's sensitivity to small abnormalities.
 - **Parent:** promoted P2+P4 equal-rank blend at `0.8958211` OOF and `0.916` public;
@@ -55,10 +56,11 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   signed URLs are not stored in Git, artifacts, notebook source, or logs. Do not use
   or republish an unofficial Kaggle image mirror; stage an official package through a
   private Kaggle Secret and retain filename/hash/overlay checks.
-- **Frozen next arm:** class-agnostic lesion-center and box-size pretraining of the P2
-  CoAtNet backbone, followed by a matched ImageNet-versus-localization initialization
-  comparison under the existing report-grouped pseudo and five-fold expert OOF
-  contract. Full details: [`P6_PROTOCOL.md`](P6_PROTOCOL.md).
+- **Frozen downstream contract:** class-agnostic lesion-center and box-size
+  pretraining of the P2 CoAtNet backbone, followed by a matched
+  ImageNet-versus-localization initialization comparison under the existing
+  report-grouped pseudo and five-fold expert OOF contract. Full details:
+  [`P6_PROTOCOL.md`](P6_PROTOCOL.md).
 - **Secure staging:** private CPU notebook
   `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging` version 1 was pushed on
   2026-09-04. It checks only whether `FASTMRI_KNEE_DICOM_BATCH2_URL` is enabled and
@@ -140,8 +142,20 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   `rsna-knee-p6-p2-matched-control` and `rsna-knee-p6-p2-transfer` use the same source,
   P2 cache, seeds, optimizer, batches, epochs, checkpoint-selection boundary, and
   five-fold expert OOF procedure; initialization is their only intended difference.
-  Both version-1 kernels were confirmed `RUNNING` immediately after launch on
-  2026-09-04.
+  Both version-1 kernels completed successfully and their outputs were downloaded on
+  2026-09-05.
+- **Matched downstream result:** control pseudo BCE was `0.4736813` and OOF macro AUC
+  was `0.8999658`; transfer improved them to `0.4625987` and `0.9098782`. Standalone
+  transfer gained `+0.0099125` with bootstrap probability `0.8844`, but is not promoted
+  alone because Effusion declined `-0.0708075`, beyond the `-0.05` stability floor.
+  The fixed 75% P2+P4 plus 25% P6 rank blend reached `0.9054206`, a `+0.0095995`
+  improvement over P2+P4. Its paired 95% interval `[0.0029767, 0.0172338]`, `0.9976`
+  improvement probability, nine nonnegative targets, and `-0.0071685` worst decline
+  pass every frozen promotion gate. Promote only this fixed blend.
+- **Downstream validation:** both manifests and every hashed artifact passed; all 58
+  expert rows were OOF exactly once; saved direct and five fold heads replayed; report
+  overlap remained zero; and both T4s were active. Control GPU means were 97.79% and
+  97.14%; transfer means were 96.77% and 96.74%.
 - **AWS cost control:** after the selected checkpoint was verified locally and in the
   private Kaggle Dataset, instance `i-0952ebd05fab9e563` was stopped and then
   terminated with explicit approval on 2026-09-04. Its 100 GiB root and 500 GiB data
@@ -154,6 +168,7 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
   First GPU-smoke attempt: [`experiments/results/P6-B-GPU-SMOKE-v1.json`](../experiments/results/P6-B-GPU-SMOKE-v1.json).
   Validated GPU smoke: [`experiments/results/P6-B-GPU-SMOKE-v2.json`](../experiments/results/P6-B-GPU-SMOKE-v2.json).
   Validated full source run: [`experiments/results/P6-B.json`](../experiments/results/P6-B.json).
+  Validated matched comparison: [`experiments/results/P6.json`](../experiments/results/P6.json).
 
 ### B04 target-wise OOF AUC
 
@@ -237,7 +252,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P4 | **validated / blend promoted** | Five end-to-end folds of the P2 winner | P4 alone tied P2 at 0.891161; fixed equal-rank P2+P4 reached 0.895821 and passed its gate |
 | P4-SUB | **validated / scored** | Optimized six-model P2+P4 equal-rank submission | Public leaderboard 0.916, improving canonical P2 by 0.008 |
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
-| P6 | **running** | fastMRI+ localization transfer into matched P2 reruns | Source pretraining validated; control and transfer version-1 arms running on Kaggle |
+| P6 | **validated / blend promoted** | fastMRI+ localization transfer into matched P2 reruns | Fixed 75% P2+P4 plus 25% P6 rank blend passed at 0.905421 OOF; hidden-test canary is next |
 | P7–P9 | queued | Report-image auxiliary, relabelling/ensemble, and 3D stages | Gates in the roadmap |
 
 ## Completed P5 run

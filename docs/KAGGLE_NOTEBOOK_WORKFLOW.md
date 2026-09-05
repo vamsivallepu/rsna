@@ -25,8 +25,8 @@
 | P5 OrthoFoundation speed smoke | [rsna-knee-p5-orthofoundation-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-speed-smoke) | GPU T4 x2 | V2 independently passed: 159.45 images/s, 14.74 min full-feature projection, 1,847 MiB/rank, both GPUs 100% peak |
 | P5 OrthoFoundation frozen | [rsna-knee-p5-orthofoundation-frozen](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-orthofoundation-frozen) | GPU T4 x2 | V3 complete and independently validated; OOF 0.768822, fixed P5 blend 0.886740; rejected and LoRA gate failed |
 | P5 diagnostic submission | [rsna-knee-p5-diagnostic-submission](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p5-diagnostic-submission) | GPU T4 x2 | Canary v1 independently validated; exact version submitted as `56008122`, currently pending |
-| P6 P2 matched control | [rsna-knee-p6-p2-matched-control](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-matched-control) | GPU T4 x2 | Version 1 running; original ImageNet initialization under the frozen P6 comparison contract |
-| P6 P2 transfer | [rsna-knee-p6-p2-transfer](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-transfer) | GPU T4 x2 | Version 1 running; validated P6 epoch-2 localization checkpoint, otherwise matched to control |
+| P6 P2 matched control | [rsna-knee-p6-p2-matched-control](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-matched-control) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.899966, pseudo BCE 0.473681, both GPUs verified |
+| P6 P2 transfer | [rsna-knee-p6-p2-transfer](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-transfer) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.909878, pseudo BCE 0.462599; fixed 25% blend promoted at 0.905421 |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

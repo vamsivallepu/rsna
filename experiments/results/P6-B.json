@@ -63,7 +63,7 @@
     "launch_commit": "679e531",
     "control_version": 1,
     "transfer_version": 1,
-    "state": "running"
+    "state": "completed_and_independently_validated"
   },
   "aws_cleanup": {
     "date": "2026-09-04",

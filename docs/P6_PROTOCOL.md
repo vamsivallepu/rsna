@@ -193,6 +193,23 @@ from the original ImageNet checkpoint and `rsna-knee-p6-p2-transfer` starts from
 selected P6 checkpoint. They share the P2 cache, code, seeds, batches, optimizer,
 epochs, pseudo-validation selection, and expert-OOF procedure.
 
+## Validated matched-transfer result
+
+Both Kaggle version-1 arms completed and passed independent artifact hashes, saved-head
+prediction replay, report-group purge, exact 58-row OOF coverage, and dual-GPU checks.
+The matched ImageNet control reached `0.8999658` OOF; P6 transfer reached `0.9098782`,
+a `+0.0099125` delta with paired-bootstrap probability `0.8844`. Transfer also lowered
+the pseudo-validation weighted BCE from `0.4736813` to `0.4625987`.
+
+The standalone transfer is not promoted by itself because Effusion declined
+`-0.0708075`, exceeding the frozen `-0.05` per-target floor. The predeclared fixed
+blend—75% of the existing P2+P4 equal-rank model plus 25% P6 rank—reached `0.9054206`
+OOF versus `0.8958211`, a `+0.0095995` gain. Its 5,000-sample paired-bootstrap 95%
+interval is `[0.0029767, 0.0172338]` with probability of improvement `0.9976`; nine
+targets are nonnegative and the worst decline is only `-0.0071685`. It passes every
+frozen gate and is promoted for a hidden-test inference canary. The tracked result is
+[`P6.json`](../experiments/results/P6.json).
+
 The private secret entry notebook is
 `vallepuvamsikrishna/rsna-knee-p6-fastmri-staging`. Version 1 only tests secret
 availability and validates the official host/package path; it does not display the

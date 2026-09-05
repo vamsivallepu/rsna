@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P6",
+  "run_id": "P6-P2-MATCHED-TRANSFER-COMPARISON-v1",
+  "status": "validated",
+  "date": "2026-09-05",
+  "launch_commit": "679e531",
+  "raw_artifact_paths": {
+    "control": "outputs/kaggle/rsna-p6-p2-matched-control-v1",
+    "transfer": "outputs/kaggle/rsna-p6-p2-transfer-v1"
+  },
+  "manifest_sha256": {
+    "control": "047a9f5653a9c1d032bd439a1eb9734a5bc0917d6e3edf81654ebe92bd7a0914",
+    "transfer": "885b58c5a9af1bffaac1f52c9703db3538d25f8d9660b036b563b351b1067bce"
+  },
+  "validated": true,
+  "matched_configuration": true,
+  "artifact_validation": {
+    "control_full_replay_passed": true,
+    "transfer_full_replay_passed": true,
+    "all_manifest_artifact_hashes_passed": true,
+    "saved_direct_and_fold_heads_replayed": true,
+    "report_group_purge_validated": true,
+    "expert_oof_rows_per_arm": 58,
+    "dual_gpu_execution_validated": true,
+    "gpu_utilization": {
+      "control": {
+        "0": {
+          "count": 155,
+          "mean": 97.79354838709678,
+          "median": 100.0,
+          "max": 100
+        },
+        "1": {
+          "count": 155,
+          "mean": 97.14193548387097,
+          "median": 100.0,
+          "max": 100
+        }
+      },
+      "transfer": {
+        "0": {
+          "count": 171,
+          "mean": 96.7719298245614,
+          "median": 100.0,
+          "max": 100
+        },
+        "1": {
+          "count": 171,
+          "mean": 96.74269005847954,
+          "median": 100.0,
+          "max": 100
+        }
+      }
+    }
+  },
+  "runtime_minutes": {
+    "control_representation": 131.27847274144492,
+    "control_feature_extraction": 20.422127536932628,
+    "transfer_representation": 144.09351080258688,
+    "transfer_feature_extraction": 22.827796590328216
+  },
+  "direct_expert": {
+    "control_macro_auc": 0.8892456778172776,
+    "transfer_macro_auc": 0.9087097233589598
+  },
+  "pseudo_validation": {
+    "control_weighted_bce": 0.47368129700278905,
+    "transfer_weighted_bce": 0.46259872634244603,
+    "improvement_control_minus_transfer": 0.011082570660343016,
+    "gate_passed": true
+  },
+  "standalone": {
+    "control_macro_auc": 0.8999657535114253,
+    "transfer_macro_auc": 0.9098782108453899,
+    "delta": 0.00991245733396462,
+    "target_deltas": {
+      "ACL": 0.02450980392156865,
+      "MCL": 0.020408163265306145,
+      "Medial Meniscus": 0.009615384615384581,
+      "Lateral Meniscus": 0.029813664596273437,
+      "Medial OA": 0.027906976744186074,
+      "Lateral OA": 0.07156673114119927,
+      "PF OA": 0.028314028314028294,
+      "Effusion": -0.07080745341614902,
+      "Synovitis": -0.005973715651135136,
+      "Baker's": 0.007246376811594235,
+      "Contusion": 0.0013495276653171517,
+      "Fracture": -0.025000000000000022
+    },
+    "nonnegative_target_deltas": 9,
+    "worst_target_delta": -0.07080745341614902,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": 0.009964323137919612,
+      "ci95": [
+        -0.006754513282104906,
+        0.02669382843825901
+      ],
+      "probability_positive": 0.8844
+    },
+    "gate_passed": false
+  },
+  "fixed_25pct_rank_blend": {
+    "p2_p4_macro_auc": 0.8958210633119559,
+    "p2_p4_plus_p6_macro_auc": 0.9054205862136073,
+    "delta": 0.009599522901651447,
+    "target_deltas": {
+      "ACL": 0.01225490196078427,
+      "MCL": 0.03401360544217691,
+      "Medial Meniscus": -0.004807692307692291,
+      "Lateral Meniscus": 0.027950310559006097,
+      "Medial OA": 0.0007751937984494806,
+      "Lateral OA": 0.030947775628626495,
+      "PF OA": 0.009652509652509633,
+      "Effusion": 0.0006211180124222615,
+      "Synovitis": -0.007168458781361964,
+      "Baker's": -0.0027173913043477826,
+      "Contusion": 0.007422402159244279,
+      "Fracture": 0.006249999999999978
+    },
+    "nonnegative_target_deltas": 9,
+    "worst_target_delta": -0.007168458781361964,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": 0.009556615506428523,
+      "ci95": [
+        0.0029766802678699287,
+        0.017233752500616355
+      ],
+      "probability_positive": 0.9976
+    },
+    "gate_passed": true
+  },
+  "promotion_gate_passed": true,
+  "decision": "Promote the fixed 75% P2+P4 plus 25% P6 rank blend. The standalone P6 transfer improves macro AUC but fails the no-target-below-minus-0.05 stability gate because Effusion declines. The fixed blend passes every predeclared pseudo-validation, macro, bootstrap, and target-stability gate."
+}
