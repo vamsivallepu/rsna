@@ -105,22 +105,24 @@ HEAD_FOLD_LR = 2e-4
 HEAD_FOLD_WEIGHT_DECAY = 1e-3
 MODEL_MEAN = (0.5, 0.5, 0.5)
 MODEL_STD = (0.5, 0.5, 0.5)
-EXECUTION_REVISION = "ddp_t4_v3"
 P6_TRANSFER = os.environ.get("P6_TRANSFER") == "1"
 P6_MATCHED_CONTROL = os.environ.get("P6_MATCHED_CONTROL") == "1"
-if P6_TRANSFER and P6_MATCHED_CONTROL:
-    raise ValueError("P6_TRANSFER and P6_MATCHED_CONTROL are mutually exclusive")
+P7_REPORT_AUX = os.environ.get("P7_REPORT_AUX") == "1"
+if sum((P6_TRANSFER, P6_MATCHED_CONTROL, P7_REPORT_AUX)) > 1:
+    raise ValueError("P6 and P7 execution modes are mutually exclusive")
 P4_FOLD = int(os.environ["P4_FOLD"]) if "P4_FOLD" in os.environ else None
 if P4_FOLD is not None and P4_FOLD not in range(N_FOLDS):
     raise ValueError(f"P4_FOLD must be in [0, {N_FOLDS - 1}], got {P4_FOLD}")
-if P4_FOLD is not None and (P6_TRANSFER or P6_MATCHED_CONTROL):
-    raise ValueError("P4 mode cannot be combined with a P6 matched arm")
+if P4_FOLD is not None and (P6_TRANSFER or P6_MATCHED_CONTROL or P7_REPORT_AUX):
+    raise ValueError("P4 mode cannot be combined with a P6/P7 matched arm")
 P4_MODE = P4_FOLD is not None
 P4_SEED_BASE = 20260904
 RUN_SEED = P4_SEED_BASE + P4_FOLD if P4_MODE else P2_SEED
 RUN_LABEL = (
     "P4"
     if P4_MODE
+    else "P7_REPORT_AUX"
+    if P7_REPORT_AUX
     else "P6_TRANSFER"
     if P6_TRANSFER
     else "P6_CONTROL"
@@ -128,22 +130,36 @@ RUN_LABEL = (
     else "P2"
 )
 RUN_ID = (
-    "P6-P2-TRANSFER-v1"
+    "P7-REPORT-IMAGE-AUX-v1"
+    if P7_REPORT_AUX
+    else "P6-P2-TRANSFER-v1"
     if P6_TRANSFER
     else "P6-P2-MATCHED-CONTROL-v1"
     if P6_MATCHED_CONTROL
     else "P2-COATNET-v1"
 )
-MODEL_ID = P6_MODEL_ID if P6_TRANSFER else IMAGENET_MODEL_ID
-MODEL_SHA256 = P6_MODEL_SHA256 if P6_TRANSFER else IMAGENET_MODEL_SHA256
+MODEL_ID = P6_MODEL_ID if P6_TRANSFER or P7_REPORT_AUX else IMAGENET_MODEL_ID
+MODEL_SHA256 = (
+    P6_MODEL_SHA256 if P6_TRANSFER or P7_REPORT_AUX else IMAGENET_MODEL_SHA256
+)
 MODEL_FILENAME = (
-    "p6_localization_backbone_best.safetensors" if P6_TRANSFER else "model.safetensors"
+    "p6_localization_backbone_best.safetensors"
+    if P6_TRANSFER or P7_REPORT_AUX
+    else "model.safetensors"
 )
 MODEL_LICENSE = (
     "Apache-2.0 backbone; MIT annotations; fastMRI data-use agreement"
-    if P6_TRANSFER
+    if P6_TRANSFER or P7_REPORT_AUX
     else "Apache-2.0"
 )
+P7_REPORT_EMBEDDING_DIM = 1024
+P7_REPORT_TEMPERATURE = 0.07
+P7_REPORT_AUX_WEIGHT = 0.10
+P7_REPORT_EMBEDDING_RUN_ID = "P7-REPORT-EMBEDDINGS-v1"
+P7_REPORT_EMBEDDINGS_MANIFEST_SHA256 = os.environ.get(
+    "P7_REPORT_EMBEDDINGS_MANIFEST_SHA256", ""
+)
+EXECUTION_REVISION = "p7_report_aux_ddp_t4_v1" if P7_REPORT_AUX else "ddp_t4_v3"
 P4_SPEED_SMOKE = os.environ.get("P4_SPEED_SMOKE") == "1"
 if P4_SPEED_SMOKE and not P4_MODE:
     raise ValueError("P4_SPEED_SMOKE requires a P4_FOLD")
@@ -213,6 +229,18 @@ def find_named_file(filename: str, minimum_bytes: int = 1) -> Path:
         "p6_localization_training.json": Path(
             "/kaggle/input/datasets/vallepuvamsikrishna/"
             "rsna-p6-fastmri-localization-init/p6_localization_training.json"
+        ),
+        "p7_report_embeddings_manifest.json": Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p7-report-embeddings/p7_report_embeddings_manifest.json"
+        ),
+        "p7_bge_m3_report_embeddings.npy": Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p7-report-embeddings/p7_bge_m3_report_embeddings.npy"
+        ),
+        "p7_bge_m3_report_studies.csv": Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p7-report-embeddings/p7_bge_m3_report_studies.csv"
         ),
         "p2_cache_manifest_part_a.json": Path(
             "/kaggle/input/notebooks/vallepuvamsikrishna/"
@@ -301,6 +329,39 @@ def validate_p6_source_manifest(path: Path) -> dict[str, object]:
     assert manifest["data"]["validation_volumes"] == 199
     assert manifest["data"]["volume_overlap"] == 0
     return manifest
+
+
+def validate_p7_report_embeddings(
+    manifest_path: Path,
+    embeddings_path: Path,
+    studies_path: Path,
+    study_ids: list[str],
+) -> tuple[dict[str, object], np.ndarray]:
+    assert P7_REPORT_EMBEDDINGS_MANIFEST_SHA256
+    assert sha256_file(manifest_path) == P7_REPORT_EMBEDDINGS_MANIFEST_SHA256
+    manifest = json.loads(manifest_path.read_text())
+    assert manifest["run_id"] == P7_REPORT_EMBEDDING_RUN_ID
+    assert manifest["studies"] == manifest["unique_studies"] == 4_407
+    assert manifest["nonempty_reports"] == 4_407
+    assert manifest["model"]["source"] == (
+        "yethukmutt/bge-m3/Transformers/m3/1"
+    )
+    assert manifest["model"]["upstream"] == "BAAI/bge-m3"
+    assert manifest["model"]["license"] == "MIT"
+    assert manifest["model"]["embedding_dimension"] == P7_REPORT_EMBEDDING_DIM
+    assert manifest["tokens"]["truncated_reports"] == 0
+    expected_artifacts = manifest["artifacts_sha256"]
+    assert sha256_file(embeddings_path) == expected_artifacts[embeddings_path.name]
+    assert sha256_file(studies_path) == expected_artifacts[studies_path.name]
+    embedding_studies = pd.read_csv(studies_path, dtype={ID: str})
+    assert embedding_studies.columns.tolist() == [ID]
+    assert embedding_studies[ID].tolist() == study_ids
+    embeddings = np.load(embeddings_path, mmap_mode="r")
+    assert embeddings.shape == (4_407, P7_REPORT_EMBEDDING_DIM)
+    assert embeddings.dtype == np.float16 and np.isfinite(embeddings).all()
+    norms = np.linalg.norm(np.asarray(embeddings).astype(np.float32), axis=1)
+    assert np.max(np.abs(norms - 1.0)) < 0.002
+    return manifest, embeddings
 
 
 def normalize_report(report: object) -> str:
@@ -434,6 +495,13 @@ class CoAtNetMIL(nn.Module):
             backbone.set_grad_checkpointing(enable=False)
         self.backbone = backbone
         self.head = TargetAttentionHead()
+        if P7_REPORT_AUX:
+            self.report_projection = nn.Sequential(
+                nn.LayerNorm(FEATURE_DIM),
+                nn.Linear(FEATURE_DIM, P7_REPORT_EMBEDDING_DIM),
+                nn.GELU(),
+                nn.Linear(P7_REPORT_EMBEDDING_DIM, P7_REPORT_EMBEDDING_DIM),
+            )
         self.channels_last = channels_last
         self.register_buffer("mean", torch.tensor(MODEL_MEAN).view(1, 3, 1, 1))
         self.register_buffer("std", torch.tensor(MODEL_STD).view(1, 3, 1, 1))
@@ -465,9 +533,20 @@ class CoAtNetMIL(nn.Module):
         mask: torch.Tensor,
         augment: bool = False,
         return_features: bool = False,
-    ) -> torch.Tensor:
+        return_report_embedding: bool = False,
+    ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
         features = self.encode(windows, augment=augment)
-        return features if return_features else self.head(features, mask)
+        if return_features:
+            return features
+        logits = self.head(features, mask)
+        if not return_report_embedding:
+            return logits
+        if not P7_REPORT_AUX:
+            raise RuntimeError("report embedding requested outside P7 mode")
+        valid = mask[:, :, None].to(features.dtype)
+        pooled = (features * valid).sum(dim=1) / valid.sum(dim=1).clamp_min(1.0)
+        embedding = F.normalize(self.report_projection(pooled).float(), dim=-1)
+        return logits, embedding
 
 
 def weighted_terms(
@@ -482,6 +561,28 @@ def weighted_bce(
 ) -> torch.Tensor:
     numerator, denominator = weighted_terms(logits, labels, label_weights)
     return numerator / denominator
+
+
+def p7_multi_positive_infonce(
+    image_embeddings: torch.Tensor,
+    study_indices: np.ndarray,
+    report_bank: torch.Tensor,
+    bank_group_ids: torch.Tensor,
+    all_group_ids: torch.Tensor,
+) -> torch.Tensor:
+    """Duplicate-aware image-to-report InfoNCE over the frozen report bank."""
+    assert P7_REPORT_AUX and len(image_embeddings) == len(study_indices)
+    indices = torch.as_tensor(study_indices, dtype=torch.long, device=report_bank.device)
+    query_groups = all_group_ids[indices]
+    positive = query_groups[:, None] == bank_group_ids[None, :]
+    assert positive.any(dim=1).all()
+    logits = (
+        image_embeddings.to(report_bank.dtype) @ report_bank.transpose(0, 1)
+    ).float() / P7_REPORT_TEMPERATURE
+    denominator = torch.logsumexp(logits, dim=1)
+    numerator = torch.logsumexp(logits.masked_fill(~positive, -torch.inf), dim=1)
+    raw = (denominator - numerator).mean()
+    return raw / math.log(report_bank.shape[0])
 
 
 def calculate_metrics(
@@ -578,7 +679,24 @@ def worker_main() -> int:
     target_path = find_named_file("training_targets.csv", 100_000)
     model_path = find_named_file(MODEL_FILENAME, 250_000_000)
     p6_source_manifest_path = (
-        find_named_file("p6_localization_training.json", 1_000) if P6_TRANSFER else None
+        find_named_file("p6_localization_training.json", 1_000)
+        if P6_TRANSFER or P7_REPORT_AUX
+        else None
+    )
+    p7_report_manifest_path = (
+        find_named_file("p7_report_embeddings_manifest.json", 1_000)
+        if P7_REPORT_AUX
+        else None
+    )
+    p7_report_embeddings_path = (
+        find_named_file("p7_bge_m3_report_embeddings.npy", 1_000_000)
+        if P7_REPORT_AUX
+        else None
+    )
+    p7_report_studies_path = (
+        find_named_file("p7_bge_m3_report_studies.csv", 100_000)
+        if P7_REPORT_AUX
+        else None
     )
     part_a = prepare_cache_part("a")
     part_b = prepare_cache_part("b") if FULL_RUN else None
@@ -595,7 +713,11 @@ def worker_main() -> int:
                 validate_p6_source_manifest(p6_source_manifest_path)
                 print(
                     {
-                        "P6_TRANSFER_SOURCE_VALIDATED": True,
+                        (
+                            "P7_P6_SOURCE_VALIDATED"
+                            if P7_REPORT_AUX
+                            else "P6_TRANSFER_SOURCE_VALIDATED"
+                        ): True,
                         "manifest_sha256": P6_SOURCE_MANIFEST_SHA256,
                         "checkpoint_sha256": P6_MODEL_SHA256,
                     },
@@ -626,6 +748,36 @@ def worker_main() -> int:
     assert metadata[ID].tolist() == targets[ID].tolist() == study_ids
     assert targets[TARGETS].notna().all().all()
 
+    p7_report_manifest: dict[str, object] | None = None
+    p7_report_embeddings: np.ndarray | None = None
+    if P7_REPORT_AUX:
+        assert FULL_RUN
+        assert p7_report_manifest_path is not None
+        assert p7_report_embeddings_path is not None
+        assert p7_report_studies_path is not None
+        if is_primary:
+            p7_report_manifest, p7_report_embeddings = (
+                validate_p7_report_embeddings(
+                    p7_report_manifest_path,
+                    p7_report_embeddings_path,
+                    p7_report_studies_path,
+                    study_ids,
+                )
+            )
+            print(
+                {
+                    "P7_REPORT_EMBEDDINGS_VALIDATED": True,
+                    "manifest_sha256": P7_REPORT_EMBEDDINGS_MANIFEST_SHA256,
+                },
+                flush=True,
+            )
+        if distributed:
+            dist.barrier()
+        if p7_report_embeddings is None:
+            p7_report_embeddings = np.load(
+                p7_report_embeddings_path, mmap_mode="r"
+            )
+
     pixels_a = np.load(part_a["pixels"], mmap_mode="r")
     mask_a = np.load(part_a["mask"], mmap_mode="r").astype(bool)
     if part_b:
@@ -646,6 +798,7 @@ def worker_main() -> int:
     p4_expert_valid_indices = np.empty(0, dtype=int)
     p4_dropped_indices = np.empty(0, dtype=int)
     p4_split_roles = np.full(len(study_ids), "", dtype=object)
+    p7_report_bank_indices = np.empty(0, dtype=int)
     if FULL_RUN:
         assert len(gold_indices) == 58 and len(pseudo_indices) == 4_349
         if P4_MODE:
@@ -751,6 +904,13 @@ def worker_main() -> int:
                     set(report_hashes[pseudo_valid_indices])
                     & set(report_hashes[adapt_indices])
                 )
+        if P7_REPORT_AUX:
+            p7_report_bank_indices = adapt_indices.copy()
+            assert not is_gold[p7_report_bank_indices].any()
+            assert not (
+                set(report_hashes[p7_report_bank_indices])
+                & set(report_hashes[pseudo_valid_indices])
+            )
         if SPEED_SMOKE:
             # Preserve the full tensor shapes and accumulation path while keeping
             # the remote diagnostic short enough to stream and inspect live.
@@ -759,6 +919,45 @@ def worker_main() -> int:
         assert len(adapt_indices) % world_size == 0
     else:
         adapt_indices = pseudo_valid_indices = np.arange(len(study_ids))
+
+    p7_report_bank: torch.Tensor | None = None
+    p7_bank_group_ids: torch.Tensor | None = None
+    p7_all_group_ids: torch.Tensor | None = None
+    p7_report_bank_unique_groups = 0
+    if P7_REPORT_AUX:
+        assert p7_report_embeddings is not None
+        assert len(p7_report_bank_indices) > 3_800
+        unique_hashes = {
+            value: index
+            for index, value in enumerate(sorted(set(report_hashes.tolist())))
+        }
+        group_ids = np.asarray(
+            [unique_hashes[value] for value in report_hashes], dtype=np.int64
+        )
+        p7_report_bank = torch.from_numpy(
+            np.asarray(p7_report_embeddings[p7_report_bank_indices]).copy()
+        ).to(device=device, dtype=torch.float16)
+        p7_bank_group_ids = torch.from_numpy(
+            group_ids[p7_report_bank_indices]
+        ).to(device=device)
+        p7_all_group_ids = torch.from_numpy(group_ids).to(device=device)
+        assert torch.isfinite(p7_report_bank).all()
+        p7_report_bank_unique_groups = len(
+            np.unique(group_ids[p7_report_bank_indices])
+        )
+        if is_primary:
+            np.save(OUTPUT_ROOT / "p7_report_bank_indices.npy", p7_report_bank_indices)
+            np.save(OUTPUT_ROOT / "p7_report_group_ids.npy", group_ids)
+            print(
+                {
+                    "P7_REPORT_BANK_READY": True,
+                    "rows": len(p7_report_bank_indices),
+                    "unique_report_groups": p7_report_bank_unique_groups,
+                    "expert_rows": int(is_gold[p7_report_bank_indices].sum()),
+                    "selection_report_overlap": 0,
+                },
+                flush=True,
+            )
 
     def read_study(index: int) -> tuple[np.ndarray, np.ndarray]:
         if index < len(pixels_a):
@@ -872,6 +1071,14 @@ def worker_main() -> int:
                 "execution_revision": EXECUTION_REVISION,
                 "speed_smoke": SPEED_SMOKE,
                 "p4_speed_smoke": P4_SPEED_SMOKE,
+                "p7_report_aux": P7_REPORT_AUX,
+                "p7_report_temperature": (
+                    P7_REPORT_TEMPERATURE if P7_REPORT_AUX else None
+                ),
+                "p7_report_aux_weight": P7_REPORT_AUX_WEIGHT if P7_REPORT_AUX else None,
+                "p7_report_bank_rows": (
+                    len(p7_report_bank_indices) if P7_REPORT_AUX else 0
+                ),
                 "gradient_checkpointing": False,
                 "channels_last": device.type == "cuda",
                 "cudnn_benchmark": device.type == "cuda",
@@ -893,7 +1100,10 @@ def worker_main() -> int:
     else:
         model = model.to(device)
     parameter_count = sum(parameter.numel() for parameter in model.parameters())
-    assert 73_000_000 < parameter_count < 76_000_000
+    if P7_REPORT_AUX:
+        assert 75_000_000 < parameter_count < 79_000_000
+    else:
+        assert 73_000_000 < parameter_count < 76_000_000
     train_model: nn.Module
     if distributed:
         train_model = DDP(
@@ -919,11 +1129,16 @@ def worker_main() -> int:
     else:
         train_model = model
 
+    optimizer_groups = [
+        {"params": model.backbone.parameters(), "lr": BACKBONE_LR},
+        {"params": model.head.parameters(), "lr": HEAD_LR},
+    ]
+    if P7_REPORT_AUX:
+        optimizer_groups.append(
+            {"params": model.report_projection.parameters(), "lr": HEAD_LR}
+        )
     optimizer = torch.optim.AdamW(
-        [
-            {"params": model.backbone.parameters(), "lr": BACKBONE_LR},
-            {"params": model.head.parameters(), "lr": HEAD_LR},
-        ],
+        optimizer_groups,
         weight_decay=REP_WEIGHT_DECAY,
         fused=device.type == "cuda",
     )
@@ -932,7 +1147,11 @@ def worker_main() -> int:
     )
     scheduler = torch.optim.lr_scheduler.OneCycleLR(
         optimizer,
-        max_lr=[BACKBONE_LR, HEAD_LR],
+        max_lr=[
+            BACKBONE_LR,
+            HEAD_LR,
+            *([HEAD_LR] if P7_REPORT_AUX else []),
+        ],
         total_steps=rep_epochs * updates_per_epoch,
         pct_start=0.15,
     )
@@ -984,6 +1203,8 @@ def worker_main() -> int:
         optimizer.zero_grad(set_to_none=True)
         epoch_totals = torch.zeros(2, dtype=torch.float64, device=device)
         window_totals = torch.zeros(2, dtype=torch.float64, device=device)
+        epoch_report_totals = torch.zeros(2, dtype=torch.float64, device=device)
+        window_report_totals = torch.zeros(2, dtype=torch.float64, device=device)
         for step, batch in enumerate(loader):
             should_update = (step + 1) % grad_accum == 0 or step + 1 == len(loader)
             sync_context = (
@@ -992,20 +1213,45 @@ def worker_main() -> int:
                 else train_model.no_sync()  # type: ignore[union-attr]
             )
             with sync_context:
-                _, windows, window_mask, labels, label_weights = move_batch(batch)
+                indices, windows, window_mask, labels, label_weights = move_batch(batch)
                 with torch.autocast(
                     device_type=device.type,
                     dtype=torch.float16,
                     enabled=device.type == "cuda",
                 ):
-                    logits = train_model(windows, window_mask, augment=True)
+                    output = train_model(
+                        windows,
+                        window_mask,
+                        augment=True,
+                        return_report_embedding=P7_REPORT_AUX,
+                    )
+                    if P7_REPORT_AUX:
+                        assert isinstance(output, tuple)
+                        logits, image_embeddings = output
+                        assert p7_report_bank is not None
+                        assert p7_bank_group_ids is not None
+                        assert p7_all_group_ids is not None
+                        report_loss = p7_multi_positive_infonce(
+                            image_embeddings,
+                            indices,
+                            p7_report_bank,
+                            p7_bank_group_ids,
+                            p7_all_group_ids,
+                        )
+                    else:
+                        assert isinstance(output, torch.Tensor)
+                        logits = output
+                        report_loss = torch.zeros((), device=device)
                     local_num, local_den = weighted_terms(logits, labels, label_weights)
                     global_den = local_den.detach().clone()
                     if distributed:
                         dist.all_reduce(global_den, op=dist.ReduceOp.SUM)
                     # DDP averages gradients. Multiplying by world_size makes this
                     # exactly the old global weighted loss across the two studies.
-                    loss = local_num * world_size / global_den.clamp_min(1.0)
+                    classification_loss = (
+                        local_num * world_size / global_den.clamp_min(1.0)
+                    )
+                    loss = classification_loss + P7_REPORT_AUX_WEIGHT * report_loss
                 scaler.scale(loss / grad_accum).backward()
             epoch_totals += torch.stack(
                 [local_num.detach().double(), local_den.detach().double()]
@@ -1013,6 +1259,14 @@ def worker_main() -> int:
             window_totals += torch.stack(
                 [local_num.detach().double(), local_den.detach().double()]
             )
+            report_totals = torch.stack(
+                [
+                    report_loss.detach().double() * len(indices),
+                    torch.as_tensor(len(indices), dtype=torch.float64, device=device),
+                ]
+            )
+            epoch_report_totals += report_totals
+            window_report_totals += report_totals
             if should_update:
                 scaler.unscale_(optimizer)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
@@ -1026,14 +1280,23 @@ def worker_main() -> int:
                 logged = window_totals.clone()
                 if distributed:
                     dist.all_reduce(logged, op=dist.ReduceOp.SUM)
+                logged_report = window_report_totals.clone()
+                if P7_REPORT_AUX and distributed:
+                    dist.all_reduce(logged_report, op=dist.ReduceOp.SUM)
                 if is_primary:
-                    print(
+                    message = (
                         f"{RUN_LABEL} train epoch {epoch + 1}/{rep_epochs} "
                         f"step {step + 1}/{len(loader)} "
-                        f"loss={(logged[0] / logged[1].clamp_min(1.0)).item():.5f}",
-                        flush=True,
+                        f"bce={(logged[0] / logged[1].clamp_min(1.0)).item():.5f}"
                     )
+                    if P7_REPORT_AUX:
+                        message += (
+                            " report_nce="
+                            f"{(logged_report[0] / logged_report[1].clamp_min(1.0)).item():.5f}"
+                        )
+                    print(message, flush=True)
                 window_totals.zero_()
+                window_report_totals.zero_()
             if SPEED_SMOKE and is_primary and (step + 1) % 4 == 0:
                 print(
                     {
@@ -1050,10 +1313,15 @@ def worker_main() -> int:
             torch.cuda.synchronize(device)
         epoch_training_seconds = time.time() - epoch_started
         global_epoch_totals = epoch_totals.clone()
+        global_report_totals = epoch_report_totals.clone()
         if distributed:
             dist.all_reduce(global_epoch_totals, op=dist.ReduceOp.SUM)
+            dist.all_reduce(global_report_totals, op=dist.ReduceOp.SUM)
         train_loss = float(
             (global_epoch_totals[0] / global_epoch_totals[1].clamp_min(1.0)).item()
+        )
+        report_train_loss = float(
+            (global_report_totals[0] / global_report_totals[1].clamp_min(1.0)).item()
         )
         validation_started = time.time()
         valid_loss = validation_loss(pseudo_valid_indices)
@@ -1063,6 +1331,10 @@ def worker_main() -> int:
         row = {
             "epoch": epoch + 1,
             "train_loss": train_loss,
+            "train_report_contrastive": report_train_loss if P7_REPORT_AUX else 0.0,
+            "train_combined_loss": (
+                train_loss + P7_REPORT_AUX_WEIGHT * report_train_loss
+            ),
             "pseudo_valid_weighted_bce": valid_loss,
             "elapsed_minutes": (time.time() - training_started) / 60.0,
             "training_seconds": epoch_training_seconds,
@@ -1104,6 +1376,20 @@ def worker_main() -> int:
                     history[-1]["training_seconds"] / smoke_global_steps
                 ),
                 "pseudo_valid_weighted_bce": history[-1]["pseudo_valid_weighted_bce"],
+                "train_report_contrastive": history[-1][
+                    "train_report_contrastive"
+                ],
+                "train_combined_loss": history[-1]["train_combined_loss"],
+                "p7_report_aux": P7_REPORT_AUX,
+                "p7_report_temperature": (
+                    P7_REPORT_TEMPERATURE if P7_REPORT_AUX else None
+                ),
+                "p7_report_aux_weight": (
+                    P7_REPORT_AUX_WEIGHT if P7_REPORT_AUX else None
+                ),
+                "p7_report_bank_rows": (
+                    len(p7_report_bank_indices) if P7_REPORT_AUX else 0
+                ),
                 "validation_seconds": history[-1]["validation_seconds"],
                 "eval_study_batch_per_rank": eval_batch_per_rank,
                 "peak_memory_mib_by_rank": [
@@ -1131,15 +1417,44 @@ def worker_main() -> int:
         f"p4_fold_{P4_FOLD}_history.csv" if P4_MODE else "p2_representation_history.csv"
     )
     checkpoint_path = OUTPUT_ROOT / checkpoint_name
+    report_projection_name = "p7_report_projection_best.pt"
+    report_projection_path = OUTPUT_ROOT / report_projection_name
     if is_primary:
         assert best_state is not None and best_epoch >= 1
-        torch.save(best_state, checkpoint_path)
+        if P7_REPORT_AUX:
+            deployable_state = {
+                key: value
+                for key, value in best_state.items()
+                if not key.startswith("report_projection.")
+            }
+            projection_state = {
+                key.removeprefix("report_projection."): value
+                for key, value in best_state.items()
+                if key.startswith("report_projection.")
+            }
+            assert deployable_state and projection_state
+            torch.save(deployable_state, checkpoint_path)
+            torch.save(projection_state, report_projection_path)
+        else:
+            torch.save(best_state, checkpoint_path)
         pd.DataFrame(history).to_csv(OUTPUT_ROOT / history_name, index=False)
         del best_state
     if distributed:
         dist.barrier()
     selected_state = torch.load(checkpoint_path, map_location=device, weights_only=True)
-    model.load_state_dict(selected_state, strict=True)
+    incompatible = model.load_state_dict(selected_state, strict=not P7_REPORT_AUX)
+    if P7_REPORT_AUX:
+        expected_missing = {
+            f"report_projection.{key}"
+            for key in model.report_projection.state_dict()
+        }
+        assert set(incompatible.missing_keys) == expected_missing
+        assert not incompatible.unexpected_keys
+        selected_projection = torch.load(
+            report_projection_path, map_location=device, weights_only=True
+        )
+        model.report_projection.load_state_dict(selected_projection, strict=True)
+        del selected_projection
     del selected_state
     gc.collect()
     if is_primary:
@@ -1644,6 +1959,14 @@ def worker_main() -> int:
         "p2_coatnet_feature_positions.npy",
         "p2_coatnet_feature_studies.csv",
     ]
+    if P7_REPORT_AUX:
+        artifacts.extend(
+            [
+                report_projection_name,
+                "p7_report_bank_indices.npy",
+                "p7_report_group_ids.npy",
+            ]
+        )
     if FULL_RUN:
         artifacts.extend(
             [
@@ -1676,7 +1999,9 @@ def worker_main() -> int:
         "model_license": MODEL_LICENSE,
         "initialization": {
             "arm": (
-                "p6_fastmri_localization_transfer"
+                "p6_fastmri_localization_plus_report_aux"
+                if P7_REPORT_AUX
+                else "p6_fastmri_localization_transfer"
                 if P6_TRANSFER
                 else "matched_imagenet_control"
                 if P6_MATCHED_CONTROL
@@ -1685,9 +2010,41 @@ def worker_main() -> int:
             "checkpoint_filename": MODEL_FILENAME,
             "checkpoint_sha256": MODEL_SHA256,
             "p6_source_manifest_sha256": (
-                P6_SOURCE_MANIFEST_SHA256 if P6_TRANSFER else None
+                P6_SOURCE_MANIFEST_SHA256
+                if P6_TRANSFER or P7_REPORT_AUX
+                else None
             ),
         },
+        "report_auxiliary": (
+            {
+                "enabled": True,
+                "training_only": True,
+                "text_model_source": "yethukmutt/bge-m3/Transformers/m3/1",
+                "text_model_upstream": "BAAI/bge-m3",
+                "text_model_license": "MIT",
+                "embedding_manifest_sha256": (
+                    P7_REPORT_EMBEDDINGS_MANIFEST_SHA256
+                ),
+                "embedding_artifacts_sha256": (
+                    p7_report_manifest["artifacts_sha256"]
+                    if p7_report_manifest is not None
+                    else None
+                ),
+                "embedding_dimension": P7_REPORT_EMBEDDING_DIM,
+                "bank_rows": len(p7_report_bank_indices),
+                "bank_unique_report_groups": p7_report_bank_unique_groups,
+                "bank_expert_rows": int(is_gold[p7_report_bank_indices].sum()),
+                "selection_report_overlap": 0,
+                "temperature": P7_REPORT_TEMPERATURE,
+                "loss_weight": P7_REPORT_AUX_WEIGHT,
+                "loss": "duplicate-aware multi-positive image-to-report InfoNCE",
+                "loss_normalization": "divide by log(report bank rows)",
+                "projection_artifact": report_projection_name,
+                "deployable_checkpoint_excludes_projection": True,
+            }
+            if P7_REPORT_AUX
+            else {"enabled": False}
+        ),
         "feature_dim": FEATURE_DIM,
         "cache_size": CACHE_SIZE,
         "model_size": MODEL_SIZE,
@@ -1714,6 +2071,7 @@ def worker_main() -> int:
         "direct_expert": direct_result,
         "fold_oof": fold_result,
         "representation_gold_rows": 0 if FULL_RUN else None,
+        "report_auxiliary_gold_rows": 0 if P7_REPORT_AUX else None,
         "pseudo_report_group_overlap": 0 if FULL_RUN else None,
         "artifacts_sha256": {
             name: sha256_file(OUTPUT_ROOT / name) for name in artifacts
@@ -1730,12 +2088,24 @@ def worker_main() -> int:
                 if p6_source_manifest_path is not None
                 else None
             ),
+            "p7_report_embeddings_manifest_path": (
+                str(p7_report_manifest_path)
+                if p7_report_manifest_path is not None
+                else None
+            ),
+            "p7_report_embeddings_path": (
+                str(p7_report_embeddings_path)
+                if p7_report_embeddings_path is not None
+                else None
+            ),
             "cache_a": str(part_a["root"]),
             "cache_b": str(part_b["root"]) if part_b else None,
         },
     }
     manifest_path = OUTPUT_ROOT / (
-        "p6_transfer_manifest.json"
+        "p7_report_aux_manifest.json"
+        if P7_REPORT_AUX
+        else "p6_transfer_manifest.json"
         if P6_TRANSFER
         else "p6_control_manifest.json"
         if P6_MATCHED_CONTROL

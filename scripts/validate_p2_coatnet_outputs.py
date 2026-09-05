@@ -67,6 +67,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-run-id", default="P2-COATNET-v1")
     parser.add_argument("--expected-model-sha256", default=MODEL_SHA256)
     parser.add_argument("--expected-initialization-arm", default="canonical_p2")
+    parser.add_argument("--expected-execution-revision", default="ddp_t4_v3")
     parser.add_argument("--output-json", type=Path)
     parser.add_argument(
         "--p0-dir",
@@ -183,7 +184,7 @@ def main() -> int:
     assert initialization["checkpoint_sha256"] == args.expected_model_sha256
     assert manifest["cache_signature_sha256"] == CACHE_SIGNATURE
     assert manifest["feature_dim"] == FEATURE_DIM and manifest["k_eval"] == K_EVAL
-    assert manifest["execution_revision"] == "ddp_t4_v3"
+    assert manifest["execution_revision"] == args.expected_execution_revision
     assert manifest["visible_gpus"] == 2 and manifest["data_parallel"] is True
     assert manifest["data_parallel_backend"] == "DistributedDataParallel"
     assert manifest["distributed_backend"] == "nccl" and manifest["world_size"] == 2

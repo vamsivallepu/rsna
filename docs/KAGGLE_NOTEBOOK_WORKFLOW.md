@@ -28,7 +28,9 @@
 | P6 P2 matched control | [rsna-knee-p6-p2-matched-control](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-matched-control) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.899966, pseudo BCE 0.473681, both GPUs verified |
 | P6 P2 transfer | [rsna-knee-p6-p2-transfer](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-p2-transfer) | GPU T4 x2 | Version 1 complete and independently validated; OOF 0.909878, pseudo BCE 0.462599; fixed 25% blend promoted at 0.905421 |
 | P6 blend submission | [rsna-knee-p6-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p6-blend-canary) | GPU T4 x2 | V2 independently validated; submission `56026228` complete at public 0.923, +0.007 over P4 |
-| P7 BGE-M3 report embeddings | [rsna-knee-p7-report-embeddings](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-embeddings) | GPU T4 x2 | Prepared; immutable multilingual report-embedding preflight is next |
+| P7 BGE-M3 report embeddings | [rsna-knee-p7-report-embeddings](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-embeddings) | GPU T4 x2 | V1 complete and independently validated; 4,407 x 1,024 embeddings, zero truncation, 1,260/1,231 MiB peak |
+| P7 report-image speed smoke | [rsna-knee-p7-report-image-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-speed-smoke) | GPU T4 x2 | Prepared; 64-study smoke with the full fixed report bank |
+| P7 report-image auxiliary | [rsna-knee-p7-report-image-aux](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-aux) | GPU T4 x2 | Prepared; launch only after the speed/memory smoke passes |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -155,6 +157,11 @@ cache-signature hash, and array hashes before training.
   `scripts/p7_report_embeddings.py`, `scripts/build_p7_report_embeddings.py`,
   `scripts/validate_p7_report_embeddings.py`,
   `kaggle/rsna-p7-report-embeddings/`, and `docs/P7_PROTOCOL.md`
+- P7 report-image canonical trainer, kernel builder, prelaunch/speed validators, and
+  bundles: `scripts/p2_coatnet_ddp.py`, `scripts/build_p7_kernels.py`,
+  `scripts/validate_p7_prelaunch.py`, `scripts/validate_p7_speed_smoke.py`,
+  `kaggle/rsna-p7-report-image-speed-smoke/`, and
+  `kaggle/rsna-p7-report-image-aux/`
 
 All five P4 folds completed and independently passed their artifact, split, report
 purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively

@@ -1,0 +1,45 @@
+{
+  "experiment_id": "P7-A",
+  "status": "validated",
+  "run_id": "P7-REPORT-EMBEDDINGS-v1",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p7-report-embeddings",
+  "kaggle_version": 1,
+  "studies": 4407,
+  "embedding_dimension": 1024,
+  "model": {
+    "source": "yethukmutt/bge-m3/Transformers/m3/1",
+    "upstream": "BAAI/bge-m3",
+    "license": "MIT",
+    "pooling": "first token followed by L2 normalization"
+  },
+  "tokens": {
+    "minimum": 19,
+    "median": 282.0,
+    "p95": 689.0,
+    "maximum": 1238,
+    "truncated_reports": 0
+  },
+  "execution": {
+    "accelerator": "NvidiaTeslaT4 x2",
+    "world_size": 2,
+    "batch_size_per_rank": 4,
+    "total_minutes": 6.887143317858378,
+    "elapsed_minutes_by_rank": [
+      0.6154529929161072,
+      0.5964053273200989
+    ],
+    "peak_allocated_mib_by_rank": [
+      1260.40966796875,
+      1231.19677734375
+    ]
+  },
+  "integrity": {
+    "manifest_sha256": "f82ddf5f5b95224a21cb83b2f1e8b3ed1bf3bad2e8495396d5c398956a9556a8",
+    "embedding_sha256": "3d324ac3c711ba7dcc3c55747377ba2c1875e0b683fbde77d4e4220092b9c326",
+    "study_order_sha256": "72bb18659cba9fc84f4f363c2585f1a99f84e6f03971e4d8313813ba647aa81e",
+    "maximum_norm_error": 0.00007462501525878906,
+    "independent_validation": true,
+    "truncated_reports": 0
+  },
+  "decision": "Advance to the P7-B two-GPU image-training speed and memory smoke."
+}

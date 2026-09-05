@@ -28,6 +28,12 @@ expert labels and produces only embeddings, token lengths, study order, and an
 integrity manifest. The full P7 training job consumes that immutable output and does
 not load BGE-M3 again.
 
+P7-A version 1 completed and independently validated on 2026-09-05. It produced all
+4,407 by 1,024 embeddings with no truncation (maximum 1,238 tokens), maximum norm
+error `0.00007463`, and peak allocations of 1,260 and 1,231 MiB. The immutable
+manifest SHA-256 is
+`f82ddf5f5b95224a21cb83b2f1e8b3ed1bf3bad2e8495396d5c398956a9556a8`.
+
 ## Matched image-training arm
 
 P7 starts from the exact P6 fastMRI+ localization checkpoint and otherwise preserves
@@ -72,7 +78,7 @@ for direct expert inference, OOF inference, or hidden-test inference.
 
 ## Execution ladder
 
-1. Build and independently validate P7-A report embeddings.
+1. Build and independently validate P7-A report embeddings. **Complete.**
 2. Run a 64-study, one-epoch T4 x2 speed/memory smoke with the full report bank and
    auxiliary loss.
 3. Launch one full matched P7 candidate only if the smoke is finite, both GPUs are
