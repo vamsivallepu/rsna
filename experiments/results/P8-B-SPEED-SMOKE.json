@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-B-SPEED-SMOKE",
+  "run_id": "P8-NOISY-STUDENT-FOLD-0-SPEED-SMOKE-v1",
+  "status": "validated",
+  "date": "2026-09-06",
+  "code_commit": "6882732",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p8-student-speed-smoke",
+  "kaggle_version": 1,
+  "raw_artifact_path": "outputs/kaggle/rsna-p8-student-speed-smoke-v1-retry",
+  "manifest_sha256": "52512943a06b8106dcf142862cffff1406c811fb882ec72a320e178c25f8bc89",
+  "validated": true,
+  "teacher": {
+    "manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
+    "fold_0_target_sha256": "ec306bb842e8aa43a81d200eaba6b9d3d372fc48792f3ca902a576d663e9790b",
+    "formula": "0.50 report + 0.50 mean(P2 direct, P4 fold, P6 direct)"
+  },
+  "initialization": {
+    "model_id": "P6B-FASTMRI-PLUS-LOCALIZATION-v1/e2be22d",
+    "model_sha256": "5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195"
+  },
+  "execution": {
+    "fold": 0,
+    "representation_rows": 64,
+    "pseudo_train_rows": 62,
+    "expert_train_rows": 2,
+    "pseudo_valid_rows": 8,
+    "expert_valid_rows": 12,
+    "representation_epochs": 1,
+    "best_epoch": 1,
+    "best_pseudo_valid_weighted_bce": 0.5394346394609929,
+    "input_validation_minutes": 2.3465552886327106,
+    "representation_minutes": 0.9277702093124389,
+    "fold_inference_minutes": 0.07022746006647745,
+    "training_seconds": 38.84712505340576,
+    "validation_seconds": 15.598296642303467,
+    "world_size": 2,
+    "gpu_peak_utilization_percent": {
+      "0": 99,
+      "1": 99
+    },
+    "gpu_peak_memory_used_mib": {
+      "0": 7539,
+      "1": 7539
+    }
+  },
+  "validation": {
+    "source_and_artifact_hashes_verified": true,
+    "teacher_manifest_and_target_hashes_verified": true,
+    "p6_initialization_verified": true,
+    "complete_role_ledger_verified": true,
+    "report_isolation_verified": true,
+    "expert_valid_gradient_rows": 0,
+    "checkpoint_selection_gold_rows": 0,
+    "expert_predictions_and_labels_verified": true,
+    "both_gpus_active": true,
+    "traceback_or_cuda_oom": false
+  },
+  "matched_path_runtime_projection": {
+    "method": "Scale the five observed P4 full-fold representation runtimes by the P8-smoke/P4-smoke representation-time ratio; P4 is the same fold trainer and geometry.",
+    "p8_to_p4_smoke_ratio": 0.9582806176289479,
+    "representation_minutes_by_fold": [
+      125.14152677492014,
+      134.71030194329936,
+      124.20239862946303,
+      135.10183946064942,
+      121.562993786673
+    ],
+    "mean_representation_minutes": 128.14381211900098,
+    "projected_total_minutes_range": [
+      123.9797765353722,
+      137.51862220934862
+    ],
+    "note": "The direct 64-row linear extrapolation is intentionally not used because fixed CUDA warm-up dominates the tiny smoke; matched P4 full runs are the empirical comparator."
+  },
+  "advance_gate_passed": true,
+  "decision": "Launch the five P8 student folds in waves constrained by Kaggle concurrent GPU-session capacity."
+}

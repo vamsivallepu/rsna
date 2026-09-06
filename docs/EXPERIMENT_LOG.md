@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **teacher validated / student smoke running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Teacher V2 passed all gates; exact-manifest 64-study student smoke V1 launched on Kaggle T4 x2 |
+| P8 | **teacher and student smoke validated / folds ready** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Smoke V1 passed exact teacher/P6/split/hash/DDP gates; empirical matched-path projection is 124–138 min per full fold |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -347,11 +347,17 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 - **Student speed smoke:** the 64-study smoke and all five fold bundles were generated
   from the canonical trainer with the exact teacher manifest hash embedded. Local
   compilation, lint, expert-label, non-target-column, initialization, metadata, and
-  generated-source checks passed. Kaggle version 1 of
-  `vallepuvamsikrishna/rsna-knee-p8-student-speed-smoke` reached authoritative
-  `RUNNING` state on 2026-09-06. Do not start a full fold until its downloaded
-  artifacts independently pass the runtime, memory, DDP, initialization, split, and
-  teacher-hash gates.
+  generated-source checks passed. Kaggle version 1 completed and its downloaded
+  artifacts independently passed the exact teacher/target and P6 initialization
+  hashes, complete role ledger, report isolation, checkpoint selection, held-out
+  predictions, artifact hashes, and two-GPU gates. Its 64-row epoch took `0.93`
+  minutes, held-out inference `0.07` minutes, both T4s reached 99% utilization and
+  7,539 MiB used, and there was no traceback or OOM. Calibrating against the same-path
+  P4 smoke and five full P4 folds projects approximately `124–138` total minutes per
+  P8 fold. Tracked evidence:
+  [`P8-B-SPEED-SMOKE.json`](../experiments/results/P8-B-SPEED-SMOKE.json).
+- **Next gate:** launch the five full folds in waves allowed by Kaggle's concurrent
+  GPU-session capacity. Independently validate each completed fold before aggregation.
 
 ## Completed P5 run
 
