@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **teacher generation running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Audit passed at 0.920920; private T4 x2 label-generation version 1 launched from `feed9b0` |
+| P8 | **teacher generation retry prepared** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Audit passed at 0.920920; V1 finished inference but failed a strict final FP16 replay assertion; V2 fix is `be3508b` |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -316,13 +316,21 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   image-teacher formula reached `0.920920` expert macro AUC versus `0.894811` for
   the report teacher. Its paired-bootstrap probability of a positive delta was
   `0.9984`; all advance gates passed without target-specific tuning.
-- **Teacher generation:** private Kaggle kernel version 1 at
-  `vallepuvamsikrishna/rsna-knee-p8-teacher-labels` reached authoritative `RUNNING`
-  state on 2026-09-06. Exact canonical source and independent prelaunch/output
-  validators are committed at `feed9b0`. The T4 x2 job consumes only immutable,
-  hash-pinned P2/P4/P6 outputs, weak labels, and `P2-CACHE-v1`; it generates five
-  fold-specific target tables while preserving expert labels and all original
-  agreement weights.
+- **Teacher generation V1:** the private T4 x2 job consumed the correct immutable,
+  hash-pinned P2/P4/P6 outputs, weak labels, and `P2-CACHE-v1`. All sources passed at
+  8.07 minutes, both GPUs sustained 100% observed utilization with 8,845 MiB peak
+  allocation, and ranks completed 2,204/2,204 and 2,203/2,203 studies in 95.58 and
+  89.39 inference minutes. It then failed at 104.16 total minutes on a final
+  `np.allclose(..., atol=1e-5)` check between batch-of-two FP16 replay predictions
+  and the original batch-of-one P4 OOF values. This was not an OOM, model, cache, or
+  data failure, but Kaggle retained no artifacts.
+- **Teacher generation V2 fix:** commit `be3508b` moves the replay gate to all 58
+  expert studies before full inference, records maximum/mean/p99 differences, and
+  preserves the already-frozen canonical P2/P4/P6 expert values for the audit. Only
+  pseudo-study predictions use the faster batch-of-two replay. Exact generated-source,
+  lint, compile, source/hash, formula, fold-safety, and prelaunch checks passed locally.
+  Failure evidence is tracked in
+  [`P8-A-TEACHER-LABELS-V1-FAILURE.json`](../experiments/results/P8-A-TEACHER-LABELS-V1-FAILURE.json).
 - **Next gate:** download and independently replay every generated target and teacher
   component. Only a passing artifact advances to the 64-study P8 student smoke and
   then five full folds.

@@ -38,8 +38,9 @@ public dependencies are kept locally and are excluded from version control.
     blend reached **0.9044**, below P6's **0.9054**, so P7 was rejected without
     tuning.
 11. P8 freezes fold-safe noisy-student relabelling. Its untuned expert audit reached
-    **0.9209** versus **0.8948** for the report teacher; private two-GPU generation of
-    five fold-specific target tables is now running before the student-fold smoke.
+    **0.9209** versus **0.8948** for the report teacher. Teacher generation version 1
+    completed all image inference but failed a strict post-run FP16 replay assertion;
+    version 2 moves that gate before the long pass and preserves canonical audit rows.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

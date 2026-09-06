@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-A-TEACHER-LABELS",
+  "run_id": "P8-FOLD-SAFE-TEACHER-v1",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p8-teacher-labels",
+  "kaggle_version": 1,
+  "launch_commit": "feed9b0",
+  "date": "2026-09-06",
+  "status": "failed after successful inference",
+  "authoritative_kaggle_status": "KernelWorkerStatus.ERROR",
+  "failure": {
+    "elapsed_seconds": 6249.766088054,
+    "stage": "post-inference expert replay assertion",
+    "traceback_line": 626,
+    "exception": "AssertionError",
+    "assertion": "np.allclose(recomputed P4 held-out predictions, saved canonical P4 OOF predictions, atol=1e-5, rtol=0)",
+    "root_cause": "The P8 replay used a per-rank batch of two while the original P4 OOF inference used a per-rank batch of one. FP16 CUDA batch and kernel selection can change low-order probability digits, making the original 1e-5 equality assertion too strict.",
+    "not_oom": true,
+    "not_model_or_data_failure": true,
+    "outputs_retained_by_kaggle": false
+  },
+  "completed_compute": {
+    "sources_validated_at_seconds": 484.201754319,
+    "rank_0_studies": 2204,
+    "rank_0_inference_minutes": 95.58396442333857,
+    "rank_1_studies": 2203,
+    "rank_1_inference_minutes": 89.39022066593171,
+    "peak_allocated_mib_per_rank": 8845,
+    "observed_gpu_utilization_percent": 100
+  },
+  "corrective_action": {
+    "fix_commit": "be3508b",
+    "early_expert_replay_preflight": true,
+    "expert_preflight_studies": 58,
+    "direct_maximum_absolute_tolerance": 1e-5,
+    "p4_maximum_absolute_tolerance": 0.005,
+    "p4_mean_absolute_tolerance": 0.0005,
+    "canonical_expert_values_preserved_for_audit": true,
+    "pseudo_teacher_predictions_remain_batch_2_recomputed_values": true
+  },
+  "decision": "Relaunch as Kaggle version 2. Require the expert replay preflight to pass before allowing the full 4,407-study inference pass."
+}
