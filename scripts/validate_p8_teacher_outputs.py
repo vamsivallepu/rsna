@@ -284,7 +284,7 @@ def main() -> int:
             for index, row in utilization.to_dict(orient="index").items()
         },
         "advance_gate_passed": True,
-        "decision": "Advance to five P8 student folds.",
+        "decision": "Advance to the P8 student speed smoke; start five folds only if it passes.",
     }
     args.result.parent.mkdir(parents=True, exist_ok=True)
     args.result.write_text(json.dumps(result, indent=2) + "\n")
