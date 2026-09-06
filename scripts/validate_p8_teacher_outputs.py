@@ -121,6 +121,19 @@ def main() -> int:
         "expert_validation_teacher_gradient_rows": 0,
         "expert_fold_seed": FOLD_SEED,
     }
+    replay_preflight = manifest["replay_preflight"]
+    assert replay_preflight["passed"] is True
+    assert replay_preflight["studies"] == 58
+    assert replay_preflight["inference_batch_per_rank"] == 2
+    assert replay_preflight["canonical_expert_values_used_for_audit"] is True
+    assert replay_preflight["direct_maximum_absolute_tolerance"] == 1e-5
+    assert replay_preflight["p4_maximum_absolute_tolerance"] == 5e-3
+    assert replay_preflight["p4_mean_absolute_tolerance"] == 5e-4
+    for statistics in replay_preflight["p4_fold_differences"].values():
+        assert statistics["maximum_absolute_error"] <= 5e-3
+        assert statistics["mean_absolute_error"] <= 5e-4
+    for statistics in replay_preflight["direct_differences"].values():
+        assert statistics["maximum_absolute_error"] <= 1e-5
     assert manifest["source_hashes"] | {
         "cache_manifest_sha256": None
     } == EXPECTED_SOURCE_HASHES | {"cache_manifest_sha256": None}

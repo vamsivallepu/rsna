@@ -81,7 +81,12 @@ def main() -> int:
     assert values["IMAGE_WEIGHT"] == 0.5
     assert "IMAGE_COMPONENT_WEIGHT = 1.0 / 3.0" in source
     assert values["EXPECTED_RELABEL_MACRO"] == 0.9209204490507412
-    assert source.count("batch_size=2") == 1
+    assert source.count("batch_size=2") == 2
+    assert '"expert_replay_preflight"' in source
+    assert '"canonical_expert_values_used_for_audit": True' in source
+    assert values["DIRECT_REPLAY_ATOL"] == 1e-5
+    assert values["P4_REPLAY_MAX_ATOL"] == 5e-3
+    assert values["P4_REPLAY_MEAN_ATOL"] == 5e-4
     assert "target_specific_adjustments\": False" in source
     assert "expert_validation_teacher_gradient_rows\": 0" in source
     assert "p4_teacher_matches_student_fold\": True" in source
@@ -147,6 +152,8 @@ def main() -> int:
                 "expert_validation_teacher_gradient_rows": 0,
                 "visible_gpus_required": 2,
                 "study_batch_per_gpu": 2,
+                "expert_replay_preflight_before_full_inference": True,
+                "canonical_expert_values_used_for_audit": True,
                 "source_manifests_and_artifacts_validated": True,
             },
             indent=2,

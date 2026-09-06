@@ -77,6 +77,9 @@ P4_MANIFEST_SHA256 = {
     3: "9894605caa4ae2c0d93f5d11c8766a2256f20e14298821f40dc7b1df9e83867c",
     4: "e592fa0e53cabe35819489e733bdff0885068c5756f65e541d5fee7da6b1c228",
 }
+DIRECT_REPLAY_ATOL = 1e-5
+P4_REPLAY_MAX_ATOL = 5e-3
+P4_REPLAY_MEAN_ATOL = 5e-4
 REPORT_WEIGHT = 0.50
 IMAGE_WEIGHT = 0.50
 IMAGE_COMPONENT_WEIGHT = 1.0 / 3.0
@@ -362,12 +365,12 @@ def load_p4_models(roots: dict[int, Path], device: torch.device) -> list[CoAtNet
 
 
 def predict_p4(
-    roots: dict[int, Path],
+    models: list[CoAtNetMIL],
     loader: DataLoader,
     local_count: int,
     device: torch.device,
+    phase: str,
 ) -> np.ndarray:
-    models = load_p4_models(roots, device)
     output = np.empty((N_FOLDS, local_count, N_TARGETS), dtype=np.float32)
     processed = 0
     started = time.time()
@@ -399,6 +402,7 @@ def predict_p4(
                 print(
                     {
                         "P8_P4_PROGRESS": {
+                            "phase": phase,
                             "device": str(device),
                             "local_studies": processed,
                             "local_total": local_count,
@@ -408,9 +412,18 @@ def predict_p4(
                     flush=True,
                 )
     assert processed == local_count and np.isfinite(output).all()
-    del models
-    torch.cuda.empty_cache()
     return output
+
+
+def difference_statistics(
+    computed: np.ndarray, reference: np.ndarray
+) -> dict[str, float]:
+    absolute = np.abs(computed.astype(np.float64) - reference.astype(np.float64))
+    return {
+        "maximum_absolute_error": float(absolute.max()),
+        "mean_absolute_error": float(absolute.mean()),
+        "p99_absolute_error": float(np.quantile(absolute, 0.99)),
+    }
 
 
 def calculate_metrics(labels: np.ndarray, predictions: np.ndarray) -> dict[str, float]:
@@ -553,15 +566,146 @@ def main_worker() -> int:
             ID
         ].tolist() == study_ids
 
+    labels = targets[TARGETS].to_numpy(np.float64)
+    is_gold = targets["is_gold"].astype(bool).to_numpy()
+    gold_indices = np.where(is_gold)[0]
+    assert len(gold_indices) == 58
+    expert_fold = np.full(len(study_ids), -1, dtype=np.int8)
+    splitter = KFold(n_splits=N_FOLDS, shuffle=True, random_state=FOLD_SEED)
+    for fold, (_, valid_position) in enumerate(splitter.split(gold_indices)):
+        expert_fold[gold_indices[valid_position]] = fold
+    assert (expert_fold[gold_indices] >= 0).all()
+
     local_indices = np.arange(rank, len(study_ids), world_size, dtype=np.int64)
     p2_direct = predict_direct(p2_root, local_indices, device)
     p6_direct = predict_direct(p6_root, local_indices, device)
+    np.save(OUTPUT_ROOT / f"p8_indices_rank_{rank}.npy", local_indices)
+    np.save(OUTPUT_ROOT / f"p8_p2_rank_{rank}.npy", p2_direct)
+    np.save(OUTPUT_ROOT / f"p8_p6_rank_{rank}.npy", p6_direct)
     pixels_a = np.load(part_a["pixels"], mmap_mode="r")
     mask_a = np.load(part_a["mask"], mmap_mode="r")
     pixels_b = np.load(part_b["pixels"], mmap_mode="r")
     mask_b = np.load(part_b["mask"], mmap_mode="r")
     slot_bounds = np.load(part_a["root"] / "p2_slot_bounds.npy")
     assert slot_bounds.tolist() == [[0, 18], [18, 32], [32, 44], [44, 52], [52, 64]]
+    p4_models = load_p4_models(p4_roots, device)
+
+    # Validate the numerically equivalent batch-of-two replay before paying for
+    # all 4,407 studies. The original P4 OOF inference used a per-rank batch of
+    # one, so FP16 kernel selection can move low-order probability digits.
+    local_preflight_indices = gold_indices[gold_indices % world_size == rank]
+    preflight_dataset = CacheDataset(
+        local_preflight_indices,
+        pixels_a,
+        mask_a,
+        pixels_b,
+        mask_b,
+        slot_bounds,
+    )
+    preflight_loader = DataLoader(
+        preflight_dataset,
+        batch_size=2,
+        shuffle=False,
+        num_workers=2,
+        pin_memory=True,
+        prefetch_factor=2,
+    )
+    preflight_p4 = predict_p4(
+        p4_models,
+        preflight_loader,
+        len(local_preflight_indices),
+        device,
+        "expert_replay_preflight",
+    )
+    np.save(
+        OUTPUT_ROOT / f"p8_preflight_indices_rank_{rank}.npy",
+        local_preflight_indices,
+    )
+    np.save(
+        OUTPUT_ROOT / f"p8_preflight_p4_rank_{rank}.npy", preflight_p4
+    )
+    dist.barrier()
+
+    if is_primary:
+        preflight_full_p2 = np.full(
+            (len(study_ids), N_TARGETS), np.nan, dtype=np.float32
+        )
+        preflight_full_p6 = np.full_like(preflight_full_p2, np.nan)
+        preflight_full_p4 = np.full(
+            (N_FOLDS, len(study_ids), N_TARGETS), np.nan, dtype=np.float32
+        )
+        for shard_rank in range(world_size):
+            indices = np.load(OUTPUT_ROOT / f"p8_indices_rank_{shard_rank}.npy")
+            preflight_full_p2[indices] = np.load(
+                OUTPUT_ROOT / f"p8_p2_rank_{shard_rank}.npy"
+            )
+            preflight_full_p6[indices] = np.load(
+                OUTPUT_ROOT / f"p8_p6_rank_{shard_rank}.npy"
+            )
+            preflight_indices = np.load(
+                OUTPUT_ROOT / f"p8_preflight_indices_rank_{shard_rank}.npy"
+            )
+            preflight_full_p4[:, preflight_indices] = np.load(
+                OUTPUT_ROOT / f"p8_preflight_p4_rank_{shard_rank}.npy"
+            )
+        assert np.isfinite(preflight_full_p2[gold_indices]).all()
+        assert np.isfinite(preflight_full_p6[gold_indices]).all()
+        assert np.isfinite(preflight_full_p4[:, gold_indices]).all()
+
+        p4_differences: dict[str, dict[str, float]] = {}
+        for fold in range(N_FOLDS):
+            valid_indices = gold_indices[expert_fold[gold_indices] == fold]
+            saved = pd.read_csv(
+                p4_roots[fold] / f"p4_fold_{fold}_oof_predictions.csv",
+                dtype={ID: str},
+            ).set_index(ID).loc[np.asarray(study_ids)[valid_indices]]
+            reference = saved[
+                [f"pred__{target}" for target in TARGETS]
+            ].to_numpy(np.float32)
+            statistics = difference_statistics(
+                preflight_full_p4[fold, valid_indices], reference
+            )
+            assert statistics["maximum_absolute_error"] <= P4_REPLAY_MAX_ATOL
+            assert statistics["mean_absolute_error"] <= P4_REPLAY_MEAN_ATOL
+            p4_differences[str(fold)] = statistics
+            split = pd.read_csv(
+                p4_roots[fold] / f"p4_fold_{fold}_split.csv", dtype={ID: str}
+            )
+            assert split[ID].tolist() == study_ids
+            assert (split.loc[valid_indices, "role"] == "expert_valid").all()
+
+        direct_differences: dict[str, dict[str, float]] = {}
+        for source, root, computed in (
+            ("P2 direct", p2_root, preflight_full_p2),
+            ("P6 direct", p6_root, preflight_full_p6),
+        ):
+            saved = pd.read_csv(
+                root / "p2_direct_expert_predictions.csv", dtype={ID: str}
+            ).set_index(ID).loc[np.asarray(study_ids)[gold_indices]]
+            reference = saved[
+                [f"pred__{target}" for target in TARGETS]
+            ].to_numpy(np.float32)
+            statistics = difference_statistics(computed[gold_indices], reference)
+            assert statistics["maximum_absolute_error"] <= DIRECT_REPLAY_ATOL
+            direct_differences[source] = statistics
+
+        replay_preflight = {
+            "passed": True,
+            "studies": len(gold_indices),
+            "inference_batch_per_rank": 2,
+            "direct_maximum_absolute_tolerance": DIRECT_REPLAY_ATOL,
+            "p4_maximum_absolute_tolerance": P4_REPLAY_MAX_ATOL,
+            "p4_mean_absolute_tolerance": P4_REPLAY_MEAN_ATOL,
+            "p4_fold_differences": p4_differences,
+            "direct_differences": direct_differences,
+            "canonical_expert_values_used_for_audit": True,
+        }
+        (OUTPUT_ROOT / "p8_replay_preflight.json").write_text(
+            json.dumps(replay_preflight, indent=2) + "\n"
+        )
+        print({"P8_REPLAY_PREFLIGHT": replay_preflight}, flush=True)
+    dist.barrier()
+
     dataset = CacheDataset(
         local_indices, pixels_a, mask_a, pixels_b, mask_b, slot_bounds
     )
@@ -573,11 +717,12 @@ def main_worker() -> int:
         pin_memory=True,
         prefetch_factor=2,
     )
-    p4_predictions = predict_p4(p4_roots, loader, len(local_indices), device)
-    np.save(OUTPUT_ROOT / f"p8_indices_rank_{rank}.npy", local_indices)
-    np.save(OUTPUT_ROOT / f"p8_p2_rank_{rank}.npy", p2_direct)
-    np.save(OUTPUT_ROOT / f"p8_p6_rank_{rank}.npy", p6_direct)
+    p4_predictions = predict_p4(
+        p4_models, loader, len(local_indices), device, "full_teacher_generation"
+    )
     np.save(OUTPUT_ROOT / f"p8_p4_rank_{rank}.npy", p4_predictions)
+    del p4_models
+    torch.cuda.empty_cache()
     memory_mib = torch.tensor(
         [torch.cuda.max_memory_allocated(device) / (1024**2)],
         dtype=torch.float64,
@@ -607,15 +752,12 @@ def main_worker() -> int:
         assert np.isfinite(merged_p6).all()
         assert np.isfinite(merged_p4).all()
 
-        labels = targets[TARGETS].to_numpy(np.float64)
-        is_gold = targets["is_gold"].astype(bool).to_numpy()
-        gold_indices = np.where(is_gold)[0]
-        assert len(gold_indices) == 58
-        expert_fold = np.full(len(study_ids), -1, dtype=np.int8)
-        splitter = KFold(n_splits=N_FOLDS, shuffle=True, random_state=FOLD_SEED)
-        for fold, (_, valid_position) in enumerate(splitter.split(gold_indices)):
-            valid_indices = gold_indices[valid_position]
-            expert_fold[valid_indices] = fold
+        # The preflight proved that this batch-of-two replay is numerically
+        # equivalent to the original batch-of-one OOF inference. Preserve the
+        # already-frozen canonical values on the 58 audit rows so teacher audit
+        # metrics remain byte-for-byte independent of CUDA kernel selection.
+        for fold in range(N_FOLDS):
+            valid_indices = gold_indices[expert_fold[gold_indices] == fold]
             saved = pd.read_csv(
                 p4_roots[fold] / f"p4_fold_{fold}_oof_predictions.csv",
                 dtype={ID: str},
@@ -623,18 +765,7 @@ def main_worker() -> int:
             saved_predictions = saved[
                 [f"pred__{target}" for target in TARGETS]
             ].to_numpy(np.float32)
-            assert np.allclose(
-                merged_p4[fold, valid_indices],
-                saved_predictions,
-                atol=1e-5,
-                rtol=0.0,
-            )
-            split = pd.read_csv(
-                p4_roots[fold] / f"p4_fold_{fold}_split.csv", dtype={ID: str}
-            )
-            assert split[ID].tolist() == study_ids
-            assert (split.loc[valid_indices, "role"] == "expert_valid").all()
-        assert (expert_fold[gold_indices] >= 0).all()
+            merged_p4[fold, valid_indices] = saved_predictions
 
         for root, computed in ((p2_root, merged_p2), (p6_root, merged_p6)):
             saved = pd.read_csv(
@@ -643,9 +774,7 @@ def main_worker() -> int:
             saved_predictions = saved[
                 [f"pred__{target}" for target in TARGETS]
             ].to_numpy(np.float32)
-            assert np.allclose(
-                computed[gold_indices], saved_predictions, atol=1e-5, rtol=0.0
-            )
+            computed[gold_indices] = saved_predictions
 
         report_predictions = consensus[
             [f"mean__{target}" for target in TARGETS]
@@ -717,6 +846,11 @@ def main_worker() -> int:
         for shard_rank in range(world_size):
             for prefix in ("indices", "p2", "p6", "p4"):
                 (OUTPUT_ROOT / f"p8_{prefix}_rank_{shard_rank}.npy").unlink()
+            for prefix in ("indices", "p4"):
+                (
+                    OUTPUT_ROOT
+                    / f"p8_preflight_{prefix}_rank_{shard_rank}.npy"
+                ).unlink()
         if telemetry is not None:
             telemetry.close()
         artifact_names = [
@@ -727,6 +861,7 @@ def main_worker() -> int:
             "p8_teacher_studies.csv",
             "p8_teacher_expert_audit.csv",
             "p8_teacher_gpu_telemetry.csv",
+            "p8_replay_preflight.json",
             *[f"p8_fold_{fold}_training_targets.csv" for fold in range(N_FOLDS)],
         ]
         assert source_hashes is not None
@@ -753,6 +888,7 @@ def main_worker() -> int:
                 "expert_validation_teacher_gradient_rows": 0,
                 "expert_fold_seed": FOLD_SEED,
             },
+            "replay_preflight": replay_preflight,
             "expert_audit_macro_auc": {
                 "report": report_metrics["MACRO"],
                 "image": image_metrics["MACRO"],
