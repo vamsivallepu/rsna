@@ -32,7 +32,7 @@
 | P7 report-image speed smoke | [rsna-knee-p7-report-image-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-speed-smoke) | GPU T4 x2 | V1 complete and independently validated; report loss 1.0142, 8,148 MiB/rank, 1.89–5.62 h representation projection |
 | P7 report-image auxiliary | [rsna-knee-p7-report-image-auxiliary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p7-report-image-auxiliary) | GPU T4 x2 | V1 complete and independently validated; OOF 0.904283 and fixed blend 0.904354 missed P6; rejected |
 | P8 teacher labels | [rsna-knee-p8-teacher-labels](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-teacher-labels) | GPU T4 x2 | V2 complete and independently validated; 102.16 min, audit 0.920920, both GPUs averaged >91.5% utilization |
-| P8 student speed smoke | [rsna-knee-p8-student-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-student-speed-smoke) | GPU T4 x2 | Exact teacher-manifest bundle generated and locally validated; not launched |
+| P8 student speed smoke | [rsna-knee-p8-student-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-student-speed-smoke) | GPU T4 x2 | V1 running; exact teacher manifest `c9fa6080...e5bc85f`, 64 training rows, one epoch |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

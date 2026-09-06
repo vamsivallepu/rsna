@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **teacher validated / student smoke ready** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | V2 independently passed all target, hash, fold-safety, audit, runtime, and GPU gates; exact-manifest smoke bundle generated |
+| P8 | **teacher validated / student smoke running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Teacher V2 passed all gates; exact-manifest 64-study student smoke V1 launched on Kaggle T4 x2 |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -344,11 +344,14 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   Tracked evidence:
   [`P8-A-TEACHER-LABELS.json`](../experiments/results/P8-A-TEACHER-LABELS.json) and
   [`P8-A-TEACHER-LABELS-V2-PREFLIGHT.json`](../experiments/results/P8-A-TEACHER-LABELS-V2-PREFLIGHT.json).
-- **Next gate:** the 64-study P8 student speed-smoke and all five fold bundles were
-  generated from the canonical trainer with the exact teacher manifest hash embedded.
-  Local compilation, lint, expert-label, non-target-column, initialization, metadata,
-  and generated-source checks passed. Launch and validate the smoke before starting
-  any full student fold.
+- **Student speed smoke:** the 64-study smoke and all five fold bundles were generated
+  from the canonical trainer with the exact teacher manifest hash embedded. Local
+  compilation, lint, expert-label, non-target-column, initialization, metadata, and
+  generated-source checks passed. Kaggle version 1 of
+  `vallepuvamsikrishna/rsna-knee-p8-student-speed-smoke` reached authoritative
+  `RUNNING` state on 2026-09-06. Do not start a full fold until its downloaded
+  artifacts independently pass the runtime, memory, DDP, initialization, split, and
+  teacher-hash gates.
 
 ## Completed P5 run
 
