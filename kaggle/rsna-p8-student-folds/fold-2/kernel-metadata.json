@@ -1,0 +1,24 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2",
+  "title": "RSNA Knee P8 Noisy Student Fold 2",
+  "code_file": "rsna-p8-noisy-student-fold-2.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [
+    "vallepuvamsikrishna/rsna-p6-fastmri-localization-init"
+  ],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-a",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b",
+    "vallepuvamsikrishna/rsna-knee-p8-teacher-labels"
+  ],
+  "model_sources": []
+}

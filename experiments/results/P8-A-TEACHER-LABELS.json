@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-A-TEACHER-LABELS",
+  "status": "validated",
+  "manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
+  "teacher_formula_replayed": true,
+  "fold_specific_targets_replayed": true,
+  "expert_validation_teacher_gradient_rows": 0,
+  "expert_audit_macro_auc": {
+    "report": 0.8948112944772516,
+    "image": 0.9034874698692111,
+    "relabel": 0.9209204490507412
+  },
+  "execution": {
+    "world_size": 2,
+    "visible_gpus": 2,
+    "backend": "nccl",
+    "model_dtype": "float32 with float16 autocast",
+    "elapsed_minutes": 102.15998170375823,
+    "python": "3.12.13",
+    "torch": "2.10.0+cu128",
+    "timm": "1.0.26",
+    "peak_allocated_mib_by_rank": [
+      7784.61328125,
+      7784.61328125
+    ]
+  },
+  "gpu_utilization": {
+    "0": {
+      "count": 103.0,
+      "mean": 91.6116504854369,
+      "median": 100.0,
+      "max": 100.0
+    },
+    "1": {
+      "count": 103.0,
+      "mean": 91.52427184466019,
+      "median": 100.0,
+      "max": 100.0
+    }
+  },
+  "advance_gate_passed": true,
+  "decision": "Advance to five P8 student folds."
+}

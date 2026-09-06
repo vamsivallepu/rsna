@@ -40,8 +40,9 @@ public dependencies are kept locally and are excluded from version control.
 11. P8 freezes fold-safe noisy-student relabelling. Its untuned expert audit reached
     **0.9209** versus **0.8948** for the report teacher. Teacher generation version 1
     completed all image inference but failed a strict post-run FP16 replay assertion.
-    Version 2 passed the new 58-study early replay gate and is running the full pass
-    while preserving canonical audit rows.
+    Version 2 passed the new 58-study early replay gate and independently validated
+    in 102.16 minutes. All five fold-specific teacher tables are now frozen, and the
+    exact-manifest student speed-smoke bundle is ready for launch.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
