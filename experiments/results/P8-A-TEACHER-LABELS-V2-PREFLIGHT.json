@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-A-TEACHER-LABELS",
+  "run_id": "P8-FOLD-SAFE-TEACHER-v1",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p8-teacher-labels",
+  "kaggle_version": 2,
+  "launch_commit": "719ecf3",
+  "fix_commit": "be3508b",
+  "script_sha256": "b7279d300cfb15abd7a4090ba26bef5f1ee54015d5b458b457c77f3c47566119",
+  "date": "2026-09-06",
+  "status": "preflight validated; full generation running",
+  "source_hashes_validated": true,
+  "preflight": {
+    "passed": true,
+    "studies": 58,
+    "inference_batch_per_rank": 2,
+    "canonical_expert_values_used_for_audit": true,
+    "direct_maximum_absolute_tolerance": 0.00001,
+    "p4_maximum_absolute_tolerance": 0.005,
+    "p4_mean_absolute_tolerance": 0.0005,
+    "p4_fold_differences": {
+      "0": {
+        "maximum_absolute_error": 0.00036656856536865234,
+        "mean_absolute_error": 0.000030485214665532112,
+        "p99_absolute_error": 0.00016439497470855687
+      },
+      "1": {
+        "maximum_absolute_error": 0.00032210350036621094,
+        "mean_absolute_error": 0.000046357978135347366,
+        "p99_absolute_error": 0.0002856725454330443
+      },
+      "2": {
+        "maximum_absolute_error": 0.0005663633346557617,
+        "mean_absolute_error": 0.000050716205603546565,
+        "p99_absolute_error": 0.0002624362707138054
+      },
+      "3": {
+        "maximum_absolute_error": 0.0002359449863433838,
+        "mean_absolute_error": 0.000042962079698389225,
+        "p99_absolute_error": 0.0001762697100639343
+      },
+      "4": {
+        "maximum_absolute_error": 0.00017571449279785156,
+        "mean_absolute_error": 0.000022132852763840646,
+        "p99_absolute_error": 0.00011966526508331297
+      }
+    },
+    "direct_differences": {
+      "P2 direct": {
+        "maximum_absolute_error": 1.7881393432617188e-7,
+        "mean_absolute_error": 1.725087734474533e-8,
+        "p99_absolute_error": 1.1920928955078125e-7
+      },
+      "P6 direct": {
+        "maximum_absolute_error": 2.682209014892578e-7,
+        "mean_absolute_error": 2.356406686634853e-8,
+        "p99_absolute_error": 1.5050172805785997e-7
+      }
+    }
+  },
+  "full_generation_first_progress": {
+    "rank_0_studies": 50,
+    "rank_0_total": 2204,
+    "rank_0_elapsed_minutes": 1.9967651565869649,
+    "rank_1_studies": 50,
+    "rank_1_total": 2203,
+    "rank_1_elapsed_minutes": 2.116280472278595,
+    "peak_allocated_mib_per_rank": 8845,
+    "observed_gpu_utilization_percent": 100
+  }
+}

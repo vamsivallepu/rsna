@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **teacher generation retry prepared** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Audit passed at 0.920920; V1 finished inference but failed a strict final FP16 replay assertion; V2 fix is `be3508b` |
+| P8 | **teacher generation V2 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Audit passed at 0.920920; V2 passed the new 58-study replay preflight and entered full generation from `719ecf3` |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -331,6 +331,13 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   lint, compile, source/hash, formula, fold-safety, and prelaunch checks passed locally.
   Failure evidence is tracked in
   [`P8-A-TEACHER-LABELS-V1-FAILURE.json`](../experiments/results/P8-A-TEACHER-LABELS-V1-FAILURE.json).
+- **Teacher generation V2 live gate:** Kaggle version 2 passed every immutable source
+  hash and the full 58-study batch-of-two replay preflight. The worst P4 absolute
+  difference was `0.000566` against a `0.005` gate; per-fold mean differences were
+  `0.000022` to `0.000051` against a `0.0005` gate. P2/P6 maxima were below
+  `2.7e-7`. Full generation then started at 100% observed utilization on both GPUs,
+  with the first 50 studies/rank taking 2.00/2.12 minutes. Tracked evidence:
+  [`P8-A-TEACHER-LABELS-V2-PREFLIGHT.json`](../experiments/results/P8-A-TEACHER-LABELS-V2-PREFLIGHT.json).
 - **Next gate:** download and independently replay every generated target and teacher
   component. Only a passing artifact advances to the 64-study P8 student smoke and
   then five full folds.

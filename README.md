@@ -39,8 +39,9 @@ public dependencies are kept locally and are excluded from version control.
     tuning.
 11. P8 freezes fold-safe noisy-student relabelling. Its untuned expert audit reached
     **0.9209** versus **0.8948** for the report teacher. Teacher generation version 1
-    completed all image inference but failed a strict post-run FP16 replay assertion;
-    version 2 moves that gate before the long pass and preserves canonical audit rows.
+    completed all image inference but failed a strict post-run FP16 replay assertion.
+    Version 2 passed the new 58-study early replay gate and is running the full pass
+    while preserving canonical audit rows.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
