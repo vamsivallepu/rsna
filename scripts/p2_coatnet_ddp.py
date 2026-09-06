@@ -111,16 +111,36 @@ P7_REPORT_AUX = os.environ.get("P7_REPORT_AUX") == "1"
 if sum((P6_TRANSFER, P6_MATCHED_CONTROL, P7_REPORT_AUX)) > 1:
     raise ValueError("P6 and P7 execution modes are mutually exclusive")
 P4_FOLD = int(os.environ["P4_FOLD"]) if "P4_FOLD" in os.environ else None
+P8_FOLD = int(os.environ["P8_FOLD"]) if "P8_FOLD" in os.environ else None
 if P4_FOLD is not None and P4_FOLD not in range(N_FOLDS):
     raise ValueError(f"P4_FOLD must be in [0, {N_FOLDS - 1}], got {P4_FOLD}")
+if P8_FOLD is not None and P8_FOLD not in range(N_FOLDS):
+    raise ValueError(f"P8_FOLD must be in [0, {N_FOLDS - 1}], got {P8_FOLD}")
+if P4_FOLD is not None and P8_FOLD is not None:
+    raise ValueError("P4_FOLD and P8_FOLD are mutually exclusive")
 if P4_FOLD is not None and (P6_TRANSFER or P6_MATCHED_CONTROL or P7_REPORT_AUX):
     raise ValueError("P4 mode cannot be combined with a P6/P7 matched arm")
+if P8_FOLD is not None and (P6_TRANSFER or P6_MATCHED_CONTROL or P7_REPORT_AUX):
+    raise ValueError("P8 mode cannot be combined with a P6/P7 matched arm")
 P4_MODE = P4_FOLD is not None
+P8_MODE = P8_FOLD is not None
+FOLD_MODE = P4_MODE or P8_MODE
+FOLD_INDEX = P4_FOLD if P4_MODE else P8_FOLD
+FOLD_PREFIX = "p8" if P8_MODE else "p4"
+FOLD_RUN_LABEL = "P8" if P8_MODE else "P4"
+FOLD_RUN_ID_PREFIX = "P8-NOISY-STUDENT" if P8_MODE else "P4-COATNET-E2E"
 P4_SEED_BASE = 20260904
-RUN_SEED = P4_SEED_BASE + P4_FOLD if P4_MODE else P2_SEED
-RUN_LABEL = (
-    "P4"
+P8_SEED_BASE = 20260908
+RUN_SEED = (
+    P8_SEED_BASE + P8_FOLD
+    if P8_MODE
+    else P4_SEED_BASE + P4_FOLD
     if P4_MODE
+    else P2_SEED
+)
+RUN_LABEL = (
+    FOLD_RUN_LABEL
+    if FOLD_MODE
     else "P7_REPORT_AUX"
     if P7_REPORT_AUX
     else "P6_TRANSFER"
@@ -130,7 +150,9 @@ RUN_LABEL = (
     else "P2"
 )
 RUN_ID = (
-    "P7-REPORT-IMAGE-AUX-v1"
+    "P8-NOISY-STUDENT-v1"
+    if P8_MODE
+    else "P7-REPORT-IMAGE-AUX-v1"
     if P7_REPORT_AUX
     else "P6-P2-TRANSFER-v1"
     if P6_TRANSFER
@@ -138,18 +160,19 @@ RUN_ID = (
     if P6_MATCHED_CONTROL
     else "P2-COATNET-v1"
 )
-MODEL_ID = P6_MODEL_ID if P6_TRANSFER or P7_REPORT_AUX else IMAGENET_MODEL_ID
+USES_P6_INITIALIZATION = P6_TRANSFER or P7_REPORT_AUX or P8_MODE
+MODEL_ID = P6_MODEL_ID if USES_P6_INITIALIZATION else IMAGENET_MODEL_ID
 MODEL_SHA256 = (
-    P6_MODEL_SHA256 if P6_TRANSFER or P7_REPORT_AUX else IMAGENET_MODEL_SHA256
+    P6_MODEL_SHA256 if USES_P6_INITIALIZATION else IMAGENET_MODEL_SHA256
 )
 MODEL_FILENAME = (
     "p6_localization_backbone_best.safetensors"
-    if P6_TRANSFER or P7_REPORT_AUX
+    if USES_P6_INITIALIZATION
     else "model.safetensors"
 )
 MODEL_LICENSE = (
     "Apache-2.0 backbone; MIT annotations; fastMRI data-use agreement"
-    if P6_TRANSFER or P7_REPORT_AUX
+    if USES_P6_INITIALIZATION
     else "Apache-2.0"
 )
 P7_REPORT_EMBEDDING_DIM = 1024
@@ -159,10 +182,22 @@ P7_REPORT_EMBEDDING_RUN_ID = "P7-REPORT-EMBEDDINGS-v1"
 P7_REPORT_EMBEDDINGS_MANIFEST_SHA256 = os.environ.get(
     "P7_REPORT_EMBEDDINGS_MANIFEST_SHA256", ""
 )
-EXECUTION_REVISION = "p7_report_aux_ddp_t4_v1" if P7_REPORT_AUX else "ddp_t4_v3"
+P8_TEACHER_MANIFEST_SHA256 = os.environ.get("P8_TEACHER_MANIFEST_SHA256", "")
+EXECUTION_REVISION = (
+    "p8_noisy_student_ddp_t4_v1"
+    if P8_MODE
+    else "p7_report_aux_ddp_t4_v1"
+    if P7_REPORT_AUX
+    else "ddp_t4_v3"
+)
 P4_SPEED_SMOKE = os.environ.get("P4_SPEED_SMOKE") == "1"
+P8_SPEED_SMOKE = os.environ.get("P8_SPEED_SMOKE") == "1"
 if P4_SPEED_SMOKE and not P4_MODE:
-    raise ValueError("P4_SPEED_SMOKE requires a P4_FOLD")
+    raise ValueError("P4_SPEED_SMOKE requires P4_FOLD")
+if P8_SPEED_SMOKE and not P8_MODE:
+    raise ValueError("P8_SPEED_SMOKE requires P8_FOLD")
+if P4_SPEED_SMOKE and P8_SPEED_SMOKE:
+    raise ValueError("P4 and P8 speed-smoke modes are mutually exclusive")
 
 ON_KAGGLE = Path("/kaggle/working").is_dir()
 FULL_RUN = ON_KAGGLE and torch.cuda.is_available()
@@ -274,6 +309,29 @@ def find_named_file(filename: str, minimum_bytes: int = 1) -> Path:
     raise FileNotFoundError(filename)
 
 
+def find_p8_teacher_file(filename: str, minimum_bytes: int = 1) -> Path:
+    direct = [
+        Path(
+            "/kaggle/input/notebooks/vallepuvamsikrishna/"
+            "rsna-knee-p8-teacher-labels"
+        )
+        / filename,
+        Path("outputs/kaggle/rsna-p8-teacher-labels-v1") / filename,
+    ]
+    for path in direct:
+        if path.is_file() and path.stat().st_size >= minimum_bytes:
+            return path.resolve()
+    if Path("/kaggle/input").is_dir():
+        matches = [
+            path
+            for path in Path("/kaggle/input").glob(f"**/{filename}")
+            if path.is_file() and path.stat().st_size >= minimum_bytes
+        ]
+        if len(matches) == 1:
+            return matches[0].resolve()
+    raise FileNotFoundError(filename)
+
+
 def prepare_cache_part(part: str) -> dict[str, object]:
     manifest_path = find_named_file(f"p2_cache_manifest_part_{part}.json")
     manifest = json.loads(manifest_path.read_text())
@@ -328,6 +386,41 @@ def validate_p6_source_manifest(path: Path) -> dict[str, object]:
     assert manifest["data"]["train_volumes"] == 973
     assert manifest["data"]["validation_volumes"] == 199
     assert manifest["data"]["volume_overlap"] == 0
+    return manifest
+
+
+def validate_p8_teacher_manifest(
+    manifest_path: Path, target_path: Path, fold: int
+) -> dict[str, object]:
+    assert P8_TEACHER_MANIFEST_SHA256
+    assert sha256_file(manifest_path) == P8_TEACHER_MANIFEST_SHA256
+    manifest = json.loads(manifest_path.read_text())
+    assert manifest["schema_version"] == 1
+    assert manifest["run_id"] == "P8-FOLD-SAFE-TEACHER-v1"
+    assert manifest["studies"] == 4_407
+    assert manifest["pseudo_studies"] == 4_349
+    assert manifest["expert_studies"] == 58
+    assert manifest["folds"] == N_FOLDS
+    assert manifest["formula"] == {
+        "report_weight": 0.5,
+        "image_weight": 0.5,
+        "image_component_weight": 1.0 / 3.0,
+        "image_components": ["P2 direct", "P4 fold", "P6 direct"],
+        "target_specific_adjustments": False,
+        "pseudo_weights_changed": False,
+        "expert_targets_changed": False,
+    }
+    assert manifest["fold_safety"] == {
+        "p2_direct_expert_gradient_rows": 0,
+        "p6_direct_expert_gradient_rows": 0,
+        "p4_teacher_matches_student_fold": True,
+        "expert_validation_teacher_gradient_rows": 0,
+        "expert_fold_seed": FOLD_SEED,
+    }
+    assert manifest["expert_audit_macro_auc"]["relabel"] == 0.9209204490507412
+    artifact = f"p8_fold_{fold}_training_targets.csv"
+    assert target_path.name == artifact
+    assert sha256_file(target_path) == manifest["artifacts_sha256"][artifact]
     return manifest
 
 
@@ -649,7 +742,9 @@ def worker_main() -> int:
     is_primary = rank == 0
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     telemetry_name = (
-        f"p4_fold_{P4_FOLD}_gpu_telemetry.csv" if P4_MODE else "p2_gpu_telemetry.csv"
+        f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_gpu_telemetry.csv"
+        if FOLD_MODE
+        else "p2_gpu_telemetry.csv"
     )
     telemetry = (
         GpuTelemetry(OUTPUT_ROOT / telemetry_name) if FULL_RUN and is_primary else None
@@ -665,8 +760,9 @@ def worker_main() -> int:
         torch.backends.cudnn.benchmark = True
         torch.backends.cudnn.deterministic = True
 
+    fold_speed_smoke = P4_SPEED_SMOKE or P8_SPEED_SMOKE
     rep_epochs = (
-        REP_EPOCHS if FULL_RUN and not SPEED_SMOKE and not P4_SPEED_SMOKE else 1
+        REP_EPOCHS if FULL_RUN and not SPEED_SMOKE and not fold_speed_smoke else 1
     )
     head_epochs = HEAD_EPOCHS if FULL_RUN else 1
     k_train = K_TRAIN if FULL_RUN else 1
@@ -676,11 +772,20 @@ def worker_main() -> int:
     workers = WORKERS_PER_RANK if FULL_RUN else 0
 
     train_path = find_named_file("train.csv", 100_000)
-    target_path = find_named_file("training_targets.csv", 100_000)
+    target_path = (
+        find_p8_teacher_file(f"p8_fold_{P8_FOLD}_training_targets.csv", 100_000)
+        if P8_MODE
+        else find_named_file("training_targets.csv", 100_000)
+    )
     model_path = find_named_file(MODEL_FILENAME, 250_000_000)
     p6_source_manifest_path = (
         find_named_file("p6_localization_training.json", 1_000)
-        if P6_TRANSFER or P7_REPORT_AUX
+        if USES_P6_INITIALIZATION
+        else None
+    )
+    p8_teacher_manifest_path = (
+        find_p8_teacher_file("p8_teacher_manifest.json", 1_000)
+        if P8_MODE
         else None
     )
     p7_report_manifest_path = (
@@ -716,10 +821,26 @@ def worker_main() -> int:
                         (
                             "P7_P6_SOURCE_VALIDATED"
                             if P7_REPORT_AUX
+                            else "P8_P6_SOURCE_VALIDATED"
+                            if P8_MODE
                             else "P6_TRANSFER_SOURCE_VALIDATED"
                         ): True,
                         "manifest_sha256": P6_SOURCE_MANIFEST_SHA256,
                         "checkpoint_sha256": P6_MODEL_SHA256,
+                    },
+                    flush=True,
+                )
+            if P8_MODE:
+                assert P8_FOLD is not None and p8_teacher_manifest_path is not None
+                validate_p8_teacher_manifest(
+                    p8_teacher_manifest_path, target_path, P8_FOLD
+                )
+                print(
+                    {
+                        "P8_TEACHER_TARGET_VALIDATED": True,
+                        "fold": P8_FOLD,
+                        "manifest_sha256": P8_TEACHER_MANIFEST_SHA256,
+                        "target_sha256": sha256_file(target_path),
                     },
                     flush=True,
                 )
@@ -801,7 +922,7 @@ def worker_main() -> int:
     p7_report_bank_indices = np.empty(0, dtype=int)
     if FULL_RUN:
         assert len(gold_indices) == 58 and len(pseudo_indices) == 4_349
-        if P4_MODE:
+        if FOLD_MODE:
             adapt_indices, pseudo_valid_indices = stable_group_split(
                 pseudo_indices,
                 report_hashes[pseudo_indices],
@@ -820,14 +941,14 @@ def worker_main() -> int:
         assert not (
             set(report_hashes[adapt_indices]) & set(report_hashes[pseudo_valid_indices])
         )
-        if P4_MODE:
-            assert P4_FOLD is not None
+        if FOLD_MODE:
+            assert FOLD_INDEX is not None
             folds = list(
                 KFold(n_splits=N_FOLDS, shuffle=True, random_state=FOLD_SEED).split(
                     gold_indices
                 )
             )
-            expert_train_pos, expert_valid_pos = folds[P4_FOLD]
+            expert_train_pos, expert_valid_pos = folds[FOLD_INDEX]
             p4_expert_train_indices = gold_indices[expert_train_pos]
             p4_expert_valid_indices = gold_indices[expert_valid_pos]
             expert_valid_hashes = set(report_hashes[p4_expert_valid_indices])
@@ -889,7 +1010,7 @@ def worker_main() -> int:
             )
             assert not (set(report_hashes[pseudo_valid_indices]) & expert_valid_hashes)
             assert (p4_split_roles != "").all()
-            if P4_SPEED_SMOKE:
+            if fold_speed_smoke:
                 smoke_pseudo_train = adapt_indices[~is_gold[adapt_indices]][:62]
                 smoke_expert_train = p4_expert_train_indices[:2]
                 adapt_indices = np.concatenate(
@@ -1060,6 +1181,7 @@ def worker_main() -> int:
             {
                 "run_label": RUN_LABEL,
                 "p4_fold": P4_FOLD,
+                "p8_fold": P8_FOLD,
                 "run_seed": RUN_SEED,
                 "python": platform.python_version(),
                 "torch": torch.__version__,
@@ -1071,6 +1193,7 @@ def worker_main() -> int:
                 "execution_revision": EXECUTION_REVISION,
                 "speed_smoke": SPEED_SMOKE,
                 "p4_speed_smoke": P4_SPEED_SMOKE,
+                "p8_speed_smoke": P8_SPEED_SMOKE,
                 "p7_report_aux": P7_REPORT_AUX,
                 "p7_report_temperature": (
                     P7_REPORT_TEMPERATURE if P7_REPORT_AUX else None
@@ -1086,9 +1209,9 @@ def worker_main() -> int:
                 "pseudo_train": len(adapt_indices),
                 "pseudo_valid": len(pseudo_valid_indices),
                 "gold": len(gold_indices),
-                "expert_train": len(p4_expert_train_indices) if P4_MODE else 0,
-                "expert_valid": len(p4_expert_valid_indices) if P4_MODE else 0,
-                "ddp_balance_drops": len(p4_dropped_indices) if P4_MODE else 0,
+                "expert_train": len(p4_expert_train_indices) if FOLD_MODE else 0,
+                "expert_valid": len(p4_expert_valid_indices) if FOLD_MODE else 0,
+                "ddp_balance_drops": len(p4_dropped_indices) if FOLD_MODE else 0,
             },
             flush=True,
         )
@@ -1411,10 +1534,14 @@ def worker_main() -> int:
         return 0
 
     checkpoint_name = (
-        f"p4_fold_{P4_FOLD}_best.pt" if P4_MODE else "p2_coatnet_pseudo_best.pt"
+        f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_best.pt"
+        if FOLD_MODE
+        else "p2_coatnet_pseudo_best.pt"
     )
     history_name = (
-        f"p4_fold_{P4_FOLD}_history.csv" if P4_MODE else "p2_representation_history.csv"
+        f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_history.csv"
+        if FOLD_MODE
+        else "p2_representation_history.csv"
     )
     checkpoint_path = OUTPUT_ROOT / checkpoint_name
     report_projection_name = "p7_report_projection_best.pt"
@@ -1467,8 +1594,8 @@ def worker_main() -> int:
             flush=True,
         )
 
-    if P4_MODE and FULL_RUN:
-        assert P4_FOLD is not None
+    if FOLD_MODE and FULL_RUN:
+        assert FOLD_INDEX is not None
         fold_inference_started = time.time()
         local_valid_indices = p4_expert_valid_indices[rank::world_size]
         local_predictions: list[np.ndarray] = []
@@ -1500,10 +1627,13 @@ def worker_main() -> int:
             else np.empty((0, N_TARGETS), dtype=np.float32)
         )
         np.save(
-            OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{rank}.npy", rank_indices
+            OUTPUT_ROOT
+            / f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_indices_rank_{rank}.npy",
+            rank_indices,
         )
         np.save(
-            OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{rank}.npy",
+            OUTPUT_ROOT
+            / f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_predictions_rank_{rank}.npy",
             rank_predictions,
         )
         if distributed:
@@ -1513,10 +1643,12 @@ def worker_main() -> int:
             prediction_by_index: dict[int, np.ndarray] = {}
             for shard_rank in range(world_size):
                 shard_indices = np.load(
-                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{shard_rank}.npy"
+                    OUTPUT_ROOT
+                    / f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_indices_rank_{shard_rank}.npy"
                 )
                 shard_predictions = np.load(
-                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{shard_rank}.npy"
+                    OUTPUT_ROOT
+                    / f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_predictions_rank_{shard_rank}.npy"
                 )
                 assert len(shard_indices) == len(shard_predictions)
                 prediction_by_index.update(
@@ -1537,7 +1669,7 @@ def worker_main() -> int:
             prediction_frame = pd.DataFrame(
                 {
                     ID: np.asarray(study_ids)[p4_expert_valid_indices],
-                    "fold": P4_FOLD,
+                    "fold": FOLD_INDEX,
                 }
             )
             for target_index, target in enumerate(TARGETS):
@@ -1545,10 +1677,10 @@ def worker_main() -> int:
                     p4_expert_valid_indices, target_index
                 ]
                 prediction_frame[f"pred__{target}"] = fold_predictions[:, target_index]
-            prediction_name = f"p4_fold_{P4_FOLD}_oof_predictions.csv"
+            prediction_name = f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_oof_predictions.csv"
             prediction_frame.to_csv(OUTPUT_ROOT / prediction_name, index=False)
 
-            split_name = f"p4_fold_{P4_FOLD}_split.csv"
+            split_name = f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_split.csv"
             pd.DataFrame(
                 {
                     ID: study_ids,
@@ -1560,10 +1692,12 @@ def worker_main() -> int:
 
             for shard_rank in range(world_size):
                 (
-                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_indices_rank_{shard_rank}.npy"
+                    OUTPUT_ROOT
+                    / f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_indices_rank_{shard_rank}.npy"
                 ).unlink()
                 (
-                    OUTPUT_ROOT / f"p4_fold_{P4_FOLD}_predictions_rank_{shard_rank}.npy"
+                    OUTPUT_ROOT
+                    / f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_predictions_rank_{shard_rank}.npy"
                 ).unlink()
 
             if telemetry is not None:
@@ -1580,13 +1714,13 @@ def worker_main() -> int:
             manifest = {
                 "schema_version": 1,
                 "run_id": (
-                    f"P4-COATNET-E2E-FOLD-{P4_FOLD}-SPEED-SMOKE-v1"
-                    if P4_SPEED_SMOKE
-                    else f"P4-COATNET-E2E-FOLD-{P4_FOLD}-v1"
+                    f"{FOLD_RUN_ID_PREFIX}-FOLD-{FOLD_INDEX}-SPEED-SMOKE-v1"
+                    if fold_speed_smoke
+                    else f"{FOLD_RUN_ID_PREFIX}-FOLD-{FOLD_INDEX}-v1"
                 ),
-                "full_run": not P4_SPEED_SMOKE,
-                "speed_smoke": P4_SPEED_SMOKE,
-                "fold": P4_FOLD,
+                "full_run": not fold_speed_smoke,
+                "speed_smoke": fold_speed_smoke,
+                "fold": FOLD_INDEX,
                 "seeds": {
                     "pseudo_split": P2_SEED,
                     "expert_folds": FOLD_SEED,
@@ -1626,7 +1760,7 @@ def worker_main() -> int:
                 "cache_signature_sha256": EXPECTED_CACHE_SIGNATURE,
                 "model_id": MODEL_ID,
                 "model_sha256": MODEL_SHA256,
-                "model_license": "Apache-2.0",
+                "model_license": MODEL_LICENSE,
                 "feature_dim": FEATURE_DIM,
                 "cache_size": CACHE_SIZE,
                 "model_size": MODEL_SIZE,
@@ -1635,9 +1769,9 @@ def worker_main() -> int:
                 "k_eval": k_eval,
                 "representation_epochs": rep_epochs,
                 "execution_revision": (
-                    "p4_e2e_fold_ddp_t4_speed_smoke_v1"
-                    if P4_SPEED_SMOKE
-                    else "p4_e2e_fold_ddp_t4_v1"
+                    f"{FOLD_PREFIX}_e2e_fold_ddp_t4_speed_smoke_v1"
+                    if fold_speed_smoke
+                    else f"{FOLD_PREFIX}_e2e_fold_ddp_t4_v1"
                 ),
                 "visible_gpus": torch.cuda.device_count(),
                 "data_parallel": distributed,
@@ -1673,17 +1807,24 @@ def worker_main() -> int:
                     "cache_b": str(part_b["root"]) if part_b else None,
                 },
             }
-            manifest_name = f"p4_fold_{P4_FOLD}_manifest.json"
+            if P8_MODE:
+                manifest["teacher_manifest_sha256"] = P8_TEACHER_MANIFEST_SHA256
+                manifest["teacher_target_sha256"] = sha256_file(target_path)
+                manifest["teacher_target_file"] = target_path.name
+                manifest["pseudo_target_formula"] = (
+                    "0.50 report + 0.50 mean(P2 direct, P4 fold, P6 direct)"
+                )
+            manifest_name = f"{FOLD_PREFIX}_fold_{FOLD_INDEX}_manifest.json"
             manifest_path = OUTPUT_ROOT / manifest_name
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
             print(
                 {
                     (
-                        "P4_SPEED_SMOKE_COMPLETE"
-                        if P4_SPEED_SMOKE
-                        else "P4_FOLD_COMPLETE"
+                        f"{FOLD_RUN_LABEL}_SPEED_SMOKE_COMPLETE"
+                        if fold_speed_smoke
+                        else f"{FOLD_RUN_LABEL}_FOLD_COMPLETE"
                     ): True,
-                    "fold": P4_FOLD,
+                    "fold": FOLD_INDEX,
                     "best_epoch": best_epoch,
                     "best_loss": best_loss,
                     "expert_valid_rows": len(p4_expert_valid_indices),
