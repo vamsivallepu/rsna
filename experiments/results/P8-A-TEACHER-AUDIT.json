@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-A-TEACHER-AUDIT",
+  "status": "validated",
+  "date": "2026-09-06",
+  "formula": {
+    "report_weight": 0.5,
+    "image_weight": 0.5,
+    "image_components": [
+      "P2 direct",
+      "P4 fold-safe OOF",
+      "P6 direct"
+    ],
+    "image_component_weight": 0.3333333333333333,
+    "target_specific_adjustments": false
+  },
+  "source_sha256": {
+    "consensus": "c152263597c8588894b6b70ef54c4bd3fd517b610ae7177e4f78443b8ed0dfc7",
+    "p2_direct": "e3d349f8d553d42ec5b0d5e02e424ead1381a48e344a1d56f05473d008115531",
+    "p4_oof": "2bac0d963610d7eb10de3cd6d38c72d077823877b6626a1d075b812f46b26446",
+    "p6_direct": "17d0e5224b43395453fbf64a5b18846008956553c593633e968a1b6e0ea1833a"
+  },
+  "expert_rows": 58,
+  "report_teacher": {
+    "ACL": 0.9901960784313727,
+    "MCL": 0.9795918367346939,
+    "Medial Meniscus": 0.9549278846153846,
+    "Lateral Meniscus": 0.8813664596273291,
+    "Medial OA": 0.9310077519379845,
+    "Lateral OA": 0.8075435203094778,
+    "PF OA": 0.9028314028314028,
+    "Effusion": 0.8795031055900621,
+    "Synovitis": 0.7879330943847073,
+    "Baker's": 0.9465579710144927,
+    "Contusion": 0.8609986504723346,
+    "Fracture": 0.8152777777777777,
+    "MACRO": 0.8948112944772516
+  },
+  "image_teacher": {
+    "ACL": 0.954656862745098,
+    "MCL": 0.8526077097505669,
+    "Medial Meniscus": 0.96875,
+    "Lateral Meniscus": 0.8559006211180125,
+    "Medial OA": 0.9689922480620154,
+    "Lateral OA": 0.7949709864603483,
+    "PF OA": 0.8043758043758044,
+    "Effusion": 0.9714285714285714,
+    "Synovitis": 0.8100358422939068,
+    "Baker's": 0.9655797101449276,
+    "Contusion": 0.9487179487179487,
+    "Fracture": 0.9458333333333333,
+    "MACRO": 0.9034874698692111
+  },
+  "relabel_teacher": {
+    "ACL": 0.9754901960784313,
+    "MCL": 0.9546485260770975,
+    "Medial Meniscus": 0.9723557692307692,
+    "Lateral Meniscus": 0.9093167701863354,
+    "Medial OA": 0.9720930232558139,
+    "Lateral OA": 0.8065764023210832,
+    "PF OA": 0.8828828828828829,
+    "Effusion": 0.9701863354037268,
+    "Synovitis": 0.8088410991636799,
+    "Baker's": 0.9655797101449275,
+    "Contusion": 0.9136302294197032,
+    "Fracture": 0.9194444444444445,
+    "MACRO": 0.9209204490507412
+  },
+  "relabel_minus_report_target_deltas": {
+    "ACL": -0.014705882352941346,
+    "MCL": -0.024943310657596363,
+    "Medial Meniscus": 0.01742788461538458,
+    "Lateral Meniscus": 0.02795031055900632,
+    "Medial OA": 0.041085271317829464,
+    "Lateral OA": -0.0009671179883946612,
+    "PF OA": -0.019948519948519983,
+    "Effusion": 0.09068322981366472,
+    "Synovitis": 0.02090800477897259,
+    "Baker's": 0.01902173913043481,
+    "Contusion": 0.052631578947368585,
+    "Fracture": 0.10416666666666685
+  },
+  "nonnegative_target_deltas": 8,
+  "worst_target_delta": -0.024943310657596363,
+  "paired_bootstrap": {
+    "repeats": 5000,
+    "mean_delta": 0.026199878500779438,
+    "ci95": [
+      0.008876872386846148,
+      0.044085333059174094
+    ],
+    "probability_positive": 0.9984
+  },
+  "gates": {
+    "macro_at_least_0_90": true,
+    "macro_above_report_teacher": true,
+    "nonnegative_targets": true,
+    "worst_target": true,
+    "bootstrap_probability": true
+  },
+  "advance_gate_passed": true,
+  "decision": "Advance to fold-specific P8-A GPU teacher generation."
+}

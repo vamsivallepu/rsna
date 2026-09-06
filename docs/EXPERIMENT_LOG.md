@@ -254,7 +254,8 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8–P9 | queued | Relabelling/ensemble and compact 3D specialist | Gates in the roadmap |
+| P8 | **protocol frozen; teacher audit passed** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Fixed relabel teacher reached 0.920920 vs report 0.894811 with 0.9984 bootstrap probability; generate all fold-specific labels on GPU |
+| P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
 
