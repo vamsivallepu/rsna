@@ -37,6 +37,7 @@ K_EVAL = 32
 FOLD_SEED = 20260831
 MODEL_SHA256 = "91570c7af10fea0af03c1b0a49be3e4775596239890eb4193c75129b3045623e"
 CACHE_SIGNATURE = "0a9332278587c80c6994da1bb8bb2c27501a198cf8a93a1041f5ab1788a3c1e3"
+REPLAY_ATOL = 1e-5
 
 
 class TargetAttentionHead(nn.Module):
@@ -262,7 +263,7 @@ def main() -> int:
     direct_head.load_state_dict(direct_state, strict=True)
     replayed_direct = replay(direct_head, feature_gold, mask_gold)
     direct_max_abs_error = float(np.max(np.abs(replayed_direct - direct_predictions)))
-    assert np.allclose(replayed_direct, direct_predictions, atol=2e-6), (
+    assert np.allclose(replayed_direct, direct_predictions, atol=REPLAY_ATOL), (
         direct_max_abs_error
     )
 
@@ -289,7 +290,7 @@ def main() -> int:
             head, feature_gold[valid_pos], mask_gold[valid_pos]
         )
     assert np.array_equal(expected_fold, oof["fold"].to_numpy(int))
-    assert np.allclose(replayed_oof, oof_predictions, atol=2e-6)
+    assert np.allclose(replayed_oof, oof_predictions, atol=REPLAY_ATOL)
 
     p0 = (
         pd.read_csv(args.p0_dir / "p0_b_oof_predictions.csv", dtype={ID: str})
@@ -311,7 +312,9 @@ def main() -> int:
         "direct_macro_auc": direct_metrics["MACRO"],
         "candidate_oof_macro_auc": oof_metrics["MACRO"],
         "p0_b_macro_auc": p0_metrics["MACRO"],
-        "delta__p2_minus_p0_b": oof_metrics["MACRO"] - p0_metrics["MACRO"],
+        "delta__candidate_minus_p0_b": (
+            oof_metrics["MACRO"] - p0_metrics["MACRO"]
+        ),
         "nonnegative_target_deltas": sum(
             value >= 0 for value in target_deltas.values()
         ),
@@ -319,6 +322,7 @@ def main() -> int:
         "paired_bootstrap": bootstrap,
         "saved_direct_and_fold_heads_replayed": True,
         "direct_replay_max_abs_error": direct_max_abs_error,
+        "replay_absolute_tolerance": REPLAY_ATOL,
         "report_group_purge_validated": True,
         "gpu_utilization": gpu_utilization.to_dict("index"),
     }

@@ -104,3 +104,13 @@ Promotion requires every condition:
 
 If the fixed arm fails, do not tune temperature, auxiliary weight, pooling, language,
 or targets against the 58 expert rows. Retain the current P6 blend and advance to P8.
+
+## Final result
+
+P7-B version 1 completed and independently validated on 2026-09-06. The selected
+epoch was 8 with pseudo-validation weighted BCE `0.459584`, improving P6's
+`0.462599`. However, standalone expert OOF was `0.904283` versus P6's `0.909878`.
+The frozen 75% P2+P4 plus 25% P7 blend reached `0.904354`, below the current P6 blend
+at `0.905421`; paired-bootstrap probability of a positive blend delta was `0.3724`.
+The standalone, blend, and bootstrap gates failed. P7 is rejected without tuning,
+P6 remains promoted, and the ordered roadmap advances to P8.

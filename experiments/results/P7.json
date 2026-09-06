@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P7",
+  "run_id": "P7-REPORT-IMAGE-AUX-v1",
+  "status": "validated / rejected",
+  "date": "2026-09-06",
+  "launch_commit": "6dbbc05",
+  "raw_artifact_path": "outputs/kaggle/rsna-p7-report-image-aux-v1",
+  "validated": true,
+  "manifest_sha256": "c221af6616ec7e7db9e5a47d72b52c6bf02f0605569413cc1976c64baf0d68a0",
+  "artifact_replay": {
+    "validated": true,
+    "run_id": "P7-REPORT-IMAGE-AUX-v1",
+    "initialization_arm": "p6_fastmri_localization_plus_report_aux",
+    "direct_macro_auc": 0.9057350195014857,
+    "candidate_oof_macro_auc": 0.9042832726720965,
+    "p0_b_macro_auc": 0.7967882566762247,
+    "delta__candidate_minus_p0_b": 0.10749501599587186,
+    "nonnegative_target_deltas": 12,
+    "worst_target_delta": 0.005802707930367523,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": 0.10767884344702243,
+      "ci95": [
+        0.07362424485742884,
+        0.14340225073055946
+      ],
+      "probability_positive": 1.0
+    },
+    "saved_direct_and_fold_heads_replayed": true,
+    "direct_replay_max_abs_error": 2.980232238769531e-07,
+    "replay_absolute_tolerance": 1e-05,
+    "report_group_purge_validated": true,
+    "gpu_utilization": {
+      "0": {
+        "count": 173,
+        "mean": 96.90751445086705,
+        "median": 99.0,
+        "max": 100
+      },
+      "1": {
+        "count": 173,
+        "mean": 96.16763005780346,
+        "median": 99.0,
+        "max": 100
+      }
+    }
+  },
+  "report_auxiliary_integrity": {
+    "embedding_manifest_sha256": "f82ddf5f5b95224a21cb83b2f1e8b3ed1bf3bad2e8495396d5c398956a9556a8",
+    "bank_rows": 3926,
+    "bank_unique_report_groups": 3761,
+    "bank_expert_rows": 0,
+    "selection_report_overlap": 0,
+    "deployable_checkpoint_matches_p6_schema": true
+  },
+  "pseudo_validation_weighted_bce": 0.4595842035044453,
+  "best_epoch": 8,
+  "runtime_minutes": {
+    "representation": 147.20674837032954,
+    "feature_extraction_and_head_evaluation": 23.258042164643605,
+    "total": 170.46479053497313
+  },
+  "standalone": {
+    "p6_macro_auc": 0.9098782108453899,
+    "p7_macro_auc": 0.9042832726720965,
+    "delta": -0.005594938173293373
+  },
+  "fixed_25pct_rank_blend": {
+    "current_p6_macro_auc": 0.9054205862136073,
+    "candidate_p7_macro_auc": 0.9043536965911861,
+    "delta": -0.0010668896224211855,
+    "target_deltas": {
+      "ACL": 0.002450980392156854,
+      "MCL": -0.013605442176870763,
+      "Medial Meniscus": 0.0,
+      "Lateral Meniscus": 1.1102230246251565e-16,
+      "Medial OA": 0.0046511627906977715,
+      "Lateral OA": -0.01934235976789156,
+      "PF OA": 0.0,
+      "Effusion": 0.00745341614906847,
+      "Synovitis": -0.0011947431302269385,
+      "Baker's": 0.005434782608695676,
+      "Contusion": 0.0013495276653171517,
+      "Fracture": 0.0
+    },
+    "nonnegative_target_deltas": 9,
+    "worst_target_delta": -0.01934235976789156,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": -0.000967636523235382,
+      "ci95": [
+        -0.0068825586998672245,
+        0.0047454913487178
+      ],
+      "probability_positive": 0.3724
+    }
+  },
+  "promotion_gates": {
+    "pseudo_validation_bce": true,
+    "standalone_macro": false,
+    "fixed_blend_macro": false,
+    "nonnegative_targets": true,
+    "worst_target": true,
+    "bootstrap_probability": false
+  },
+  "promotion_gate_passed": false,
+  "decision": "Reject P7 without tuning the frozen auxiliary design; retain P6."
+}

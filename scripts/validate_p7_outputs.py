@@ -48,6 +48,7 @@ P7_EMBEDDING_SHA256 = (
 )
 P6_STANDALONE_MACRO = 0.9098782108453899
 P6_BLEND_MACRO = 0.9054205862136073
+LAUNCH_COMMIT = "6dbbc05"
 
 
 def parse_args() -> argparse.Namespace:
@@ -331,7 +332,10 @@ def main() -> int:
         "schema_version": 1,
         "experiment_id": "P7",
         "run_id": manifest["run_id"],
-        "status": "validated",
+        "status": "validated / rejected",
+        "date": "2026-09-06",
+        "launch_commit": LAUNCH_COMMIT,
+        "raw_artifact_path": str(root),
         "validated": True,
         "manifest_sha256": sha256(manifest_path),
         "artifact_replay": artifact,
@@ -346,6 +350,17 @@ def main() -> int:
         "pseudo_validation_weighted_bce": manifest[
             "best_pseudo_valid_weighted_bce"
         ],
+        "best_epoch": manifest["best_epoch"],
+        "runtime_minutes": {
+            "representation": manifest["elapsed"]["representation_minutes"],
+            "feature_extraction_and_head_evaluation": manifest["elapsed"][
+                "feature_extraction_minutes"
+            ],
+            "total": (
+                manifest["elapsed"]["representation_minutes"]
+                + manifest["elapsed"]["feature_extraction_minutes"]
+            ),
+        },
         "standalone": {
             "p6_macro_auc": p6_metrics["MACRO"],
             "p7_macro_auc": p7_metrics["MACRO"],

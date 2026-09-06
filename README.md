@@ -33,7 +33,11 @@ public dependencies are kept locally and are excluded from version control.
    frozen 75% P2+P4 plus 25% P6 rank blend reached **0.9054** OOF, and its validated
    seven-model canary projects to **7.61 hours**. Exact submission `56026228`
    completed at **0.923** public, improving the P4 blend by **0.007**.
-10. Promote only repeatable OOF improvements through the canonical ordered roadmap in
+10. P7 added frozen multilingual report-image alignment during P6-matched training.
+    It improved pseudo-validation BCE but fell to **0.9043** expert OOF; its frozen
+    blend reached **0.9044**, below P6's **0.9054**, so P7 was rejected without
+    tuning.
+11. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
 
