@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **teacher and student smoke validated / folds ready** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Smoke V1 passed exact teacher/P6/split/hash/DDP gates; empirical matched-path projection is 124–138 min per full fold |
+| P8 | **teacher and smoke validated / folds 0–1 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Smoke V1 passed all gates; first concurrent wave launched with exact fold-specific teacher hashes |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -356,8 +356,11 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   P4 smoke and five full P4 folds projects approximately `124–138` total minutes per
   P8 fold. Tracked evidence:
   [`P8-B-SPEED-SMOKE.json`](../experiments/results/P8-B-SPEED-SMOKE.json).
-- **Next gate:** launch the five full folds in waves allowed by Kaggle's concurrent
-  GPU-session capacity. Independently validate each completed fold before aggregation.
+- **Full student wave 1:** folds 0 and 1 were launched concurrently as private Kaggle
+  version 1 jobs and both reached authoritative `RUNNING` state on 2026-09-06. They
+  embed teacher manifest `c9fa6080...e5bc85f` and fold-target hashes
+  `ec306bb8...e9790b` / `fdc11652...b55596`. Folds 2–4 remain unlaunched. Independently
+  validate each completed fold before using its predictions or starting aggregation.
 
 ## Completed P5 run
 
