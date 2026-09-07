@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **validated / blend promoted / submitted pending** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | P8 blend 0.909798; exact V1 canary passed at 8.002 h projected; submission `56077025` pending |
+| P8 | **validated / blend promoted / scored** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Submission `56077025` scored 0.930, +0.007 over P6; live gap 0.024 |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -404,9 +404,11 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   [`P8_SUBMISSION_PROTOCOL.md`](P8_SUBMISSION_PROTOCOL.md).
 - **Leaderboard submission:** after explicit approval, exact private Kaggle version 1
   was accepted as competition reference `56077025` with the correct commit `a669b51`
-  in its description. The authoritative submissions list reported `PENDING` and four
-  daily submissions remaining. Wait for completion without changing the frozen blend.
-  Evidence: [`P8-SUBMISSION.json`](../experiments/results/P8-SUBMISSION.json).
+  in its description. It completed at public score `0.930`, improving P6 by `0.007`,
+  P4 by `0.014`, and P2 by `0.022`. The live leader remained `0.954`, so the gap is
+  now `0.024`. Retain P8 as the current submitted leader and advance to P9 without
+  changing the frozen blend. Evidence:
+  [`P8-SUBMISSION.json`](../experiments/results/P8-SUBMISSION.json).
 
 ## Completed P5 run
 

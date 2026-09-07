@@ -71,5 +71,8 @@ The exact Kaggle version 1 is eligible for submission; rebuilding it would requi
 new canary.
 
 After explicit approval, exact version 1 was submitted on 2026-09-07 as competition
-reference `56077025` with four daily submissions remaining. Kaggle accepted the
-request and reported `PENDING`; no score was available at the submission check.
+reference `56077025` with four daily submissions remaining. It completed at public
+score `0.930`, improving P6 by `0.007`, P4 by `0.014`, and P2 by `0.022`. The live
+leader was `0.954` at verification, leaving a `0.024` gap. Retain P8 as the current
+submitted leader and proceed to P9 without retuning the frozen blend against this
+public result.

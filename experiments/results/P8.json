@@ -2,7 +2,7 @@
   "schema_version": 1,
   "experiment_id": "P8",
   "run_id": "P8-NOISY-STUDENT-OOF-v1",
-  "status": "validated / blend promoted / submitted pending",
+  "status": "validated / blend promoted / scored",
   "date": "2026-09-07",
   "validated": true,
   "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
@@ -212,11 +212,15 @@
   "competition_submission": {
     "ref": 56077025,
     "kernel_version": 1,
-    "status": "PENDING",
-    "public_score": null,
+    "status": "COMPLETE",
+    "public_score": 0.93,
     "private_score": null,
-    "daily_submissions_remaining_after_submit": 4
+    "daily_submissions_remaining_after_submit": 4,
+    "previous_best_public_score": 0.923,
+    "delta_vs_previous_best": 0.007,
+    "leading_public_score_at_verification": 0.954,
+    "gap_to_leader": 0.024
   },
   "promotion_gate_passed": true,
-  "decision": "Exact private Kaggle kernel version 1 was submitted as reference 56077025. Wait for its public score without tuning against the pending result."
+  "decision": "Submission 56077025 completed at public score 0.930, improving the previous P6 best by 0.007. Retain P8 as the current submitted leader and advance to P9 without tuning the frozen blend against the leaderboard."
 }

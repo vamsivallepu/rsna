@@ -38,7 +38,7 @@
 | P8 noisy student fold 2 | [rsna-knee-p8-noisy-student-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467777, 129.06 min representation, GPUs >96% mean |
 | P8 noisy student fold 3 | [rsna-knee-p8-noisy-student-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-3) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467245, 136.33 min representation, GPUs >96% mean |
 | P8 noisy student fold 4 | [rsna-knee-p8-noisy-student-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-4) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.468403, 149.62 min representation, GPUs >97% mean |
-| P8 blend canary | [rsna-knee-p8-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-blend-canary) | GPU T4 x2 | V1 independently validated; 8.002 h hidden projection, 0.998 h headroom; exact version submitted as `56077025`, pending |
+| P8 blend canary | [rsna-knee-p8-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-blend-canary) | GPU T4 x2 | V1 independently validated; submission `56077025` complete at public 0.930, +0.007 over P6 |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
