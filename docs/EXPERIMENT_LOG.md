@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **teacher and smoke validated / folds 0–1 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Smoke V1 passed all gates; first concurrent wave launched with exact fold-specific teacher hashes |
+| P8 | **folds 0–1 validated / folds 2–3 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Wave 1 passed all artifact, split, teacher, initialization, OOF, runtime, and GPU gates; wave 2 launched |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -356,11 +356,20 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   P4 smoke and five full P4 folds projects approximately `124–138` total minutes per
   P8 fold. Tracked evidence:
   [`P8-B-SPEED-SMOKE.json`](../experiments/results/P8-B-SPEED-SMOKE.json).
-- **Full student wave 1:** folds 0 and 1 were launched concurrently as private Kaggle
-  version 1 jobs and both reached authoritative `RUNNING` state on 2026-09-06. They
+- **Full student wave 1:** folds 0 and 1 ran concurrently as private Kaggle version 1
+  jobs. They
   embed teacher manifest `c9fa6080...e5bc85f` and fold-target hashes
-  `ec306bb8...e9790b` / `fdc11652...b55596`. Folds 2–4 remain unlaunched. Independently
-  validate each completed fold before using its predictions or starting aggregation.
+  `ec306bb8...e9790b` / `fdc11652...b55596`. Both downloaded outputs independently
+  passed every artifact hash, exact split ledger, report-isolation, P6 initialization,
+  teacher-target, checkpoint-selection, held-out prediction, and dual-GPU check.
+  Fold 0 selected epoch 8 at pseudo BCE `0.467890` and took `143.32` representation
+  minutes; fold 1 selected epoch 8 at `0.466821` and took `141.64` minutes. GPU means
+  were 96.13–96.92%, and all devices reached 100%. Evidence:
+  [`P8-B-FOLD-0.json`](../experiments/results/P8-B-FOLD-0.json) and
+  [`P8-B-FOLD-1.json`](../experiments/results/P8-B-FOLD-1.json).
+- **Full student wave 2:** folds 2 and 3 were launched concurrently and both reached
+  authoritative `RUNNING` state on 2026-09-07. Fold 4 remains staged until a slot
+  becomes available.
 
 ## Completed P5 run
 
