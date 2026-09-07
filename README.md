@@ -45,7 +45,8 @@ public dependencies are kept locally and are excluded from version control.
     **0.9098** versus the current P6 blend's **0.9054**. Every predeclared OOF gate
     passed. Its exact version-1 runtime canary independently validated at a projected
     **8.00 hidden hours** with **1.00 hour** of headroom, clearing the mandatory
-    margin. The blend is promoted and ready for an explicitly approved submission.
+    margin. The blend is promoted, and exact version 1 is now competition submission
+    `56077025`, pending evaluation.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

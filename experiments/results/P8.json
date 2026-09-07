@@ -2,7 +2,7 @@
   "schema_version": 1,
   "experiment_id": "P8",
   "run_id": "P8-NOISY-STUDENT-OOF-v1",
-  "status": "validated / blend promoted / canary passed",
+  "status": "validated / blend promoted / submitted pending",
   "date": "2026-09-07",
   "validated": true,
   "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
@@ -209,6 +209,14 @@
     "dual_gpu_alternating_p6_verified": true,
     "gate_passed": true
   },
+  "competition_submission": {
+    "ref": 56077025,
+    "kernel_version": 1,
+    "status": "PENDING",
+    "public_score": null,
+    "private_score": null,
+    "daily_submissions_remaining_after_submit": 4
+  },
   "promotion_gate_passed": true,
-  "decision": "Promote the frozen P8 seven-model blend and submit exact private Kaggle kernel version 1 after explicit submission approval."
+  "decision": "Exact private Kaggle kernel version 1 was submitted as reference 56077025. Wait for its public score without tuning against the pending result."
 }

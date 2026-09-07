@@ -69,3 +69,7 @@ selection-geometry, and dual-GPU assignment check. The validated output manifest
 SHA-256 `98537b0d5b1a36638d1ee0696daebb9c1e7f218f478ca36d323da1aeac6b9406`.
 The exact Kaggle version 1 is eligible for submission; rebuilding it would require a
 new canary.
+
+After explicit approval, exact version 1 was submitted on 2026-09-07 as competition
+reference `56077025` with four daily submissions remaining. Kaggle accepted the
+request and reported `PENDING`; no score was available at the submission check.

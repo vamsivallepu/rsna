@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **validated / blend promoted / canary passed** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | P8 blend 0.909798 versus current 0.905421; exact V1 canary projects to 8.002 h with 0.998 h headroom; ready to submit |
+| P8 | **validated / blend promoted / submitted pending** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | P8 blend 0.909798; exact V1 canary passed at 8.002 h projected; submission `56077025` pending |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -398,10 +398,15 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   `0.997539` hours of headroom. This passes the frozen 0.9-hour gate by about 5.85
   minutes. Independent validation recomputed the five-fold P8 mean and final blend,
   verified every source/artifact hash, schema, row order, selection geometry, and
-  dual-GPU P6 alternation, and found no traceback or OOM. P8 is promoted; exact
-  version 1 is ready for an explicitly approved competition submission. Evidence:
+  dual-GPU P6 alternation, and found no traceback or OOM. P8 is promoted, and the
+  canary made exact version 1 eligible for competition submission. Evidence:
   [`P8-SUBMISSION-CANARY.json`](../experiments/results/P8-SUBMISSION-CANARY.json) and
   [`P8_SUBMISSION_PROTOCOL.md`](P8_SUBMISSION_PROTOCOL.md).
+- **Leaderboard submission:** after explicit approval, exact private Kaggle version 1
+  was accepted as competition reference `56077025` with the correct commit `a669b51`
+  in its description. The authoritative submissions list reported `PENDING` and four
+  daily submissions remaining. Wait for completion without changing the frozen blend.
+  Evidence: [`P8-SUBMISSION.json`](../experiments/results/P8-SUBMISSION.json).
 
 ## Completed P5 run
 
