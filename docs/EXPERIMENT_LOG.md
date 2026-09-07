@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **folds 0–1 validated / folds 2–3 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Wave 1 passed all artifact, split, teacher, initialization, OOF, runtime, and GPU gates; wave 2 launched |
+| P8 | **folds 0–3 validated / fold 4 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Both completed waves passed every gate; final fold launched before aggregation |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -367,9 +367,16 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   were 96.13–96.92%, and all devices reached 100%. Evidence:
   [`P8-B-FOLD-0.json`](../experiments/results/P8-B-FOLD-0.json) and
   [`P8-B-FOLD-1.json`](../experiments/results/P8-B-FOLD-1.json).
-- **Full student wave 2:** folds 2 and 3 were launched concurrently and both reached
-  authoritative `RUNNING` state on 2026-09-07. Fold 4 remains staged until a slot
-  becomes available.
+- **Full student wave 2:** folds 2 and 3 ran concurrently and their downloaded outputs
+  independently passed the same complete validation contract. Fold 2 selected epoch 8
+  at pseudo BCE `0.467777` in `129.06` representation minutes; fold 3 selected epoch 8
+  at `0.467245` in `136.33` minutes. All GPUs averaged above 96% utilization and
+  reached 100%. Evidence:
+  [`P8-B-FOLD-2.json`](../experiments/results/P8-B-FOLD-2.json) and
+  [`P8-B-FOLD-3.json`](../experiments/results/P8-B-FOLD-3.json).
+- **Final student fold:** fold 4 was launched as private Kaggle version 1 and reached
+  authoritative `RUNNING` state on 2026-09-07. Aggregation remains blocked until its
+  downloaded output passes the same independent checks.
 
 ## Completed P5 run
 

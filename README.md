@@ -43,8 +43,8 @@ public dependencies are kept locally and are excluded from version control.
     Version 2 passed the new 58-study early replay gate and independently validated
     in 102.16 minutes. All five fold-specific teacher tables are now frozen, and the
     exact-manifest student speed-smoke passed all integrity and execution gates on
-    Kaggle T4 x2. Full folds 0 and 1 independently validated; folds 2 and 3 are
-    running as the second concurrent wave, with fold 4 still staged.
+    Kaggle T4 x2. Full folds 0–3 independently validated, and final fold 4 is
+    running before five-fold aggregation and the frozen promotion gate.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

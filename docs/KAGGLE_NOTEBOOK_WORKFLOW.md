@@ -35,8 +35,9 @@
 | P8 student speed smoke | [rsna-knee-p8-student-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-student-speed-smoke) | GPU T4 x2 | V1 complete and independently validated; 64-row epoch 0.93 min, both GPUs 99% peak, 7,539 MiB each, no OOM |
 | P8 noisy student fold 0 | [rsna-knee-p8-noisy-student-fold-0](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-0) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467890, 143.32 min representation, GPUs >96% mean |
 | P8 noisy student fold 1 | [rsna-knee-p8-noisy-student-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-1) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.466821, 141.64 min representation, GPUs >96% mean |
-| P8 noisy student fold 2 | [rsna-knee-p8-noisy-student-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2) | GPU T4 x2 | V1 running; exact fold-2 teacher target and P6 initialization |
-| P8 noisy student fold 3 | [rsna-knee-p8-noisy-student-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-3) | GPU T4 x2 | V1 running; exact fold-3 teacher target and P6 initialization |
+| P8 noisy student fold 2 | [rsna-knee-p8-noisy-student-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467777, 129.06 min representation, GPUs >96% mean |
+| P8 noisy student fold 3 | [rsna-knee-p8-noisy-student-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-3) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467245, 136.33 min representation, GPUs >96% mean |
+| P8 noisy student fold 4 | [rsna-knee-p8-noisy-student-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-4) | GPU T4 x2 | V1 running; exact fold-4 teacher target and P6 initialization |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

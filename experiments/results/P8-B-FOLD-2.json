@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-B-FOLD-2",
+  "run_id": "P8-NOISY-STUDENT-FOLD-2-v1",
+  "status": "validated",
+  "date": "2026-09-07",
+  "code_commit": "6882732",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2",
+  "kaggle_version": 1,
+  "raw_artifact_path": "outputs/kaggle/rsna-p8-noisy-student-v1/fold-2",
+  "manifest_sha256": "78925624ab4cebbe7044da362e1015c4d39b0ab514f04625f3d031f2a952c04d",
+  "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
+  "teacher_target_sha256": "522a8478a7bd8dc49226cc923c22a859bc80e1236a74c41360deaf62b6c2d7b4",
+  "initialization_sha256": "5222ed8edc4802d7e189e5c8656fadc64292cb4c7ca563832ceebe5237c2a195",
+  "execution": {
+    "representation_rows": 3956,
+    "pseudo_train_rows": 3910,
+    "expert_train_rows": 46,
+    "pseudo_valid_rows": 435,
+    "expert_valid_rows": 12,
+    "best_epoch": 8,
+    "best_pseudo_valid_weighted_bce": 0.4677771449060564,
+    "input_validation_minutes": 3.16816345055898,
+    "representation_minutes": 129.06023525396984,
+    "fold_inference_minutes": 0.07261245250701905,
+    "gpu_utilization_mean_percent": {
+      "0": 96.12781954887218,
+      "1": 96.90225563909775
+    },
+    "gpu_utilization_max_percent": {
+      "0": 100,
+      "1": 100
+    },
+    "gpu_peak_memory_used_mib": {
+      "0": 9795,
+      "1": 9793
+    }
+  },
+  "validation": {
+    "all_artifact_hashes_verified": true,
+    "teacher_and_initialization_hashes_verified": true,
+    "complete_role_ledger_verified": true,
+    "report_isolation_verified": true,
+    "expert_valid_gradient_rows": 0,
+    "checkpoint_selection_gold_rows": 0,
+    "heldout_predictions_and_labels_verified": true,
+    "both_gpus_active": true
+  }
+}
