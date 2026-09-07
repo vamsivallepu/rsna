@@ -255,7 +255,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
 | P8 | **validated / blend promoted / scored** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Submission `56077025` scored 0.930, +0.007 over P6; live gap 0.024 |
-| P9 | **protocol frozen / speed smoke prepared** | One shared S3D true-3D representation plus five cached-feature heads | Await the frozen T4 x2 smoke before full training |
+| P9 | **full run running** | One shared S3D true-3D representation plus five cached-feature heads | Speed smoke passed every gate; full version 1 is running on T4 x2 |
 
 ## Current P6 submission
 
@@ -430,10 +430,20 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   The P8 teacher manifest and P2/P6 arrays passed hash, row-order, shape, and
   no-expert-gradient checks. Canonical source, generated smoke/full kernels, syntax,
   lint, metadata, pseudo formula, and expert preservation all pass locally.
-- **Next action:** publish the private S3D initialization Dataset and launch the
-  64-train/16-validation T4 x2 speed/memory smoke. Full P9 training is gated on no
-  OOM, finite losses, both GPUs participating, peak allocation below 14,500 MiB, and
-  a conservative six-epoch representation projection below four hours.
+- **Speed smoke result:** the private initialization Dataset's remote checkpoint is
+  exactly 33,524,997 bytes. Kaggle kernel
+  `vallepuvamsikrishna/rsna-knee-p9-s3d-speed-smoke` version 1, frozen at commit
+  `98d10af`, completed successfully. Both DDP ranks executed the real five-clip
+  forward/backward path; training and validation losses were finite; peak allocation
+  was 912.63 MiB per rank; and the conservative six-epoch representation projection
+  is 0.9474 hours. Independent validation found no traceback or CUDA OOM and passed
+  every frozen advance gate. Evidence:
+  [`P9-SPEED-SMOKE.json`](../experiments/results/P9-SPEED-SMOKE.json).
+- **Full run launch:** exact version 1 from commit `98d10af` entered authoritative
+  `RUNNING` state at
+  `vallepuvamsikrishna/rsna-knee-p9-s3d-specialist`. It will train the shared
+  pseudo-only representation, cache all 4,407 five-slot features, and produce the
+  complete five-fold report-purged expert OOF evaluation in one run.
 
 ## Completed P5 run
 

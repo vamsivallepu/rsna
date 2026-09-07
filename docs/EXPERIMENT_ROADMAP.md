@@ -56,7 +56,7 @@ later expensive stage advances only after its prerequisites pass.
 | 6 | **P6** | **validated / blend promoted / scored** | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Source and matched arms validated; seven-backbone canary projects to 7.61 h on T4 x2 | Fixed blend passed at 0.905421 OOF; submission `56026228` scored 0.923 public, +0.007 over P4 |
 | 7 | **P7** | **validated / rejected** | BGE-M3 multilingual report-image auxiliary loss during P6-matched training | Full V1: 147.21 min representation, 23.26 min feature/head evaluation; both GPUs averaged >96% | Failed: 0.904283 OOF versus P6 0.909878; fixed P7 blend 0.904354 versus current 0.905421; retain P6 |
 | 8 | **P8** | **validated / blend promoted / scored** | Fold-safe noisy-student relabelling; five P8 folds replace P4 in the seven-model ensemble | P8 OOF 0.902912; blend 0.909798; submission `56077025` scored 0.930 public | All frozen gates passed; current submitted leader; advance to P9 without retuning |
-| 9 | **P9** | **protocol frozen / speed smoke prepared** | Compact true-3D S3D specialist for complementary targets; OrthoDiffusion reproduction rejected because its pretrained knee checkpoints/data are unavailable | Kaggle T4 x2; reuse `P2-CACHE-v1` | Advance to full run only after the frozen memory/runtime smoke passes |
+| 9 | **P9** | **full run running** | Compact true-3D S3D specialist for complementary targets; OrthoDiffusion reproduction rejected because its pretrained knee checkpoints/data are unavailable | Kaggle T4 x2; reuse `P2-CACHE-v1` | Speed smoke passed at 0.95 h projected representation time and 913 MiB/rank; full version 1 is running |
 
 ### P0 — report-group-purged DINO OOF
 

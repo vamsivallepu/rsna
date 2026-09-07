@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P9-S3D-SPEED-SMOKE-v1",
+  "status": "running",
+  "observed_at": "2026-09-07T21:34:44+05:30",
+  "code_commit": "98d10af",
+  "kernel": {
+    "ref": "vallepuvamsikrishna/rsna-knee-p9-s3d-speed-smoke",
+    "version": 1,
+    "observed_status": "KernelWorkerStatus.RUNNING",
+    "accelerator": "NvidiaTeslaT4 x2",
+    "internet": false
+  },
+  "initialization_dataset": {
+    "ref": "vallepuvamsikrishna/rsna-p9-s3d-init",
+    "private": true,
+    "filename": "s3d-d76dad2f.pth",
+    "bytes": 33524997,
+    "sha256": "d76dad2f4b2a6701ad7f64e85b294b2d1989f1ea0d3f8b240446ed2152850bbb"
+  },
+  "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
+  "pseudo_target_formula": "0.50 report + 0.25 P2 direct + 0.25 P6 direct",
+  "p4_teacher_excluded": true,
+  "expert_targets_unchanged": true,
+  "smoke": {
+    "train_studies": 64,
+    "validation_studies": 16,
+    "clips_per_study": 5,
+    "frames_per_clip": 16,
+    "image_size": 160,
+    "representation_epochs": 1
+  },
+  "advance_gates": {
+    "world_size": 2,
+    "finite_losses": true,
+    "maximum_peak_memory_mib": 14500,
+    "maximum_projected_six_epoch_representation_hours": 4.0,
+    "no_traceback_or_cuda_oom": true
+  },
+  "prelaunch_validation": {
+    "passed": true,
+    "strict_torchvision_checkpoint_load": true,
+    "teacher_hash_and_row_order": true,
+    "generated_kernels_match_canonical_source": true,
+    "compile": true,
+    "ruff": true
+  }
+}
