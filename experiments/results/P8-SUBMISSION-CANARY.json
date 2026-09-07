@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8-SUBMISSION-CANARY",
+  "run_id": "P8-BLEND-SUBMISSION-v1",
+  "status": "validated / runtime gate passed / ready to submit",
+  "date": "2026-09-07",
+  "code_commit": "a669b51",
+  "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p8-blend-canary",
+  "kaggle_version": 1,
+  "raw_artifact_path": "outputs/kaggle/rsna-p8-blend-canary-v1",
+  "generated_script_sha256": "69f1d0c828d218b445f3571ec879c4ab689b93ca5c7e1e00926dbad35777a9fe",
+  "kernel_metadata_sha256": "0d6995ba435a84fee0ec781ef5dcfe93b233d142f7f1b3673bbf66aebd563715",
+  "manifest_sha256": "98537b0d5b1a36638d1ee0696daebb9c1e7f218f478ca36d323da1aeac6b9406",
+  "submission_sha256": "cb35824188d5a1fc64d542fa22874085a523db80fc795c69848cfa5494e3ecce",
+  "execution": {
+    "studies": 3,
+    "series": 15,
+    "model_load_minutes": 0.19240272839864095,
+    "dicom_and_model_inference_minutes": 1.108033005396525,
+    "total_minutes": 1.6706225593884787,
+    "visible_gpus": 2,
+    "batch_size": 2
+  },
+  "runtime_projection": {
+    "hidden_studies": 1300,
+    "projected_hidden_hours": 8.002460594530458,
+    "nine_hour_headroom_hours": 0.9975394054695421,
+    "minimum_required_headroom_hours": 0.9,
+    "margin_above_requirement_hours": 0.09753940546954207,
+    "gate_passed": true
+  },
+  "validation": {
+    "all_source_and_artifact_hashes_verified": true,
+    "five_p8_fold_mean_recomputed": true,
+    "fixed_p8_blend_recomputed": true,
+    "submission_schema_verified": true,
+    "test_row_order_verified": true,
+    "selection_geometry_verified": true,
+    "dual_gpu_alternating_p6_verified": true,
+    "traceback_or_oom_found": false
+  },
+  "decision": "Submit exact private Kaggle kernel version 1 after explicit competition-submission approval."
+}

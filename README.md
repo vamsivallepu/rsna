@@ -43,8 +43,9 @@ public dependencies are kept locally and are excluded from version control.
     dual-GPU checks. The complete 58-study OOF replay reached **0.9029** standalone
     versus P4's **0.8912**; replacing P4 in the frozen seven-model blend reached
     **0.9098** versus the current P6 blend's **0.9054**. Every predeclared OOF gate
-    passed, so P8 advances to the mandatory hidden-test runtime canary before it can
-    be promoted or submitted.
+    passed. Its exact version-1 runtime canary independently validated at a projected
+    **8.00 hidden hours** with **1.00 hour** of headroom, clearing the mandatory
+    margin. The blend is promoted and ready for an explicitly approved submission.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

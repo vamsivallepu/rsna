@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **validated / OOF gate passed / canary required** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | P8 OOF 0.902912; frozen candidate blend 0.909798 versus current 0.905421; runtime canary next |
+| P8 | **validated / blend promoted / canary passed** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | P8 blend 0.909798 versus current 0.905421; exact V1 canary projects to 8.002 h with 0.998 h headroom; ready to submit |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -389,9 +389,19 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   `0.905421` to `0.909798`, a `+0.004378` delta. Nine of 12 target deltas were
   nonnegative, the worst was `-0.009070`, and the 5,000-repeat paired-bootstrap
   probability of improvement was `0.8992` (95% interval `[-0.002435, 0.011119]`).
-  All predeclared OOF gates passed. Promotion remains blocked only by the mandatory
+  All predeclared OOF gates passed, advancing the frozen candidate to the mandatory
   hidden-test runtime canary with at least 0.9 hours of projected headroom. Aggregate
   evidence: [`experiments/results/P8.json`](../experiments/results/P8.json).
+- **Submission canary:** exact private Kaggle version 1 from commit `a669b51`
+  completed successfully. Its three-study/15-series DICOM-plus-model segment took
+  `1.108033` minutes, projecting to `8.002461` hours for 1,300 hidden studies and
+  `0.997539` hours of headroom. This passes the frozen 0.9-hour gate by about 5.85
+  minutes. Independent validation recomputed the five-fold P8 mean and final blend,
+  verified every source/artifact hash, schema, row order, selection geometry, and
+  dual-GPU P6 alternation, and found no traceback or OOM. P8 is promoted; exact
+  version 1 is ready for an explicitly approved competition submission. Evidence:
+  [`P8-SUBMISSION-CANARY.json`](../experiments/results/P8-SUBMISSION-CANARY.json) and
+  [`P8_SUBMISSION_PROTOCOL.md`](P8_SUBMISSION_PROTOCOL.md).
 
 ## Completed P5 run
 

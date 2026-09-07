@@ -54,3 +54,18 @@ competition submission is spent:
 The builder replaces only the P4 fold family and frozen OOF constants, enables the
 already-validated P6 path, and asserts that no P4 source remains in the generated
 deployment script.
+
+## Execution record
+
+Private Kaggle version 1 completed successfully on 2026-09-07. Its three-study,
+15-series DICOM-plus-model segment took `1.108033` minutes. Linear projection to
+1,300 hidden studies is `8.002461` hours, leaving `0.997539` hours below Kaggle's
+nine-hour limit. This exceeds the frozen `0.9`-hour headroom requirement by
+`0.097539` hours (about 5.85 minutes).
+
+Downloaded artifacts independently passed every source and artifact hash, five-fold
+P8 mean reconstruction, frozen final-blend reconstruction, schema, row-order,
+selection-geometry, and dual-GPU assignment check. The validated output manifest is
+SHA-256 `98537b0d5b1a36638d1ee0696daebb9c1e7f218f478ca36d323da1aeac6b9406`.
+The exact Kaggle version 1 is eligible for submission; rebuilding it would require a
+new canary.

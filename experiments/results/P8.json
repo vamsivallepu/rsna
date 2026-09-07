@@ -2,7 +2,7 @@
   "schema_version": 1,
   "experiment_id": "P8",
   "run_id": "P8-NOISY-STUDENT-OOF-v1",
-  "status": "validated / canary required",
+  "status": "validated / blend promoted / canary passed",
   "date": "2026-09-07",
   "validated": true,
   "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
@@ -187,8 +187,28 @@
     "worst_target_above_minus_0_02": true,
     "bootstrap_probability_at_least_0_80": true,
     "oof_gate_passed": true,
-    "hidden_runtime_canary_pending": true
+    "hidden_runtime_canary_pending": false,
+    "hidden_runtime_canary_passed": true
   },
-  "promotion_gate_passed": false,
-  "decision": "Advance the frozen P8 seven-model blend to a hidden-test runtime canary; promotion remains blocked until the canary preserves at least 0.9 hours of Kaggle headroom."
+  "runtime_canary": {
+    "kaggle_kernel": "vallepuvamsikrishna/rsna-knee-p8-blend-canary",
+    "kaggle_version": 1,
+    "code_commit": "a669b51",
+    "studies": 3,
+    "series": 15,
+    "dicom_and_model_inference_minutes": 1.108033005396525,
+    "projected_hidden_studies": 1300,
+    "projected_hidden_hours": 8.002460594530458,
+    "nine_hour_headroom_hours": 0.9975394054695421,
+    "minimum_required_headroom_hours": 0.9,
+    "submission_sha256": "cb35824188d5a1fc64d542fa22874085a523db80fc795c69848cfa5494e3ecce",
+    "manifest_sha256": "98537b0d5b1a36638d1ee0696daebb9c1e7f218f478ca36d323da1aeac6b9406",
+    "all_artifact_hashes_verified": true,
+    "five_p8_fold_mean_recomputed": true,
+    "fixed_p8_blend_recomputed": true,
+    "dual_gpu_alternating_p6_verified": true,
+    "gate_passed": true
+  },
+  "promotion_gate_passed": true,
+  "decision": "Promote the frozen P8 seven-model blend and submit exact private Kaggle kernel version 1 after explicit submission approval."
 }
