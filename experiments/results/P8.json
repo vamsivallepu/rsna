@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P8",
+  "run_id": "P8-NOISY-STUDENT-OOF-v1",
+  "status": "validated / canary required",
+  "date": "2026-09-07",
+  "validated": true,
+  "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f",
+  "expert_oof_rows": 58,
+  "folds": 5,
+  "fold_sources": {
+    "0": {
+      "manifest_sha256": "f242c61269bff702fe601e35f6bc1bd7267f7d5f94c265ce684e665a4b37baf6",
+      "checkpoint_sha256": "5883762c8f4161e68eea33766aa737b34b772b180e18e75572937eeabf366c5f",
+      "teacher_target_sha256": "ec306bb842e8aa43a81d200eaba6b9d3d372fc48792f3ca902a576d663e9790b",
+      "script_sha256": "f9df607a4a6be78a5a0892b5d927fc0c62d8798d2c8ede983976ce4a52d206a3"
+    },
+    "1": {
+      "manifest_sha256": "1120c6173b9044ca84c035e47070cb5e79e40484eddea158cdd114f809eb10eb",
+      "checkpoint_sha256": "68df88b583cca94d6f777476f0b2696c9fcd850591d863cc0255a85f248003d0",
+      "teacher_target_sha256": "fdc1165235bcc974be415f6bf068d31a84367f15206d10cd07e5523a84b55596",
+      "script_sha256": "ceaeebc43f804e6b8961b9f4a2a408d4a26d39a9aff36f43db41fd0f158998a9"
+    },
+    "2": {
+      "manifest_sha256": "78925624ab4cebbe7044da362e1015c4d39b0ab514f04625f3d031f2a952c04d",
+      "checkpoint_sha256": "b2b42a0c44f83986839f90ec4547038ac0ca9705a30923be3da1e209c5196498",
+      "teacher_target_sha256": "522a8478a7bd8dc49226cc923c22a859bc80e1236a74c41360deaf62b6c2d7b4",
+      "script_sha256": "c8342f53f548050ec97adc84152f03cea73130e157fac55fa9446e8024e863d7"
+    },
+    "3": {
+      "manifest_sha256": "4d7f4a4090b7eb00517f29b8ea88822a0b8871519a593b64fb464fdaa71cd095",
+      "checkpoint_sha256": "a2c1600b173a4abc3b94e339e92de0db92e93a0d3a5a456db1f415e0c0db3639",
+      "teacher_target_sha256": "27df74518c118a61aa556f65231aa8fb532794cba090855d6beaa76ecfcdea04",
+      "script_sha256": "01b8d1a506e7c95411e1d8b57d624be3f44d269b324d9ea3cfec8b96a39e60dc"
+    },
+    "4": {
+      "manifest_sha256": "94bacb27bc1ffa637ba3adbad6be0c960f19f69a0b59563a2b1fd6efe9f7ac2b",
+      "checkpoint_sha256": "d0a154d4ab0844793c195ac92beba5fb036c9ea51dfba20bdef99194fdcb868f",
+      "teacher_target_sha256": "10245d23ae189656823d983000fab8631ed6432e3a859c333b8d01cb25213b30",
+      "script_sha256": "407b566339157f317427f89298d10994c23cc84b7027ad970aafd623e1bf28c1"
+    }
+  },
+  "fold_summary": [
+    {
+      "fold": 0,
+      "representation_rows": 3960,
+      "pseudo_valid_rows": 435,
+      "expert_train_rows": 46,
+      "expert_valid_rows": 12,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46789011053229634,
+      "representation_minutes": 143.3163323601087,
+      "fold_inference_minutes": 0.08142499923706055,
+      "gpu_0_mean": 96.47619047619048,
+      "gpu_1_mean": 96.12925170068027,
+      "gpu_0_max": 100,
+      "gpu_1_max": 100
+    },
+    {
+      "fold": 1,
+      "representation_rows": 3960,
+      "pseudo_valid_rows": 435,
+      "expert_train_rows": 46,
+      "expert_valid_rows": 12,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46682131236892277,
+      "representation_minutes": 141.64342714945477,
+      "fold_inference_minutes": 0.08260413408279418,
+      "gpu_0_mean": 96.57241379310345,
+      "gpu_1_mean": 96.92413793103448,
+      "gpu_0_max": 100,
+      "gpu_1_max": 100
+    },
+    {
+      "fold": 2,
+      "representation_rows": 3956,
+      "pseudo_valid_rows": 435,
+      "expert_train_rows": 46,
+      "expert_valid_rows": 12,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.4677771449060564,
+      "representation_minutes": 129.06023525396984,
+      "fold_inference_minutes": 0.07261245250701905,
+      "gpu_0_mean": 96.12781954887218,
+      "gpu_1_mean": 96.90225563909775,
+      "gpu_0_max": 100,
+      "gpu_1_max": 100
+    },
+    {
+      "fold": 3,
+      "representation_rows": 3960,
+      "pseudo_valid_rows": 435,
+      "expert_train_rows": 47,
+      "expert_valid_rows": 11,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46724498080110555,
+      "representation_minutes": 136.3348829070727,
+      "fold_inference_minutes": 0.07389774719874063,
+      "gpu_0_mean": 96.94285714285714,
+      "gpu_1_mean": 96.95,
+      "gpu_0_max": 100,
+      "gpu_1_max": 100
+    },
+    {
+      "fold": 4,
+      "representation_rows": 3960,
+      "pseudo_valid_rows": 435,
+      "expert_train_rows": 47,
+      "expert_valid_rows": 11,
+      "best_epoch": 8,
+      "best_pseudo_valid_weighted_bce": 0.46840314138391304,
+      "representation_minutes": 149.61555236180624,
+      "fold_inference_minutes": 0.07809772094090779,
+      "gpu_0_mean": 97.11764705882354,
+      "gpu_1_mean": 97.19607843137256,
+      "gpu_0_max": 100,
+      "gpu_1_max": 100
+    }
+  ],
+  "standalone": {
+    "p4_macro_auc": 0.89116089660126,
+    "p8_macro_auc": 0.9029118074637345,
+    "delta": 0.011750910862474484,
+    "target_deltas": {
+      "ACL": 0.004901960784313819,
+      "MCL": -0.009070294784580546,
+      "Medial Meniscus": 0.0024038461538461453,
+      "Lateral Meniscus": 0.05217391304347818,
+      "Medial OA": 0.0,
+      "Lateral OA": 0.048355899419729176,
+      "PF OA": 0.019305019305019377,
+      "Effusion": -0.006211180124223725,
+      "Synovitis": 0.009557945041816063,
+      "Baker's": 0.016304347826086918,
+      "Contusion": -0.01754385964912286,
+      "Fracture": 0.02083333333333326
+    },
+    "nonnegative_target_deltas": 9,
+    "worst_target_delta": -0.01754385964912286,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": 0.011636483021631094,
+      "ci95": [
+        -0.001683562740554958,
+        0.025888443977740795
+      ],
+      "probability_positive": 0.956
+    },
+    "gate_passed": true
+  },
+  "fixed_seven_model_blend": {
+    "formula_current": "0.375 rank(P2) + 0.375 rank(P4) + 0.25 rank(P6)",
+    "formula_candidate": "0.375 rank(P2) + 0.375 rank(P8) + 0.25 rank(P6)",
+    "current_p6_macro_auc": 0.9054205862136073,
+    "candidate_p8_macro_auc": 0.9097982866758175,
+    "delta": 0.004377700462210199,
+    "target_deltas": {
+      "ACL": 0.004901960784313708,
+      "MCL": -0.009070294784580546,
+      "Medial Meniscus": 0.0,
+      "Lateral Meniscus": 0.018633540372670843,
+      "Medial OA": 0.0031007751937984773,
+      "Lateral OA": 0.013539651837524147,
+      "PF OA": 0.0012870012870014325,
+      "Effusion": -0.008695652173912993,
+      "Synovitis": 0.019115890083631903,
+      "Baker's": 0.005434782608695676,
+      "Contusion": -0.004048582995951455,
+      "Fracture": 0.008333333333333415
+    },
+    "nonnegative_target_deltas": 9,
+    "worst_target_delta": -0.009070294784580546,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": 0.004318408325364233,
+      "ci95": [
+        -0.002435357986433146,
+        0.011119042122438848
+      ],
+      "probability_positive": 0.8992
+    }
+  },
+  "promotion_gates": {
+    "standalone_exceeds_p4": true,
+    "fixed_blend_exceeds_current": true,
+    "at_least_8_nonnegative_targets": true,
+    "worst_target_above_minus_0_02": true,
+    "bootstrap_probability_at_least_0_80": true,
+    "oof_gate_passed": true,
+    "hidden_runtime_canary_pending": true
+  },
+  "promotion_gate_passed": false,
+  "decision": "Advance the frozen P8 seven-model blend to a hidden-test runtime canary; promotion remains blocked until the canary preserves at least 0.9 hours of Kaggle headroom."
+}

@@ -38,13 +38,13 @@ public dependencies are kept locally and are excluded from version control.
     blend reached **0.9044**, below P6's **0.9054**, so P7 was rejected without
     tuning.
 11. P8 freezes fold-safe noisy-student relabelling. Its untuned expert audit reached
-    **0.9209** versus **0.8948** for the report teacher. Teacher generation version 1
-    completed all image inference but failed a strict post-run FP16 replay assertion.
-    Version 2 passed the new 58-study early replay gate and independently validated
-    in 102.16 minutes. All five fold-specific teacher tables are now frozen, and the
-    exact-manifest student speed-smoke passed all integrity and execution gates on
-    Kaggle T4 x2. Full folds 0–3 independently validated, and final fold 4 is
-    running before five-fold aggregation and the frozen promotion gate.
+    **0.9209** versus **0.8948** for the report teacher. Teacher generation version 2
+    and all five student folds independently passed their integrity, isolation, and
+    dual-GPU checks. The complete 58-study OOF replay reached **0.9029** standalone
+    versus P4's **0.8912**; replacing P4 in the frozen seven-model blend reached
+    **0.9098** versus the current P6 blend's **0.9054**. Every predeclared OOF gate
+    passed, so P8 advances to the mandatory hidden-test runtime canary before it can
+    be promoted or submitted.
 12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).

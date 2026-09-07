@@ -37,7 +37,7 @@
 | P8 noisy student fold 1 | [rsna-knee-p8-noisy-student-fold-1](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-1) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.466821, 141.64 min representation, GPUs >96% mean |
 | P8 noisy student fold 2 | [rsna-knee-p8-noisy-student-fold-2](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467777, 129.06 min representation, GPUs >96% mean |
 | P8 noisy student fold 3 | [rsna-knee-p8-noisy-student-fold-3](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-3) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.467245, 136.33 min representation, GPUs >96% mean |
-| P8 noisy student fold 4 | [rsna-knee-p8-noisy-student-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-4) | GPU T4 x2 | V1 running; exact fold-4 teacher target and P6 initialization |
+| P8 noisy student fold 4 | [rsna-knee-p8-noisy-student-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-4) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.468403, 149.62 min representation, GPUs >97% mean |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.
@@ -174,6 +174,11 @@ cache-signature hash, and array hashes before training.
   `scripts/validate_p8_teacher_prelaunch.py`,
   `scripts/validate_p8_teacher_outputs.py`, `kaggle/rsna-p8-teacher-labels/`, and
   `docs/P8_PROTOCOL.md`
+- P8 student builder, fold validator, and aggregate evaluator:
+  `scripts/build_p8_student_kernels.py`, `scripts/validate_p8_student_fold.py`, and
+  `scripts/aggregate_p8_outputs.py`. All five student folds independently validated;
+  the complete OOF replay scored `0.902912`, and the frozen candidate seven-model
+  blend scored `0.909798` versus the current `0.905421`. The runtime canary is next.
 
 All five P4 folds completed and independently passed their artifact, split, report
 purge, OOF coverage, and dual-GPU checks. P4 alone scored **0.891161** OOF, effectively

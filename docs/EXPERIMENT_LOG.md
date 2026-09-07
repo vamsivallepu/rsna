@@ -254,7 +254,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P5 | **validated / rejected** | OrthoFoundation-L frozen single-slice feature probe | OOF 0.768822; fixed 25% blend fell to 0.886740; promotion and LoRA gates failed |
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
-| P8 | **folds 0–3 validated / fold 4 running** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Both completed waves passed every gate; final fold launched before aggregation |
+| P8 | **validated / OOF gate passed / canary required** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | P8 OOF 0.902912; frozen candidate blend 0.909798 versus current 0.905421; runtime canary next |
 | P9 | queued | Compact 3D specialist | Gates in the roadmap |
 
 ## Current P6 submission
@@ -374,9 +374,24 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   reached 100%. Evidence:
   [`P8-B-FOLD-2.json`](../experiments/results/P8-B-FOLD-2.json) and
   [`P8-B-FOLD-3.json`](../experiments/results/P8-B-FOLD-3.json).
-- **Final student fold:** fold 4 was launched as private Kaggle version 1 and reached
-  authoritative `RUNNING` state on 2026-09-07. Aggregation remains blocked until its
-  downloaded output passes the same independent checks.
+- **Final student fold:** private Kaggle version 1 completed and its downloaded
+  output independently passed the same artifact, teacher-target, initialization,
+  split-ledger, report-isolation, held-out prediction, and dual-GPU contract. Fold 4
+  selected epoch 8 at pseudo BCE `0.468403` in `149.62` representation minutes;
+  both GPUs averaged above 97% utilization, reached 100%, and peaked at 7,541 MiB.
+  Evidence: [`P8-B-FOLD-4.json`](../experiments/results/P8-B-FOLD-4.json).
+- **Five-fold aggregation:** the five held-out files cover all 58 expert studies
+  exactly once. P8 standalone reached `0.902912` versus P4's `0.891161`, a
+  `+0.011751` delta with 9/12 nonnegative target deltas, worst target delta
+  `-0.017544`, and paired-bootstrap probability of improvement `0.9560`.
+- **Frozen ensemble gate:** replacing only P4 in
+  `0.375 rank(P2) + 0.375 rank(P4/P8) + 0.25 rank(P6)` raised macro AUC from
+  `0.905421` to `0.909798`, a `+0.004378` delta. Nine of 12 target deltas were
+  nonnegative, the worst was `-0.009070`, and the 5,000-repeat paired-bootstrap
+  probability of improvement was `0.8992` (95% interval `[-0.002435, 0.011119]`).
+  All predeclared OOF gates passed. Promotion remains blocked only by the mandatory
+  hidden-test runtime canary with at least 0.9 hours of projected headroom. Aggregate
+  evidence: [`experiments/results/P8.json`](../experiments/results/P8.json).
 
 ## Completed P5 run
 
