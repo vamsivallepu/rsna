@@ -1,0 +1,25 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p9-s3d-specialist",
+  "title": "RSNA Knee P9 S3D Specialist",
+  "code_file": "rsna-p9-s3d-specialist.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [
+    "vallepuvamsikrishna/rsna-p9-s3d-init"
+  ],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-report-weak-supervision",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-a",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b",
+    "vallepuvamsikrishna/rsna-knee-p8-teacher-labels"
+  ],
+  "model_sources": []
+}

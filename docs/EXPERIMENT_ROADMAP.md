@@ -56,7 +56,7 @@ later expensive stage advances only after its prerequisites pass.
 | 6 | **P6** | **validated / blend promoted / scored** | fastMRI+ knee ROI/localization pretraining or auxiliary supervision | Source and matched arms validated; seven-backbone canary projects to 7.61 h on T4 x2 | Fixed blend passed at 0.905421 OOF; submission `56026228` scored 0.923 public, +0.007 over P4 |
 | 7 | **P7** | **validated / rejected** | BGE-M3 multilingual report-image auxiliary loss during P6-matched training | Full V1: 147.21 min representation, 23.26 min feature/head evaluation; both GPUs averaged >96% | Failed: 0.904283 OOF versus P6 0.909878; fixed P7 blend 0.904354 versus current 0.905421; retain P6 |
 | 8 | **P8** | **validated / blend promoted / scored** | Fold-safe noisy-student relabelling; five P8 folds replace P4 in the seven-model ensemble | P8 OOF 0.902912; blend 0.909798; submission `56077025` scored 0.930 public | All frozen gates passed; current submitted leader; advance to P9 without retuning |
-| 9 | **P9** | queued | OrthoDiffusion or compact 3D specialist for complementary targets | Kaggle GPU; high cost | Pursue only if 2.5D finalists plateau and licensing/runtime are acceptable |
+| 9 | **P9** | **protocol frozen / speed smoke prepared** | Compact true-3D S3D specialist for complementary targets; OrthoDiffusion reproduction rejected because its pretrained knee checkpoints/data are unavailable | Kaggle T4 x2; reuse `P2-CACHE-v1` | Advance to full run only after the frozen memory/runtime smoke passes |
 
 ### P0 — report-group-purged DINO OOF
 
@@ -199,6 +199,14 @@ class-agnostic lesion localization. The independently validated epoch-2 checkpoi
 is now compared with the original ImageNet initialization under the unchanged
 report-grouped pseudo and expert-OOF contract. The checkpoint and manifests—but no
 fastMRI images—are staged in a private Kaggle Dataset for that matched comparison.
+
+P9 is frozen in [`P9_PROTOCOL.md`](P9_PROTOCOL.md). It reuses `P2-CACHE-v1` but
+replaces independent three-slice windows with five 16-frame slot clips processed by
+one official Kinetics-initialized S3D backbone. The shared representation uses only
+fold-independent pseudo supervision (`0.50 report + 0.25 P2 direct + 0.25 P6
+direct`); P4 is excluded because its five teachers contain fold-specific expert
+gradients. Five report-purged expert OOF heads share the single selected feature
+cache. A 64-train/16-validation T4 x2 smoke must pass before full training.
 
 ## Stop, go, and reprioritization rules
 

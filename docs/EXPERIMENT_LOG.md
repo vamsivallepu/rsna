@@ -1,6 +1,6 @@
 # Experiment log
 
-Last updated: 2026-09-04
+Last updated: 2026-09-07
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
@@ -255,7 +255,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
 | P8 | **validated / blend promoted / scored** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Submission `56077025` scored 0.930, +0.007 over P6; live gap 0.024 |
-| P9 | queued | Compact 3D specialist | Gates in the roadmap |
+| P9 | **protocol frozen / speed smoke prepared** | One shared S3D true-3D representation plus five cached-feature heads | Await the frozen T4 x2 smoke before full training |
 
 ## Current P6 submission
 
@@ -409,6 +409,31 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   now `0.024`. Retain P8 as the current submitted leader and advance to P9 without
   changing the frozen blend. Evidence:
   [`P8-SUBMISSION.json`](../experiments/results/P8-SUBMISSION.json).
+
+## Current P9 execution
+
+- **Architecture decision:** do not attempt OrthoDiffusion reproduction. Its public
+  implementation describes three orientation-specific 3D diffusion backbones, but
+  the pretrained knee checkpoints and 15,948-exam source corpus used by the paper
+  are not publicly packaged with the code. P9 instead uses the official Torchvision
+  S3D Kinetics-400 checkpoint: a compact 8.32-million-parameter separable 3D CNN.
+- **Frozen protocol:** [`P9_PROTOCOL.md`](P9_PROTOCOL.md). One shared S3D backbone
+  processes five uniformly resampled 16-frame clips per study at 160 px and produces
+  five 1,024-dimensional slot features. Target-specific attention fuses the slots.
+  The representation sees no expert labels.
+- **Fold-safe pseudo supervision:** `0.50 report + 0.25 P2 direct + 0.25 P6 direct`.
+  P4 is intentionally excluded from the shared representation because its five
+  checkpoints carry fold-specific expert gradients. Expert rows remain unchanged.
+- **Prelaunch state:** the official 33,524,997-byte checkpoint was strictly loaded
+  into `torchvision.models.video.s3d` and pinned at SHA-256
+  `d76dad2f4b2a6701ad7f64e85b294b2d1989f1ea0d3f8b240446ed2152850bbb`.
+  The P8 teacher manifest and P2/P6 arrays passed hash, row-order, shape, and
+  no-expert-gradient checks. Canonical source, generated smoke/full kernels, syntax,
+  lint, metadata, pseudo formula, and expert preservation all pass locally.
+- **Next action:** publish the private S3D initialization Dataset and launch the
+  64-train/16-validation T4 x2 speed/memory smoke. Full P9 training is gated on no
+  OOM, finite losses, both GPUs participating, peak allocation below 14,500 MiB, and
+  a conservative six-epoch representation projection below four hours.
 
 ## Completed P5 run
 

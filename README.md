@@ -48,7 +48,12 @@ public dependencies are kept locally and are excluded from version control.
     margin. Exact version 1 became submission `56077025` and scored **0.930** public,
     improving P6 by **0.007**. The live leader was **0.954** at verification, leaving
     a **0.024** gap.
-12. Promote only repeatable OOF improvements through the canonical ordered roadmap in
+12. P9 is frozen as a compact true-3D specialist: one official Kinetics-initialized
+    S3D backbone processes five 16-frame acquisition-slot clips, then five cheap
+    report-purged expert heads share its cached features. OrthoDiffusion reproduction
+    is deferred because its public release lacks the pretrained knee checkpoints and
+    source corpus. The private T4 x2 speed/memory smoke gates the full run.
+13. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
 
