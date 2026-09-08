@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "experiment_id": "P9",
+  "run_id": "P9-S3D-SPECIALIST-v1",
+  "status": "validated / rejected",
+  "date": "2026-09-08",
+  "validated": true,
+  "kernel": {
+    "ref": "vallepuvamsikrishna/rsna-knee-p9-s3d-specialist",
+    "version": 1,
+    "status": "KernelWorkerStatus.COMPLETE",
+    "code_commit": "98d10af"
+  },
+  "source": {
+    "manifest_sha256": "c0e9b4b7f6a8ddcf44968451c116523994d8038a0367b047919635a20c6d77f5",
+    "script_sha256": "c1bf2ea66353b391b3066cc97d2a924cf84899f7479731763e0e4a63dcd5c8b0",
+    "checkpoint_sha256": "d76dad2f4b2a6701ad7f64e85b294b2d1989f1ea0d3f8b240446ed2152850bbb",
+    "teacher_manifest_sha256": "c9fa60800e450c4bb41e6d31cc3a7d8cdb74b1d1367fb32c990200a64e5bc85f"
+  },
+  "integrity": {
+    "artifact_hashes_passed": true,
+    "safe_pseudo_targets_reconstructed": true,
+    "expert_targets_unchanged": true,
+    "p4_teacher_excluded": true,
+    "representation_expert_gradient_rows": 0,
+    "feature_shape": [
+      4407,
+      5,
+      1024
+    ],
+    "five_saved_heads_replayed": true,
+    "direct_head_replayed": true,
+    "expert_oof_rows": 58,
+    "report_hash_overlap": 0,
+    "traceback_absent": true,
+    "cuda_oom_absent": true
+  },
+  "training": {
+    "best_epoch": 5,
+    "best_pseudo_valid_weighted_bce": 0.585310412368407,
+    "representation_minutes": 15.942173957824707,
+    "feature_and_head_minutes": 1.5022610068321227,
+    "total_minutes": 17.44443497657776,
+    "gpu_utilization_mean_percent": {
+      "0": 57.19047619047619,
+      "1": 63.214285714285715
+    },
+    "gpu_utilization_max_percent": {
+      "0": 100,
+      "1": 100
+    },
+    "maximum_observed_memory_mib": 1301
+  },
+  "standalone": {
+    "direct_macro_auc": 0.6624761007258148,
+    "oof_macro_auc": 0.7538546700889182,
+    "target_auc": {
+      "ACL": 0.7977941176470589,
+      "MCL": 0.6462585034013606,
+      "Medial Meniscus": 0.7223557692307692,
+      "Lateral Meniscus": 0.6745341614906832,
+      "Medial OA": 0.9100775193798449,
+      "Lateral OA": 0.7891682785299807,
+      "PF OA": 0.7387387387387387,
+      "Effusion": 0.9105590062111801,
+      "Synovitis": 0.7550776583034648,
+      "Baker's": 0.7807971014492753,
+      "Contusion": 0.7597840755735492,
+      "Fracture": 0.5611111111111111
+    }
+  },
+  "fixed_blend": {
+    "formula": "0.85 current_P8_blend + 0.15 rank(P9)",
+    "current_macro_auc": 0.9097982866758175,
+    "candidate_macro_auc": 0.9072841307396026,
+    "delta": -0.002514155936214957,
+    "target_deltas": {
+      "ACL": -0.004901960784313708,
+      "MCL": -0.024943310657596363,
+      "Medial Meniscus": 0.004807692307692291,
+      "Lateral Meniscus": 0.002484472049689379,
+      "Medial OA": -0.0046511627906976605,
+      "Lateral OA": 0.009671179883945835,
+      "PF OA": -0.0012870012870012104,
+      "Effusion": 0.006211180124223725,
+      "Synovitis": 0.009557945041816174,
+      "Baker's": 0.0018115942028984477,
+      "Contusion": -0.0080971659919028,
+      "Fracture": -0.02083333333333337
+    },
+    "nonnegative_target_deltas": 6,
+    "worst_target_delta": -0.024943310657596363,
+    "paired_bootstrap": {
+      "repeats": 5000,
+      "mean_delta": -0.0025277669776773257,
+      "ci95": [
+        -0.008871818889417887,
+        0.0038891467520157986
+      ],
+      "probability_positive": 0.2126
+    }
+  },
+  "promotion_gates": {
+    "candidate_exceeds_current": false,
+    "at_least_8_nonnegative_targets": false,
+    "worst_target_above_minus_0_02": false,
+    "bootstrap_probability_at_least_0_80": false,
+    "all_passed": false
+  },
+  "decision": "Reject P9 without blend-weight or target-specific tuning; retain the promoted P8 submission system."
+}

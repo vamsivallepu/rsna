@@ -255,7 +255,7 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
 | P6 | **validated / blend promoted / scored** | fastMRI+ localization transfer into matched P2 reruns | Fixed blend submission `56026228` completed at public 0.923, +0.007 over P4 |
 | P7 | **validated / rejected** | BGE-M3 report-image auxiliary training | Pseudo BCE improved, but 0.904283 OOF and 0.904354 fixed blend both missed P6; retain P6 and proceed to P8 |
 | P8 | **validated / blend promoted / scored** | Fold-safe P2/P4/P6 image-teacher relabelling and five student folds | Submission `56077025` scored 0.930, +0.007 over P6; live gap 0.024 |
-| P9 | **full run running** | One shared S3D true-3D representation plus five cached-feature heads | Speed smoke passed every gate; full version 1 is running on T4 x2 |
+| P9 | **validated / rejected** | One shared S3D true-3D representation plus five cached-feature heads | OOF 0.753855; frozen 15% blend declined to 0.907284; retain P8 |
 
 ## Current P6 submission
 
@@ -439,11 +439,30 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   is 0.9474 hours. Independent validation found no traceback or CUDA OOM and passed
   every frozen advance gate. Evidence:
   [`P9-SPEED-SMOKE.json`](../experiments/results/P9-SPEED-SMOKE.json).
-- **Full run launch:** exact version 1 from commit `98d10af` entered authoritative
-  `RUNNING` state at
-  `vallepuvamsikrishna/rsna-knee-p9-s3d-specialist`. It will train the shared
-  pseudo-only representation, cache all 4,407 five-slot features, and produce the
-  complete five-fold report-purged expert OOF evaluation in one run.
+- **Full run result:** exact version 1 from commit `98d10af` completed successfully
+  at `vallepuvamsikrishna/rsna-knee-p9-s3d-specialist`. Epoch 5 minimized grouped
+  pseudo-validation BCE at `0.585310`. Representation training took 15.94 minutes;
+  feature extraction and five heads took 1.50 minutes; total model time was 17.44
+  minutes. Both GPUs reached 100% utilization, with full-run utilization means of
+  57.19% and 63.21% including hashing and I/O, and maximum observed memory of 1,301
+  MiB.
+- **Independent validation:** all 17 artifact hashes, the generated source hash,
+  checkpoint and teacher hashes, 4,407-row safe-target equation, unchanged expert
+  targets, P4 exclusion, `(4407, 5, 1024)` feature cache, five report-purged splits,
+  five saved-head prediction replays, direct-head replay, 58-row OOF coverage,
+  telemetry, and completion log passed. There was no traceback or CUDA OOM. Source
+  manifest SHA-256 is
+  `c0e9b4b7f6a8ddcf44968451c116523994d8038a0367b047919635a20c6d77f5`.
+- **OOF result:** the direct representation head scored `0.662476`; five-fold expert
+  OOF reached `0.753855`. Adding the frozen 15% P9 rank component reduced the current
+  P8 blend from `0.909798` to `0.907284` (`-0.002514`). Only 6/12 target deltas were
+  nonnegative, MCL was worst at `-0.024943`, and the 5,000-sample paired-bootstrap
+  probability of a positive macro delta was `0.2126`.
+- **Decision:** all four mandatory promotion gates fail. Reject P9 without tuning its
+  blend weight or selecting targets on the 58 expert rows. Do not build a hidden-test
+  runtime canary or spend a competition submission. Retain P8 as the promoted system;
+  the ordered P0–P9 ladder is complete. Evidence:
+  [`P9.json`](../experiments/results/P9.json).
 
 ## Completed P5 run
 

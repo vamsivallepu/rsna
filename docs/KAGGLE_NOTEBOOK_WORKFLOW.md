@@ -40,7 +40,7 @@
 | P8 noisy student fold 4 | [rsna-knee-p8-noisy-student-fold-4](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-4) | GPU T4 x2 | V1 independently validated; epoch 8, BCE 0.468403, 149.62 min representation, GPUs >97% mean |
 | P8 blend canary | [rsna-knee-p8-blend-canary](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p8-blend-canary) | GPU T4 x2 | V1 independently validated; submission `56077025` complete at public 0.930, +0.007 over P6 |
 | P9 S3D speed smoke | [rsna-knee-p9-s3d-speed-smoke](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p9-s3d-speed-smoke) | GPU T4 x2 | V1 independently passed: 0.947 h six-epoch projection, 912.63 MiB/rank, finite losses, both DDP ranks |
-| P9 S3D specialist | [rsna-knee-p9-s3d-specialist](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p9-s3d-specialist) | GPU T4 x2 | Version 1 running; shared pseudo-only representation plus complete five-head expert OOF evaluation |
+| P9 S3D specialist | [rsna-knee-p9-s3d-specialist](https://www.kaggle.com/code/vallepuvamsikrishna/rsna-knee-p9-s3d-specialist) | GPU T4 x2 | V1 independently validated; OOF 0.753855 and frozen blend 0.907284 both miss P8; rejected |
 
 All notebooks are private with internet disabled. The verified competition mount is
 `/kaggle/input/competitions/rsna-knee-abnormality-detection`.

@@ -52,8 +52,9 @@ public dependencies are kept locally and are excluded from version control.
     S3D backbone processes five 16-frame acquisition-slot clips, then five cheap
     report-purged expert heads share its cached features. OrthoDiffusion reproduction
     is deferred because its public release lacks the pretrained knee checkpoints and
-    source corpus. The private T4 x2 smoke passed at only 913 MiB/rank and a 0.95 h
-    six-epoch projection; full P9 version 1 is now running.
+    source corpus. The private T4 x2 smoke passed, but the full run produced only
+    **0.7539** OOF and its frozen 15% rank blend fell from **0.9098** to **0.9073**.
+    P9 is rejected and P8 remains the promoted system.
 13. Promote only repeatable OOF improvements through the canonical ordered roadmap in
    [`docs/EXPERIMENT_ROADMAP.md`](docs/EXPERIMENT_ROADMAP.md), and record every run
    in [`docs/EXPERIMENT_LOG.md`](docs/EXPERIMENT_LOG.md).
