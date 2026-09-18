@@ -4,6 +4,9 @@ data/*
 !data/README.md
 
 # Generated notebook builds and experiment outputs
+# New run.py bundles can embed competition split rows. Track their builders,
+# metadata and build hashes; keep the generated source local/Kaggle-only.
+kaggle/**/run.py
 output/
 outputs/
 artifacts/
@@ -93,4 +96,5 @@ temp/
 *.tmp
 *.swp
 *.swo
+experiments/*.lock
 *~

@@ -1,0 +1,137 @@
+{
+  "schema_version": "rsna-next-v1",
+  "deadline_utc": "2026-10-22T23:59:00Z",
+  "fallback_submission": "56077025",
+  "fallback_public_auc": 0.93,
+  "budget_usd": 500,
+  "allocations_usd": {
+    "audit_labels_benchmark": 60,
+    "core": 160,
+    "geometry": 100,
+    "teachers_confirmation": 80,
+    "diversity": 50,
+    "reserve": 50
+  },
+  "paid_jobs": [],
+  "training_seeds": [
+    20260917,
+    20260918
+  ],
+  "maximum_full_confirmation_recipes": 2,
+  "promotion": {
+    "bootstrap_probability_positive": 0.9,
+    "worst_target_delta_minimum": -0.02,
+    "both_seed_wins": true,
+    "runtime_hours_maximum": 7.5
+  },
+  "defaults": {
+    "epochs": 8,
+    "train_windows": 8,
+    "sampling": "uniform",
+    "expert_repeat": 1,
+    "head": "baseline",
+    "seed": 20260917,
+    "accumulation": 4,
+    "checkpointing": false
+  },
+  "recipes": {
+    "imagenet-report": {
+      "initialization": "imagenet",
+      "labels": "report"
+    },
+    "fastmri-report": {
+      "initialization": "fastmri",
+      "labels": "report"
+    },
+    "fastmri-distilled": {
+      "initialization": "fastmri",
+      "labels": "distilled"
+    },
+    "duration16": {
+      "initialization": "fastmri",
+      "labels": "report",
+      "epochs": 16,
+      "parent": "fastmri-report"
+    },
+    "balanced8": {
+      "initialization": "fastmri",
+      "labels": "report",
+      "sampling": "balanced",
+      "parent": "fastmri-report"
+    },
+    "balanced16": {
+      "initialization": "fastmri",
+      "labels": "report",
+      "sampling": "balanced",
+      "train_windows": 16,
+      "checkpointing": true,
+      "parent": "balanced8"
+    },
+    "expert4": {
+      "initialization": "fastmri",
+      "labels": "report",
+      "expert_repeat": 4,
+      "parent": "fastmri-report"
+    },
+    "fourth-source": {
+      "initialization": "fastmri",
+      "labels": "fourth_source",
+      "parent": "fastmri-distilled"
+    },
+    "mention-mask": {
+      "initialization": "fastmri",
+      "labels": "mention_mask",
+      "parent": "fastmri-distilled"
+    },
+    "native-geometry": {
+      "initialization": "fastmri",
+      "labels": "report",
+      "parent": "fastmri-report",
+      "requires_p14_cache": true
+    },
+    "dino-full": {
+      "initialization": "dinov2",
+      "labels": "report",
+      "head": "position",
+      "checkpointing": true,
+      "requires_winning_recipe_lock": true
+    }
+  },
+  "active_split_revision": "P10-report-image-v2",
+  "active_split_path": "outputs/experiments/P10-contract-v2/splits.csv",
+  "head_selection": {
+    "decision": "baseline",
+    "evidence": "experiments/results/P11-complete.json",
+    "independent_replay": "experiments/results/P11-replay.json"
+  },
+  "next_wave": [
+    {
+      "mode": "teacher",
+      "folds": [
+        0,
+        1,
+        2
+      ],
+      "recipe": "fastmri-report",
+      "seed": 20260917
+    },
+    {
+      "mode": "teacher",
+      "folds": [
+        3,
+        4
+      ],
+      "recipe": "fastmri-report",
+      "seed": 20260917
+    },
+    {
+      "mode": "student",
+      "folds": [
+        0
+      ],
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "purpose": "corrected baseline screen; not complete OOF"
+    }
+  ]
+}
