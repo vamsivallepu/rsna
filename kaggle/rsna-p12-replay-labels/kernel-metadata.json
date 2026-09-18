@@ -1,0 +1,26 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p12-replay-labels",
+  "title": "RSNA Knee P12 Replay Labels",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [
+    "vallepuvamsikrishna/rsna-p6-fastmri-localization-init"
+  ],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-a",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b",
+    "vallepuvamsikrishna/rsna-knee-report-weak-supervision",
+    "vallepuvamsikrishna/rsna-knee-teacher-bank-012-s20260917",
+    "vallepuvamsikrishna/rsna-knee-teacher-bank-34-s20260917",
+    "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-0-s20260917"
+  ]
+}

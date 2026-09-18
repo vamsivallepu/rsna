@@ -1,0 +1,107 @@
+{
+  "status": "partial_screening_only",
+  "promotion_eligible": false,
+  "runs": {
+    "baseline-20260831": {
+      "metrics": {
+        "ACL": 0.9387254901960784,
+        "MCL": 0.9070294784580498,
+        "Medial Meniscus": 0.9567307692307692,
+        "Lateral Meniscus": 0.8322981366459627,
+        "Medial OA": 0.9534883720930232,
+        "Lateral OA": 0.758220502901354,
+        "PF OA": 0.8056628056628056,
+        "Effusion": 0.9490683229813665,
+        "Synovitis": 0.7682198327359618,
+        "Baker's": 0.9583333333333334,
+        "Contusion": 0.9338731443994602,
+        "Fracture": 0.9402777777777778,
+        "MACRO": 0.891827330534662
+      },
+      "oof_sha256": "6ca9c21fc3f652bfdcc601161989be773598d924fb85e282f24b2b690feceb1c"
+    },
+    "position-20260831": {
+      "metrics": {
+        "ACL": 0.9338235294117647,
+        "MCL": 0.909297052154195,
+        "Medial Meniscus": 0.9555288461538461,
+        "Lateral Meniscus": 0.8335403726708075,
+        "Medial OA": 0.9503875968992248,
+        "Lateral OA": 0.758220502901354,
+        "PF OA": 0.8095238095238095,
+        "Effusion": 0.9490683229813665,
+        "Synovitis": 0.7694145758661888,
+        "Baker's": 0.9583333333333334,
+        "Contusion": 0.9352226720647774,
+        "Fracture": 0.9402777777777778,
+        "MACRO": 0.8918865326448704
+      },
+      "oof_sha256": "a1eeccee792ab9273548f2bdcddd2311429206afc36cc6b19a43e0d675733ffc",
+      "paired_bootstrap": {
+        "valid_repeats": 4999,
+        "ci95": [
+          -0.00308513188030228,
+          0.003105416709142258
+        ],
+        "probability_positive": 0.5287057411482297
+      }
+    },
+    "hierarchical-20260831": {
+      "metrics": {
+        "ACL": 0.9448529411764706,
+        "MCL": 0.8866213151927438,
+        "Medial Meniscus": 0.9483173076923077,
+        "Lateral Meniscus": 0.8335403726708074,
+        "Medial OA": 0.951937984496124,
+        "Lateral OA": 0.769825918762089,
+        "PF OA": 0.8095238095238095,
+        "Effusion": 0.9354037267080746,
+        "Synovitis": 0.7825567502986857,
+        "Baker's": 0.9619565217391305,
+        "Contusion": 0.9365721997300944,
+        "Fracture": 0.9472222222222222,
+        "MACRO": 0.8923609225177133
+      },
+      "oof_sha256": "ba3ac63d383996cf1496eeb61ec114b7cc7a16ebe0c98d3bbf27afbf203500bd",
+      "paired_bootstrap": {
+        "valid_repeats": 4999,
+        "ci95": [
+          -0.006769590224920178,
+          0.008022921374488979
+        ],
+        "probability_positive": 0.5753150630126025
+      }
+    }
+  },
+  "source_config": {
+    "version": "rsna-next-v1",
+    "epochs": 30,
+    "batch_size": 256,
+    "seeds": [
+      20260831,
+      20260901
+    ],
+    "variants": [
+      "baseline",
+      "position",
+      "hierarchical"
+    ],
+    "source_hashes": {
+      "p2_coatnet_features.npy": "91f75bc17d6867db7dbceea97d55b65a95b47202f8d2c6ce2e3d038908b7d665",
+      "p2_coatnet_feature_mask.npy": "8f881caccf4d114c62f3eabdff3ae59d2e78f12dcaa877337244abc97087ba14",
+      "p2_coatnet_feature_positions.npy": "5fb6f70417e2d5ba05688f9d4ba099c3c205d6651516144973716731cc11ed30",
+      "p2_coatnet_feature_studies.csv": "efc63afee30345f94a916f98ba6b30f266fccfe2976b8475fa86653b2c510513",
+      "p2_coatnet_pseudo_best.pt": "911315fba8b9f0b942c5c0e6c7ff24c47df9ad058d359c898f2e759cf50ef6db"
+    },
+    "targets_sha256": "ca63cfff863c87286e07a8059fee88f86ff8b3f4b640a98078d62113f6b93f2a",
+    "splits_sha256": "0031102d6a8145fa6ab768e5f90817b74f87a6cf464b1b0e9899518d5718eea5",
+    "code_sha256": {
+      "screen.py": "116fc66b34bb03b90d7a7ccd551e06b1057a89c561ff6c21cb9fc3f8ba3e690a",
+      "models.py": "030484b574fd761d87e6843b4519459a9a637048529cd3392988c9d71f7442cb",
+      "contracts.py": "cbea1187795423782b681e35c0c170416cc8336b39043d7c69af53e1d420c006"
+    },
+    "representation_is_historical": true,
+    "promotion_eligible": false,
+    "head_training": "historical all-pseudo with held-out expert report purge"
+  }
+}

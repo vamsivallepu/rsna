@@ -1,0 +1,31 @@
+{
+  "schema_version": "rsna-next-v1",
+  "status": "validated_local_split_contract",
+  "studies": 4407,
+  "roles": {
+    "pseudo_train": 3910,
+    "pseudo_valid": 435,
+    "expert": 58,
+    "excluded_expert_twin": 4
+  },
+  "teacher_validation_exposure_historical": 400,
+  "pseudo_validation_studies": 435,
+  "expert_report_twins_in_historical_representation": 4,
+  "teacher_fold_counts": {
+    "1": 782,
+    "0": 782,
+    "2": 782,
+    "4": 782,
+    "3": 782
+  },
+  "source_train_sha256": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33",
+  "source_series_sha256": "573c1d80772bf41211c91b149c95677385a1c22d63f485c347f1b46c0177aef3",
+  "split_sha256": "0031102d6a8145fa6ab768e5f90817b74f87a6cf464b1b0e9899518d5718eea5",
+  "benchmark_studies_sha256": "30096d661f58222a532d08e159d3c5aa030513e60a0cc06a2b6e4ea15076dbc9",
+  "remaining": [
+    "full-mount pixel/near-duplicate audit",
+    "200+ study exact P8 runtime benchmark",
+    "new split-safe model training"
+  ],
+  "historical_report_matches_are_not_proof_of_patient_duplication": true
+}

@@ -1,0 +1,24 @@
+{
+  "status": "predeclared_screen",
+  "candidate_build_sha256": "7edc5802c9780a6a462968fb0e9519e97da088d3e84041888d7dd5d4b13a0133",
+  "control_manifest_sha256": "80988af192ec762c78886ca10e620dd4ccf6194efe23491a53330fc19c8b68a7",
+  "changed": [
+    "epochs: 8 to 16",
+    "OneCycleLR schedule defined over each full duration"
+  ],
+  "held_fixed": [
+    "fold 0",
+    "seed 20260917",
+    "corrected report/image split",
+    "fastMRI initialization",
+    "original report targets",
+    "baseline pooling",
+    "8 globally sampled windows",
+    "optimizer and effective batch size",
+    "expert sampling"
+  ],
+  "checkpoint_selection": "minimum unchanged original-report pseudo-validation BCE",
+  "first_comparison": "original-report pseudo-validation BCE; do not promote using one fold/seed",
+  "full_checkpoint_replay_required": true,
+  "paid_usd": 0
+}

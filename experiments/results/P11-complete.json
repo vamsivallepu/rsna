@@ -1,0 +1,86 @@
+{
+  "status": "completed_historical_screen",
+  "results": {
+    "p2": {
+      "position": {
+        "seed_deltas": [
+          5.92021102083784e-05,
+          0.0004960728348131216
+        ],
+        "mean_seed_delta": 0.00027763747251075,
+        "ensemble_delta": 0.0005251050002539337,
+        "bootstrap": {
+          "valid_repeats": 4999,
+          "ci95": [
+            -0.002376498258682324,
+            0.0034892057901903936
+          ],
+          "probability_positive": 0.6439287857571514
+        },
+        "worst_target_delta": -0.004166666666666652,
+        "statistical_screen_passed": false,
+        "promotion_eligible": false
+      },
+      "hierarchical": {
+        "seed_deltas": [
+          0.0005335919830512514,
+          -0.00028348264867350537
+        ],
+        "mean_seed_delta": 0.00012505466718887304,
+        "ensemble_delta": 0.000771101307651012,
+        "bootstrap": {
+          "valid_repeats": 4999,
+          "ci95": [
+            -0.006991083921416799,
+            0.008786973359535545
+          ],
+          "probability_positive": 0.5955191038207641
+        },
+        "worst_target_delta": -0.02494331065759625,
+        "statistical_screen_passed": false,
+        "promotion_eligible": false
+      }
+    },
+    "p6": {
+      "position": {
+        "seed_deltas": [
+          0.0001384069799695853,
+          0.00032889984424600005
+        ],
+        "mean_seed_delta": 0.00023365341210779267,
+        "ensemble_delta": -0.0002857302476555468,
+        "bootstrap": {
+          "valid_repeats": 4999,
+          "ci95": [
+            -0.0021739379741515523,
+            0.0016812806734317557
+          ],
+          "probability_positive": 0.3732746549309862
+        },
+        "worst_target_delta": -0.003868471953578312,
+        "statistical_screen_passed": false,
+        "promotion_eligible": false
+      },
+      "hierarchical": {
+        "seed_deltas": [
+          -0.004236624762105956,
+          -0.004007118059839221
+        ],
+        "mean_seed_delta": -0.0041218714109725885,
+        "ensemble_delta": -0.004604400695726096,
+        "bootstrap": {
+          "valid_repeats": 4999,
+          "ci95": [
+            -0.016202789117364585,
+            0.006039706823809773
+          ],
+          "probability_positive": 0.21024204840968194
+        },
+        "worst_target_delta": -0.04761904761904767,
+        "statistical_screen_passed": false,
+        "promotion_eligible": false
+      }
+    }
+  },
+  "decision": "Retain baseline head; no anatomy variant passes all predeclared statistical gates; historical representations cannot be promoted regardless."
+}

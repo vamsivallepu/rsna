@@ -1,0 +1,23 @@
+{
+  "experiment_id": "P10-RUNTIME",
+  "studies": 240,
+  "hidden_studies": 1300,
+  "safety_multiplier": 1.25,
+  "projected_hidden_hours": 0.8762246503487781,
+  "runtime_gate_passed": true,
+  "pipeline": "exact P8 model/preprocessing/scheduler",
+  "benchmark_selection": "label-blind acquisition-stratified quantiles",
+  "is_submission": false,
+  "original_source_sha256": "69f1d0c828d218b445f3571ec879c4ab689b93ca5c7e1e00926dbad35777a9fe",
+  "status": "validated_runtime_and_ensemble_arithmetic",
+  "maximum_blend_replay_error": 1.1102230246251565e-16,
+  "manifest_sha256": "30244794a6eaf7c31bf4dec213ec6fe88e91c1d355e1a18f30ef326a03d1c6dd",
+  "benchmark_ids_sha256": "ed611bbe1c6461ace40cef6002be2476947a3dc40ef7a3c3f3f35cc92f2e4189",
+  "all_artifact_hashes_checked": true,
+  "all_240_studies_have_32_valid_windows": true,
+  "measured_total_minutes": 8.2171111702919,
+  "measured_dicom_and_inference_minutes": 7.686302010218302,
+  "hardware": "2 x Tesla T4",
+  "selection_limitation": "Acquisition metadata stratified; native slice-count and scanner-domain stratification not yet performed",
+  "promotion_eligible": false
+}

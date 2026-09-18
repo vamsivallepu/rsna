@@ -1,0 +1,78 @@
+{
+  "status": "all_60_fold_heads_replayed",
+  "runs": [
+    {
+      "cache": "p2",
+      "variant": "baseline",
+      "seed": 20260831,
+      "maximum_error": 2.9160308834264015e-08
+    },
+    {
+      "cache": "p2",
+      "variant": "position",
+      "seed": 20260831,
+      "maximum_error": 2.9200744600110795e-08
+    },
+    {
+      "cache": "p2",
+      "variant": "hierarchical",
+      "seed": 20260831,
+      "maximum_error": 3.316066740643997e-08
+    },
+    {
+      "cache": "p2",
+      "variant": "baseline",
+      "seed": 20260901,
+      "maximum_error": 2.9686737068601587e-08
+    },
+    {
+      "cache": "p2",
+      "variant": "position",
+      "seed": 20260901,
+      "maximum_error": 2.9770660381345238e-08
+    },
+    {
+      "cache": "p2",
+      "variant": "hierarchical",
+      "seed": 20260901,
+      "maximum_error": 2.9713439930745267e-08
+    },
+    {
+      "cache": "p6",
+      "variant": "baseline",
+      "seed": 20260831,
+      "maximum_error": 2.9763793985004838e-08
+    },
+    {
+      "cache": "p6",
+      "variant": "position",
+      "seed": 20260831,
+      "maximum_error": 2.9743957519201558e-08
+    },
+    {
+      "cache": "p6",
+      "variant": "hierarchical",
+      "seed": 20260831,
+      "maximum_error": 2.9441070581448514e-08
+    },
+    {
+      "cache": "p6",
+      "variant": "baseline",
+      "seed": 20260901,
+      "maximum_error": 2.8667449969432823e-08
+    },
+    {
+      "cache": "p6",
+      "variant": "position",
+      "seed": 20260901,
+      "maximum_error": 2.9734802287073592e-08
+    },
+    {
+      "cache": "p6",
+      "variant": "hierarchical",
+      "seed": 20260901,
+      "maximum_error": 2.9405975321417088e-08
+    }
+  ],
+  "promotion_eligible": false
+}

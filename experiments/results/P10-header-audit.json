@@ -1,0 +1,40 @@
+{
+  "status": "completed_header_audit",
+  "studies": 4407,
+  "series": 24371,
+  "scanner_domains": 47,
+  "native_slice_range": [
+    67,
+    632
+  ],
+  "estimated_pixel_range": [
+    6889472,
+    383778816
+  ],
+  "plane_disagreements": 407,
+  "missing_orientations": 0,
+  "benchmark_studies": 240,
+  "train_sha256": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33",
+  "series_sha256": "573c1d80772bf41211c91b149c95677385a1c22d63f485c347f1b46c0177aef3",
+  "label_blind": true,
+  "limitation": "One header per series; volume size estimated from native slice count and first-slice dimensions",
+  "files_sha256": {
+    "scanner_counts.csv": "fba0d430195b2ea007f98f462f6e115265e9e142bb4a5e17da2162b4583ca9dd",
+    "benchmark_studies.csv": "b9442781a35dce1a00bf0ab8063953a304243349d45c8a4633a7c420deb606b8",
+    "study_domains_sizes.csv": "e490686810075a1b050cd2772f8823840232c47b83267f96cab248ccbde49a8c",
+    "series_headers.csv": "f0a9db492046870c459d8020658c58d53bae11e0fa83c35f96cbccb2b9c51342"
+  },
+  "independent_checks": "file hashes, unique series/studies, size aggregation, full scanner-domain and size-extreme selection passed",
+  "disagreement_by_plane": {
+    "Axial": 28,
+    "Coronal": 365,
+    "Sagittal": 14
+  },
+  "affected_studies": 385,
+  "old_runtime_scanner_domains": 33,
+  "old_runtime_pixel_range": [
+    9822208,
+    289118208
+  ],
+  "new_benchmark_overlap_old": 10
+}

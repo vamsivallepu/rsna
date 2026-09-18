@@ -1,0 +1,31 @@
+{
+  "status": "completed_with_split_leakage_candidate",
+  "studies": 4407,
+  "exact_matching_studies": 2,
+  "exact_matching_groups": 1,
+  "near_candidate_pairs": 1,
+  "pair_roles": [
+    "pseudo_valid",
+    "pseudo_train"
+  ],
+  "pair_report_groups_differ": true,
+  "pair_expert_studies": 0,
+  "pair_in_smoke_training": 0,
+  "pair_in_smoke_validation": 0,
+  "affected_full_teacher_folds": [
+    0,
+    2,
+    3,
+    4
+  ],
+  "full_teacher_launch_allowed": false,
+  "required_next_step": "Verify duplicate source DICOM/cache rows and conservatively keep matching image groups out of training when any member is pseudo-validation. Regenerate versioned split before full training.",
+  "limitation": "Exact equality applies to selected preprocessed cache pixels, not a verified patient identity or full raw DICOM equality.",
+  "source_manifest_sha256": "a6d640d776292f246c7a6d107923cd24ea7356968b5e65329b5b59cc23f9da8e",
+  "artifact_sha256": {
+    "study_fingerprints.csv": "f3cae405d29561d47b1218b71fc0765d7f9c4b9ee6b1558552b1a469a6c4e75a",
+    "near_duplicate_candidates.csv": "52b4637e7664dabc0a32bdc408b7042425b9c00cd623d8644e9eb1e9c2532de1",
+    "acquisition_counts.csv": "0f735d892a35c2dc1c205c693ce667792e3cb49a18d6bde197cc063184740253",
+    "exact_selected_pixel_matches.csv": "3d07d5ef9856d9f9b4c07c92a4bea7d425258fae5a94dcc2bcc7796968123c3b"
+  }
+}

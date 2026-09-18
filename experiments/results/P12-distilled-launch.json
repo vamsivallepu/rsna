@@ -1,0 +1,16 @@
+{
+  "status": "accepted",
+  "slug": "vallepuvamsikrishna/rsna-student-fastmri-distilled-0-s20260917",
+  "live_status": "COMPLETE",
+  "paid_usd": 0,
+  "recovered_utc": "2026-09-18T11:55:50.450552+00:00",
+  "previous_failure": {
+    "status": "failed",
+    "paid_usd": 0,
+    "error": "Traceback (most recent call last):\n  File \"/home/vamsik/RSNA/scripts/rsna_next/advance_p12.py\", line 103, in <module>\n    main()\n  File \"/home/vamsik/RSNA/scripts/rsna_next/advance_p12.py\", line 89, in main\n    response = command(['kaggle', 'kernels', 'push', '-p', str(bundle)], timeout=180)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/vamsik/RSNA/scripts/rsna_next/advance_p12.py\", line 23, in command\n    raise RuntimeError((p.stdout + p.stderr)[-6000:])\nRuntimeError: 400 Client Error: Bad Request for url: https://api.kaggle.com/v1/kernels.KernelsApiService/SaveKernel\n\n",
+    "requires_remote_check_before_retry": true
+  },
+  "confirmed_cause": "Kaggle title exceeds 50 characters",
+  "build_sha256": "c9829eab218b4d5539518ed07274016e6b1b200385aa51deff2a5e1eb5a569b1",
+  "completion_verified_utc": "2026-09-18T15:21:50.711722+00:00"
+}

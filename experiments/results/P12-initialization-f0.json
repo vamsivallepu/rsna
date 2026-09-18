@@ -1,0 +1,15 @@
+{
+  "status": "artifact_and_membership_validated",
+  "fold": 0,
+  "heldout_expert_predictions": 12,
+  "imagenet_best_epoch": 8,
+  "imagenet_original_report_validation_bce": 0.4663293048239174,
+  "fastmri_original_report_validation_bce": 0.4561678843502014,
+  "imagenet_minus_fastmri_bce": 0.010161420473715987,
+  "matched_config_except_initialization": true,
+  "matched_train_validation_targets_cache": true,
+  "imagenet_minutes": 151.41528495152792,
+  "imagenet_manifest_sha256": "1b6c55a1a53f91d8aa986ff99759264217a0dee663cf13ef11212b73853c9007",
+  "promotion_eligible": false,
+  "note": "Single seed/fold screen; lower BCE preferred; full ImageNet checkpoint replay pending; expert AUC not used to select recipe."
+}

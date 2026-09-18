@@ -1,0 +1,21 @@
+{
+  "status": "artifact_and_membership_validated",
+  "fold": 0,
+  "train_studies": 3955,
+  "validation_studies": 435,
+  "heldout_expert_predictions": 12,
+  "best_epoch": 8,
+  "best_original_report_validation_bce": 0.4561678843502014,
+  "first_epoch_validation_bce": 0.5427430392107684,
+  "last_epoch_validation_bce": 0.4561678843502014,
+  "training_evaluation_prediction_minutes": 139.30678853988647,
+  "total_logged_minutes": 160.0645390028,
+  "peak_cuda_memory_mib": 7108.67919921875,
+  "world_size": 2,
+  "manifest_sha256": "80988af192ec762c78886ca10e620dd4ccf6194efe23491a53330fc19c8b68a7",
+  "split_sha256": "777d6227fc45c3645f883c7d559013a4f7ec3487697f25ef43c1f212ef9f0740",
+  "prohibited_group_overlap": 0,
+  "independent_image_replay": false,
+  "promotion_eligible": false,
+  "note": "Single fold screen; no full OOF score. Full checkpoint replay and matched initialization/label comparisons remain."
+}

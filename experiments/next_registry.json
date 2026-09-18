@@ -1,0 +1,154 @@
+{
+  "budget_cap_usd": 500,
+  "paid_jobs": [],
+  "runs": {
+    "P10-SPLITS": {
+      "state": "validated",
+      "note": "3910 pseudo train; 435 shared validation; 58 experts; four report twins excluded",
+      "updated_utc": "2026-09-17T06:31:39.080199+00:00",
+      "artifact": "outputs/experiments/P10-contract/manifest.json",
+      "artifact_sha256": "7f16595a9c8e0a18af5f6aff6eb0e830fe062ee5c1ca1fa150f3c4e9cce0bf92"
+    },
+    "P10-TEACHER-SMOKE": {
+      "state": "validated",
+      "note": "Kaggle v1 COMPLETE; two-GPU smoke artifacts, original-target checkpoint selection, finite predictions and memberships validated. 64 train/16 valid/12 prediction rows; rank0 peak 7108.7 MiB. Independent image replay pending; no full training authorized by this result alone.",
+      "updated_utc": "2026-09-17T11:00:37.920812+00:00",
+      "artifact": "experiments/results/P10-teacher-smoke.json",
+      "artifact_sha256": "17179dea8dee92f3869e5150c310c12acdc8547596168350d90eee2709887080"
+    },
+    "P10-RUNTIME": {
+      "state": "validated",
+      "note": "Kaggle v1 complete: 240 studies in 8.217 min, conservative 1300-study estimate 0.876 h including 25% inference headroom; all hashes and blend arithmetic verified. Native size/site stratification remains a limitation.",
+      "updated_utc": "2026-09-17T06:56:40.188596+00:00",
+      "artifact": "experiments/results/P10-runtime.json",
+      "artifact_sha256": "2c28b0e94ac7a7ca3de16b554bf528af7ac9199294b39466980d11f52887a905"
+    },
+    "P10-PIXEL-AUDIT": {
+      "state": "validated",
+      "note": "Raw-image overlap verified; training twin excluded in v2; full-training split gate passed",
+      "updated_utc": "2026-09-17T12:07:56.103017+00:00",
+      "artifact": "experiments/results/P10-duplicate-verification.json",
+      "artifact_sha256": "aaa329c59964fff920aae3798e3ad47e24bceb7821063fbf73a89fca4a5f3a79"
+    },
+    "P11-P2": {
+      "state": "rejected",
+      "note": "Both seeds and all folds completed; neither anatomical head passes statistical gates. Baseline retained.",
+      "updated_utc": "2026-09-17T11:28:12.275540+00:00",
+      "artifact": "experiments/results/P11-complete.json",
+      "artifact_sha256": "bd94227c59cbf988f9482c9484b42f87f10d0e3345fe5430ab2b42f8023129fc"
+    },
+    "P11-P6": {
+      "state": "rejected",
+      "note": "Both seeds and all folds completed. Position seed-average gain is tiny and ensemble delta negative; hierarchy regresses. Baseline retained.",
+      "updated_utc": "2026-09-17T11:28:13.079907+00:00",
+      "artifact": "experiments/results/P11-complete.json",
+      "artifact_sha256": "bd94227c59cbf988f9482c9484b42f87f10d0e3345fe5430ab2b42f8023129fc"
+    },
+    "P14-LOCAL-SMOKE": {
+      "state": "validated",
+      "note": "Current geometry implementation: 32 native windows, all five slots, zero series errors on representative local study. Full-mount QA pending.",
+      "updated_utc": "2026-09-17T06:59:23.990407+00:00",
+      "artifact": "experiments/results/P14-local-smoke.json",
+      "artifact_sha256": "721580cd2ec4b3d23c40f4cda6b370ba3592669a3b59f799129aa66ba355e0bc"
+    },
+    "P10-DUPLICATE-REPLAY": {
+      "state": "validated",
+      "note": "Raw duplicate reconstructed and all 12 smoke predictions replayed",
+      "updated_utc": "2026-09-17T12:07:54.701716+00:00",
+      "artifact": "experiments/results/P10-smoke-replay.json",
+      "artifact_sha256": "d8603611030736a8836ccf675fbfb3266b094498a03b85f3942a780741ab874c"
+    },
+    "P12-IMAGENET-SMOKE": {
+      "state": "validated",
+      "note": "Corrected-split ImageNet smoke passed artifact checks and full image replay",
+      "updated_utc": "2026-09-17T12:08:00.247499+00:00",
+      "artifact": "outputs/kaggle/rsna-p12-imagenet-smoke-v1/next_run/replay.json",
+      "artifact_sha256": "4a323a0ccfa5ee8c1435516ad8ff58eef558070a5215de105b7ade3e0a3e07f6"
+    },
+    "P10-HEADER-AUDIT": {
+      "state": "validated",
+      "note": "All 4407 studies and 24371 series; 47 scanner domains; independent hashes and size aggregation passed; 407 orientation flags need review",
+      "updated_utc": "2026-09-17T11:58:24.241222+00:00",
+      "artifact": "experiments/results/P10-header-audit.json",
+      "artifact_sha256": "02a88c6b462f09d35291c02bb91d8339e810855b80b85fd70975b510b85f0e4b"
+    },
+    "P10-ADVANCE-WAVE": {
+      "state": "validated",
+      "note": "Prerequisites passed; both teacher banks COMPLETE. Coordinator stopped before baseline launch; baseline version 1 recovered Sep 18. Completion here refers to dispatch only.",
+      "updated_utc": "2026-09-18T05:15:48.370164+00:00",
+      "artifact": "scripts/rsna_next/advance_p10.py",
+      "artifact_sha256": "84f6def607974ede293c24646977cc84f45f197895225bfc68daefa5804746f2"
+    },
+    "P10-SPLITS-V2": {
+      "state": "validated",
+      "note": "Verified report/image split; 3909 pseudo train; shared validation and expert folds preserved",
+      "updated_utc": "2026-09-17T12:07:55.359428+00:00",
+      "artifact": "experiments/results/P10-contract-v2.json",
+      "artifact_sha256": "c6c41be8fcc725835a7102caa66dd4bafb10ef176874b7ec23611bcc04823eef"
+    },
+    "P10-TEACHERS-012": {
+      "state": "validated",
+      "note": "Kaggle COMPLETE; downloaded checkpoints, predictions, split memberships, original-report checkpoint selection and full five-fold teacher coverage independently checked. Full image replay pending; not student OOF or model promotion.",
+      "updated_utc": "2026-09-18T05:18:10.704202+00:00",
+      "artifact": "experiments/results/P10-teacher-bank-validation.json",
+      "artifact_sha256": "6d0019fbec3bc719787d9fdaeb56bda1961bfd80ed50c55a61f4333d6d5a56c4"
+    },
+    "P10-TEACHERS-34": {
+      "state": "validated",
+      "note": "Kaggle COMPLETE; downloaded checkpoints, predictions, split memberships, original-report checkpoint selection and full five-fold teacher coverage independently checked. Full image replay pending; not student OOF or model promotion.",
+      "updated_utc": "2026-09-18T05:18:10.704279+00:00",
+      "artifact": "experiments/results/P10-teacher-bank-validation.json",
+      "artifact_sha256": "6d0019fbec3bc719787d9fdaeb56bda1961bfd80ed50c55a61f4333d6d5a56c4"
+    },
+    "P12-FASTMRI-BASELINE-F0": {
+      "state": "validated",
+      "note": "Kaggle COMPLETE; all eight epochs, checkpoint and prediction hashes, training/validation memberships and all 12 held-out expert rows verified. Best epoch 8, original report validation BCE 0.456168. Single fold only; independent full-image replay pending; no promotion.",
+      "updated_utc": "2026-09-18T08:35:53.765575+00:00",
+      "artifact": "experiments/results/P12-fastmri-baseline-f0.json",
+      "artifact_sha256": "b70040e0caa76d15eb20a948f9f17a38474544dd0597d698c289e66f62b16e60"
+    },
+    "P12-FULL-REPLAY-LABELS": {
+      "state": "validated",
+      "artifact": "experiments/results/P12-full-replay.json",
+      "artifact_sha256": "05c80756d34cd11a8d5e1c15671ccac0b8a35661672ad8d6859d01c5d987453f",
+      "updated_utc": "2026-09-18T11:55:50.450552+00:00",
+      "note": "Six complete checkpoint replays, 6386 rows, maximum error 1.11e-16; independent local label arithmetic agrees."
+    },
+    "P12-IMAGENET-REPORT-F0": {
+      "state": "validated",
+      "artifact": "experiments/results/P12-initialization-f0.json",
+      "artifact_sha256": "cee07c0ebdb527fb73c7aa3afa686d9fb74427564d46689531273886fe0d0df4",
+      "updated_utc": "2026-09-18T11:55:50.450552+00:00",
+      "note": "Kaggle COMPLETE; artifact and membership checks passed. Matched fold0 report BCE: ImageNet 0.466329 vs fastMRI 0.456168. Single seed/fold only; full ImageNet replay pending."
+    },
+    "P12-DISTILLED-LAUNCHER": {
+      "state": "validated",
+      "artifact": "experiments/results/P12-distilled-launch.json",
+      "artifact_sha256": "c514a4dc75bbf5a30a577dbe0891e9a8ab7284b3dbef42ed316b5251341647e7",
+      "note": "Dispatch recovered after confirmed title-length error; current distilled v1 RUNNING. Prior error retained in launch artifact.",
+      "updated_utc": "2026-09-18T11:55:50.450552+00:00"
+    },
+    "P12-FASTMRI-DISTILLED-F0": {
+      "state": "validated",
+      "artifact": "experiments/results/P12-distilled-f0.json",
+      "artifact_sha256": "86651430d77802a7daa2870bc83b0ec6b0e0d043429ecd520a5aa0086f40ec58",
+      "updated_utc": "2026-09-18T15:21:50.711364+00:00",
+      "note": "Kaggle COMPLETE; checkpoint/prediction hashes, zero prohibited overlap, full fold0 coverage and teacher-label provenance verified. Original report BCE 0.455944 vs matched report control 0.456168; tiny single-fold difference, no promotion. Independent full checkpoint replay pending."
+    },
+    "P12-STUDENT-REPLAY": {
+      "state": "running",
+      "artifact": "kaggle/rsna-p12-student-replay/build.json",
+      "artifact_sha256": "2984fb40caa8b5f6fb2c563a23c95359d91ecdee17eba770477a533afdb713db",
+      "note": "Private offline Kaggle v1 RUNNING; pinned ImageNet and distilled fold0 checkpoints; full prediction replay (12 rows each), not a sample.",
+      "updated_utc": "2026-09-18T15:25:42.631609+00:00"
+    },
+    "P12-DURATION16-F0": {
+      "state": "running",
+      "artifact": "kaggle/p12-duration16-f0/build.json",
+      "artifact_sha256": "7edc5802c9780a6a462968fb0e9519e97da088d3e84041888d7dd5d4b13a0133",
+      "note": "Private offline Kaggle v1 RUNNING; 16 vs completed 8 epoch fastMRI/report control; same fold0, seed20260917, labels, sampling, optimizer and model code. Full-duration schedule; no promotion from single-fold screen.",
+      "updated_utc": "2026-09-18T15:25:42.631609+00:00"
+    }
+  },
+  "fallback_submission": "56077025"
+}

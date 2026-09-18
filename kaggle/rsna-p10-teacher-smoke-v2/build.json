@@ -1,0 +1,38 @@
+{
+  "recipe": {
+    "epochs": 8,
+    "train_windows": 8,
+    "sampling": "uniform",
+    "expert_repeat": 1,
+    "head": "baseline",
+    "seed": 20260917,
+    "accumulation": 4,
+    "checkpointing": false,
+    "initialization": "fastmri",
+    "labels": "report"
+  },
+  "mode": "teacher",
+  "fold": 0,
+  "smoke": true,
+  "code_sha256": "3fbdbc4e962ccc9196318178e9a285068508fa7077a195363bd24398b8235f43",
+  "source_sha256": {
+    "scripts/rsna_next/validate.py": "fd735a8563d4e7b0ce37508e021493b339352035c4f29e8c493bc9a4135b01d1",
+    "scripts/rsna_next/registry.py": "ea8b2594cd29dc139f6ebe51c9d3003fd4f55ef1e92513936f50a0f4f7a0ff07",
+    "scripts/rsna_next/compare.py": "65f1eea24d1d3e272528f21b8626395c6b4b702a142d0034452ae31763ccea20",
+    "scripts/rsna_next/screen.py": "116fc66b34bb03b90d7a7ccd551e06b1057a89c561ff6c21cb9fc3f8ba3e690a",
+    "scripts/rsna_next/contracts.py": "7ce5255c9cdb4928f36f8d1324684d09835d5027681a81393514d373caf17649",
+    "scripts/rsna_next/geometry.py": "1907e40f1784a4e6469a1510246b8b826a2f8f995e46016eae4006e23829cadc",
+    "scripts/rsna_next/extract.py": "a43219acb136f57d7f14d32119432354635504d196fe4d91c4457c232c2a771a",
+    "scripts/rsna_next/replay.py": "39d009742f491c840e040a98f15f3ab0bedf99afcf62e94cb9d997043ba32715",
+    "scripts/rsna_next/__init__.py": "91713ce7da0ec0c64c8f6710d17005aa8df4ed9360fb86c5c6b1660030405850",
+    "scripts/rsna_next/infer.py": "74335381c47fe1c7c150ff69fdfbfab0726ca5f7993593bba9ca9ceddc8e736f",
+    "scripts/rsna_next/train.py": "5d7c0265d92c21d0eb6c0575fceced07e692c503c1b475fd880e9feb65fd8f5a",
+    "scripts/rsna_next/data.py": "783228d50e416cc21df31c8af7e0b1e071fe1d2af04626621f4678d9fc3b3318",
+    "scripts/rsna_next/labels.py": "1151afcefbb63c7f22a7ff1e7e1c0104506066fb9ae6dfda91e4d31a37ccbe70",
+    "scripts/rsna_next/models.py": "f5cbbf20669b061f5e7da139508140b9f4c76e72d5baf3de57b69c19483fd04e",
+    "scripts/rsna_next/audit.py": "97e3287e87965cae4623875cc5dc1340729892ec52c616137278df245fcd7496",
+    "scripts/rsna_next/pixel_audit.py": "aba6ce02f37abbfc09c8afb69429c08bcd5dc5378b89b0127f29a86f3c8ba6ab",
+    "scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recipe.json": "c24edc7d6902eee83493efe3aa8c576d1700d5caaaff3ec7889140284176d76c"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p10-representative-runtime",
+  "title": "RSNA Knee P10 Representative Runtime",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-p2-coatnet-rmlp2",
+    "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-0",
+    "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-1",
+    "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-2",
+    "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-3",
+    "vallepuvamsikrishna/rsna-knee-p8-noisy-student-fold-4",
+    "vallepuvamsikrishna/rsna-knee-p6-p2-transfer"
+  ],
+  "model_sources": []
+}

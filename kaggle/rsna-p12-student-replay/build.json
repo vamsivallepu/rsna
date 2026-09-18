@@ -1,0 +1,22 @@
+{
+  "code_sha256": "23abf05ce9e897f3637ebeb481a0f6abb80f67fa0c337715e70851ba74f5f8be",
+  "expected_runs": [
+    {
+      "slug": "rsna-knee-next-student-imagenet-report-0-s20260917",
+      "weights": "model.safetensors",
+      "manifest_sha256": "1b6c55a1a53f91d8aa986ff99759264217a0dee663cf13ef11212b73853c9007",
+      "checkpoint_sha256": "b7690acdd617648fd1a78f32ff84abb1b7b24e180f4cbcff81e1301f8aa0acd4",
+      "predictions_sha256": "3b02e1f6d70d50c11b294d7b4a0ec1218378a2a73e6bbbef403e018c8d23f438",
+      "rows": 12
+    },
+    {
+      "slug": "rsna-student-fastmri-distilled-0-s20260917",
+      "weights": "p6_localization_backbone_best.safetensors",
+      "manifest_sha256": "c64678a0da553d0f73d33048211fe41ceae259180587ea6a502d8e0ce5f8e773",
+      "checkpoint_sha256": "ec765e26c7fad8c0985a9bd00404206cbab29b8aed5a70e1d908b5cee065672f",
+      "predictions_sha256": "a9a4756a7c0f15be387f6b839fb6a076c9cf18c94fa98565c99389b29bea0cc7",
+      "rows": 12
+    }
+  ],
+  "split_sha256": "777d6227fc45c3645f883c7d559013a4f7ec3487697f25ef43c1f212ef9f0740"
+}

@@ -1,0 +1,34 @@
+{
+  "status": "launched",
+  "jobs": [
+    {
+      "run_id": "P10-TEACHERS-012",
+      "slug": "vallepuvamsikrishna/rsna-knee-teacher-bank-012-s20260917",
+      "folds": [
+        0,
+        1,
+        2
+      ],
+      "status": "accepted"
+    },
+    {
+      "run_id": "P10-TEACHERS-34",
+      "slug": "vallepuvamsikrishna/rsna-knee-teacher-bank-34-s20260917",
+      "folds": [
+        3,
+        4
+      ],
+      "status": "accepted"
+    },
+    {
+      "run_id": "P12-FASTMRI-BASELINE-F0",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-0-s20260917",
+      "folds": [
+        0
+      ],
+      "status": "accepted",
+      "recovered_utc": "2026-09-18T05:15:48.370164+00:00"
+    }
+  ],
+  "paid_usd": 0
+}

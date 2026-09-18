@@ -1,0 +1,25 @@
+{
+  "split_revision": "P10-report-image-v2",
+  "split_sha256": "777d6227fc45c3645f883c7d559013a4f7ec3487697f25ef43c1f212ef9f0740",
+  "train_sha256": "8ca2203c0e9d61c080c7a314c7cdb51c1b03a1d9eb4770819f7f34af53ef4e33",
+  "pixel_matches_sha256": "3d07d5ef9856d9f9b4c07c92a4bea7d425258fae5a94dcc2bcc7796968123c3b",
+  "verification_sha256": "8a780405b14b2c6cd89a9d9d79bb9dfb1ac38b13d785d3481a30a441187bbd66",
+  "full_training_allowed": true,
+  "status": "verified_image_group_split",
+  "roles": {
+    "pseudo_train": 3909,
+    "pseudo_valid": 435,
+    "expert": 58,
+    "excluded_expert_twin": 4,
+    "excluded_validation_twin": 1
+  },
+  "teacher_fold_counts": {
+    "0": 782,
+    "4": 782,
+    "2": 782,
+    "3": 782,
+    "1": 781
+  },
+  "expert_folds_unchanged": true,
+  "original_validation_membership_unchanged": true
+}

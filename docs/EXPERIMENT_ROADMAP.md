@@ -1,6 +1,13 @@
 # Experiment roadmap
 
-Snapshot date: 2026-09-04
+Snapshot date: 2026-09-17
+
+**Active continuation:** [P10–P15 implementation and execution protocol](P10_P15_PROTOCOL.md)
+supersedes the historical queue's next-step recommendations and promotion thresholds.
+P10 validation/runtime correction precedes promotion; P11 screens cached anatomical
+heads, followed by controlled CoAtNet, supervision, geometry, and bounded diversity
+experiments. Machine-readable recipes and state live in `experiments/next_plan.json`
+and `experiments/next_registry.json`. P8 remains the submitted fallback.
 
 This is the canonical execution plan for the competition. Conversation history is
 not a source of truth. Change the ordering here before starting an unlisted run,

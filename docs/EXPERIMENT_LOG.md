@@ -1,10 +1,107 @@
 # Experiment log
 
-Last updated: 2026-09-07
+Last updated: 2026-09-18
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
+
+### P12 — Duration screen and remaining student replays launched
+
+Private offline Kaggle version 1 jobs `rsna-p12-student-replay` and
+`rsna-knee-next-student-duration16-0-s20260917` both reached live RUNNING.
+The replay pins the completed ImageNet and distilled checkpoint manifests and
+checks all 12 held-out predictions from each model. The duration experiment uses
+fastMRI/original-report labels, fold 0, seed 20260917, baseline head and eight
+globally sampled windows. Only epochs (8 to 16) and the corresponding full-duration
+OneCycle schedule change. Source hashes and all other configuration fields match
+the completed eight-epoch control. This is a screen, not multi-fold promotion.
+
+Frozen comparison: `experiments/results/P12-duration16-design.json`.
+Both bundles compile, satisfy private/offline/title constraints, and the replay
+builder passes lint. No paid compute or competition submission was made.
+
+### 2026-09-18 — Full replay and controlled P12 comparison launched
+
+**Distilled completion:** live COMPLETE; downloaded checkpoint, all eight epochs
+and 12 held-out expert predictions pass hash, split and zero-overlap checks. Labels
+match the replay-verified teacher manifest. Configuration, initialization, cache,
+training/validation membership and model/training source hashes match fastMRI/report
+except the intended label change. Best unchanged report-validation BCE is
+**0.455944**, versus fastMRI/report **0.456168** and ImageNet/report **0.466329**;
+all select epoch 8. Distillation's 0.000224 reduction is a tiny single-fold/seed
+difference, not grounds for promotion. Full distilled/ImageNet checkpoint replay
+and further controlled screens remain. Evidence: `experiments/results/P12-distilled-f0.json`.
+
+**Completion check:** replay/labels and ImageNet/report fold 0 both COMPLETE.
+All six checkpoints reproduced all 6,386 saved study predictions with maximum
+absolute error 1.11e-16. Independently recomputed labels agree to 1e-12. The
+ImageNet run passes hashes, exclusions, epoch history and held-out coverage checks;
+configuration, training/validation IDs, targets and cache match the fastMRI control.
+Best original report-validation BCE is ImageNet 0.466329 versus fastMRI 0.456168
+(both epoch 8). This favors fastMRI in the single-fold screen only; full ImageNet
+replay and multi-fold/seed confirmation remain pending.
+
+The distilled launch was rejected with HTTP 400: `The title cannot exceed 50
+characters.` The builder now shortens long notebook names and checks the limit;
+the regression case is tested. Recovered distilled version 1 is live RUNNING at
+`vallepuvamsikrishna/rsna-student-fastmri-distilled-0-s20260917`.
+The prior failure is retained in `experiments/results/P12-distilled-launch.json`.
+Evidence: `experiments/results/P12-full-replay.json` and
+`experiments/results/P12-initialization-f0.json`.
+
+Private offline Kaggle version 1 jobs `rsna-knee-p12-replay-labels` and
+`rsna-knee-next-student-imagenet-report-0-s20260917` both reached live RUNNING.
+The first pins the five teacher manifests and completed fastMRI/report baseline
+manifest, replays every saved prediction, then builds fixed 50/50 report/image
+labels only after all replays pass. The second changes only initialization against
+the completed fold-0 baseline (same seed, split, labels, head and eight epochs).
+
+The one-shot `scripts/rsna_next/advance_p12.py` coordinator waits up to four hours,
+downloads and verifies six complete replays and their original artifact hashes,
+recomputes labels locally and checks probabilities/provenance before launching
+the fastMRI/distilled fold-0 arm. State/errors are saved in
+`experiments/results/P12-distilled-launch.json`; the process log is
+`outputs/experiments/P12-distilled-launch.log`. The distilled arm is **not launched
+yet**. No new student OOF claim, promotion, paid compute or submission is implied.
+All 21 existing tests and lint on the two new scripts passed.
+
+### 2026-09-18 — Teacher bank complete; baseline launch recovered
+
+**Subsequent live check:** baseline student fold 0 is now COMPLETE. Independent
+artifact checks passed: 3,955 training studies, 435 shared validation studies,
+12 held-out expert predictions, zero prohibited group overlap, matching checkpoint
+and prediction hashes. All eight epochs completed; original report-validation BCE
+fell from 0.542743 to 0.456168 and selected epoch 8. Total logged time was 160.06
+minutes (139.31 minutes training/evaluation/prediction). This single-fold result
+is not full OOF evidence or promotion; full-image replay remains pending.
+Evidence: `experiments/results/P12-fastmri-baseline-f0.json`.
+
+Live Kaggle checks confirm both teacher banks (012 and 34) COMPLETE. Downloaded
+all five checkpoints and predictions; independent validation passes artifact
+hashes, full fold memberships, zero prohibited group overlap and exactly one
+held-out teacher per 3,909 pseudo-training studies. Each shared validation/expert
+study has all five teacher predictions. All folds selected epoch 8, with original
+report-validation BCE 0.45888–0.46038. This is teacher label-source validation,
+not student OOF or a promotion decision; full checkpoint image replay remains.
+Evidence: `experiments/results/P10-teacher-bank-validation.json`.
+
+The prior coordinator completed duplicate verification, smoke replay and both
+teacher launches, but did not finish the baseline launch. Its exact failure reason
+was not retained. The baseline slug returned 404; its existing bundle was pushed
+successfully as version 1 and live status verified QUEUED on Sep 18. No paid compute
+or competition submission was made. P8 remains the fallback.
+
+### 2026-09-17 — P10 full header audit
+
+All 24,371 series across 4,407 studies were read without errors. Independent checks
+confirmed artifact hashes, unique IDs, volume aggregation and coverage of all 47
+scanner-model domains in the new 240-study benchmark selection. The earlier P8
+runtime sample covered 33 domains and omitted the native-size extremes. The
+replacement benchmark bundle is prepared, not launched. There are 407 series
+with plane-normal agreement below 0.85 (365 coronal, 28 axial, 14 sagittal), across
+385 studies; P14 must inspect these flags rather than assume metadata errors.
+Evidence: `experiments/results/P10-header-audit.json`.
 
 ## Baseline registry
 
@@ -878,6 +975,77 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   P1-B control; P1-C objective ablations are next.
 
 ## Decision history
+
+- **2026-09-17, image-group split correction:** Added transitive report/image
+  exclusion groups and a hash-bound sidecar, preserving the original validation
+  membership and expert folds. One pseudo-training twin is quarantined: 3,909
+  pseudo train, 435 validation, 58 experts, four expert-report twins and one
+  validation-image twin. Raw verification and full prediction replay launched in
+  private Kaggle job `rsna-knee-p10-duplicate-replay`; full builds enforce the gate.
+- **2026-09-17, P11 closed:** Replayed all 60 fold heads, each within 1e-6 of its
+  saved predictions. Mean two-seed position gains are +0.000278 on P2 and +0.000234
+  on P6; seed-ensemble bootstrap probabilities are 0.644 and 0.373, respectively.
+  Hierarchical pooling fails both-seed/target-regression checks. Neither variant
+  advances; preserve baseline head. Complete summaries: `P11-complete.json` and
+  `P11-replay.json` under `experiments/results/`.
+- **2026-09-17, P12 preparation:** ImageNet student fold-0 smoke submitted with the
+  corrected split and automatic prediction replay. An initial HTTP 400 submission
+  failed; compact split packaging was subsequently accepted as version 1. This is
+  an infrastructure event, not model evidence. Prepared two sequential teacher
+  banks (0–2 and 3–4) plus fastMRI/report student fold-0 baseline, contingent on gates.
+
+- **2026-09-17, completed Kaggle output review:** All three P10 jobs reached
+  COMPLETE. Teacher smoke independently passed checkpoint/prediction hashes,
+  original-report checkpoint selection, group memberships and finite predictions:
+  two GPUs, 64 training / 16 validation / 12 prediction rows; reported rank-zero
+  peak 7,108.7 MiB. The 0.559-minute training/evaluation time excludes cache setup.
+  Independent image replay is still pending; this is not model-quality evidence.
+- **2026-09-17, pixel audit finding:** Verified 4,407 unique fingerprint rows and
+  acquisition totals against source metadata. Found two studies in one identical
+  selected-cache-pixel group; the sole near-duplicate candidate is the same pair.
+  Their reports differ, and one is pseudo-validation while the other is pseudo-train
+  (teacher holdout 1). This exposes four full teacher folds to image overlap.
+  Neither row occurred in the smoke training/validation subset. Full training is
+  held until source-image/cache verification and versioned split correction; selected
+  pixel equality alone is not a claim of patient identity. Results are recorded in
+  `experiments/results/P10-pixel-audit.json` and `P10-teacher-smoke.json`.
+
+- **2026-09-17, P10–P15 implementation:** Added the [active runbook](P10_P15_PROTOCOL.md),
+  machine-readable recipe matrix and $500 reservation ledger, grouped teacher/student
+  splits, DDP image trainer, anatomical heads, report/image provenance compiler,
+  pinned offline Qwen extractor, native DICOM cache builder, independent replay,
+  rank-blend/promotion checks and hashed offline deployment runner. These are new
+  experimental paths; the historical P8 submission is retained.
+- **2026-09-17, P10 audit:** Materialized 3,910 pseudo train / 435 shared pseudo
+  validation / 58 expert / four excluded report-twin studies. Five teacher holdouts
+  each contain 782 pseudo-training studies. Reconstructed 400/435 historical P8
+  pseudo-validation exposures and four representation-stage expert-report twins.
+  [Tracked split audit](../experiments/results/P10-contract.json).
+- **2026-09-17, initial execution:** Launched private free Kaggle teacher smoke,
+  exact P8 240-study representative runtime benchmark, and selected-pixel duplicate
+  audit. Authoritative RUNNING states observed; acceptance/running is not completion.
+  No paid compute provisioned and no new competition submission made.
+- **2026-09-17, P10 runtime completed:** Exact P8 inference processed 240 selected
+  training studies in 8.217 minutes on two T4s. The 1,300-study projection including
+  25% inference headroom is 0.876 hours. Verified all hashes, 240 unique prediction
+  rows, all 32 windows per study, fold averaging, and final blend arithmetic to
+  1.11e-16. [Tracked result](../experiments/results/P10-runtime.json). This is a
+  substantially stronger benchmark than three canary studies, but native size and
+  scanner-domain stratification remain outstanding; do not transfer its timing to
+  a changed release without another benchmark.
+- **2026-09-17, P11 partial:** Baseline P2-cache first seed scored 0.89182733;
+  slot/position scored 0.89188653. Paired report-group bootstrap probability of
+  positive gain was 0.52871, CI [-0.003085, 0.003105]. Inconclusive; no promotion.
+  [Partial evidence](../experiments/results/P11-partial.json). Two-seed P2/P6 matrices
+  preserve completed fold checkpoints. Local process interruptions are execution
+  failures, not model results; resume uses archived exact source modules.
+  The P2 hierarchical first seed subsequently scored 0.89236092, with bootstrap
+  probability 0.57532 and CI [-0.006770, 0.008023]; it is also inconclusive.
+- **2026-09-17, geometry checks:** One real local study produced 32 valid native
+  triplets across all five slots with no series error. Added synthetic RLE-compressed
+  DICOM tests, canonical channel-order checks, empty-slot fp16 checks, corrupt-teacher
+  rejection, independent blend arithmetic and training/deployment cache agreement.
+  Full-mount geometry QA, GPU prediction replay and final runtime gates remain open.
 
 - **2026-09-01:** Made the roadmap and this log canonical so ordering, assumptions,
   failures, and results do not depend on conversation retention.

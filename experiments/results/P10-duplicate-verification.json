@@ -1,0 +1,15 @@
+{
+  "status": "verified_image_overlap",
+  "full_decoded_study_equal": true,
+  "studies": 2,
+  "decoded_slices": [
+    144,
+    144
+  ],
+  "reconstructed_cache_matches": [
+    true,
+    true
+  ],
+  "source_sha256": "8a780405b14b2c6cd89a9d9d79bb9dfb1ac38b13d785d3481a30a441187bbd66",
+  "note": "Decoded pixel equality, not patient identity"
+}

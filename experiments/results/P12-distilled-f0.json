@@ -1,0 +1,21 @@
+{
+  "status": "artifact_and_membership_validated",
+  "fold": 0,
+  "train_studies": 3955,
+  "shared_validation_studies": 435,
+  "heldout_expert_predictions": 12,
+  "best_epoch": 8,
+  "original_report_validation_bce": 0.4559439358676135,
+  "fastmri_report_validation_bce": 0.4561678843502014,
+  "imagenet_report_validation_bce": 0.4663293048239174,
+  "distilled_minus_fastmri_report_bce": -0.0002239484825878879,
+  "training_evaluation_prediction_minutes": 154.38557172616322,
+  "peak_cuda_memory_mib": 7108.67919921875,
+  "matched_except_labels": true,
+  "label_provenance_verified": true,
+  "prohibited_group_overlap": 0,
+  "manifest_sha256": "c64678a0da553d0f73d33048211fe41ceae259180587ea6a502d8e0ce5f8e773",
+  "independent_image_replay": false,
+  "promotion_eligible": false,
+  "note": "Single seed and fold; unchanged original report targets used for comparison. Distilled-target diagnostic BCE is not comparable to report BCE. No expert AUC selection or leaderboard claim."
+}

@@ -1,0 +1,9 @@
+{
+  "status": "local_geometry_only",
+  "valid_windows": 32,
+  "populated_slots": 5,
+  "series_errors": 0,
+  "source_sha256": "1907e40f1784a4e6469a1510246b8b826a2f8f995e46016eae4006e23829cadc",
+  "promotion_eligible": false,
+  "full_mount_qa": false
+}

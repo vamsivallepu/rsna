@@ -1,0 +1,9 @@
+{
+  "status": "replay_validated",
+  "rows": 12,
+  "maximum_absolute_error": 9.71445146547012e-17,
+  "tolerance": 0.0005,
+  "run_manifest_sha256": "4c99b308b75adece4af1765996233bdf29018c866c9eb9aff578d5d1f95ccbe8",
+  "checkpoint_sha256": "e6242c616e9908462d9b6aa0f21934cec2b0afe3846ed91fe1a4f3370dadb3ae",
+  "predictions_sha256": "28810222020c9d801c055a75342fddac5667048bb05270d75a3133f04e14af77"
+}

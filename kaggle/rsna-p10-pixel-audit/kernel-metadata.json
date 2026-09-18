@@ -1,0 +1,19 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-p10-pixel-audit",
+  "title": "Rsna Knee P10 Pixel Audit",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-a",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b"
+  ]
+}

@@ -5,6 +5,12 @@ Private working project for the Kaggle competition
 Large competition data stays on Kaggle; only representative samples and small
 public dependencies are kept locally and are excluded from version control.
 
+**September 17 continuation:** [P10–P15 runbook](docs/P10_P15_PROTOCOL.md) documents
+the new split-safe training/label/cache/inference tools, commands, evidence gates,
+and $500 budget. P10 teacher audits and P11 screens are complete; matched P12
+initialization/label screens are complete, with duration and replay jobs launched. Historical P8 is still
+the 0.930 public fallback; no replacement is promoted yet.
+
 ## Current pipeline
 
 1. Audit the metadata and DICOM loader on Kaggle's full competition mount.

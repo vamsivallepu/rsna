@@ -1,0 +1,32 @@
+{
+  "recipe": {
+    "epochs": 8,
+    "train_windows": 8,
+    "sampling": "uniform",
+    "expert_repeat": 1,
+    "head": "baseline",
+    "seed": 20260917,
+    "accumulation": 4,
+    "checkpointing": false,
+    "initialization": "fastmri",
+    "labels": "report"
+  },
+  "mode": "teacher",
+  "fold": 0,
+  "smoke": true,
+  "code_sha256": "30c3d1c0781f7de27390ef670d718a9a4d78cbe9fe12934f078daffac6e45cc0",
+  "source_sha256": {
+    "scripts/rsna_next/screen.py": "116fc66b34bb03b90d7a7ccd551e06b1057a89c561ff6c21cb9fc3f8ba3e690a",
+    "scripts/rsna_next/contracts.py": "7ce5255c9cdb4928f36f8d1324684d09835d5027681a81393514d373caf17649",
+    "scripts/rsna_next/geometry.py": "32d6979ee9145df92fa2601134d8400591445b76ca4bd8ff489d5b0e898e263c",
+    "scripts/rsna_next/extract.py": "61182fe714b9134484c531c9bd6db326eb0a81088785ceba701f9dd455a8f638",
+    "scripts/rsna_next/__init__.py": "91713ce7da0ec0c64c8f6710d17005aa8df4ed9360fb86c5c6b1660030405850",
+    "scripts/rsna_next/train.py": "9ac9b276bc67ce0b6f33d87bd32c8399476d5dff6afc88db3a37333b1a63e922",
+    "scripts/rsna_next/data.py": "783228d50e416cc21df31c8af7e0b1e071fe1d2af04626621f4678d9fc3b3318",
+    "scripts/rsna_next/labels.py": "a90c300e804bf4bf80565bc095563c62fb8db3e8aa613be594ce8894ba3266ee",
+    "scripts/rsna_next/models.py": "f5cbbf20669b061f5e7da139508140b9f4c76e72d5baf3de57b69c19483fd04e",
+    "scripts/rsna_next/audit.py": "97e3287e87965cae4623875cc5dc1340729892ec52c616137278df245fcd7496",
+    "scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recipe.json": "c24edc7d6902eee83493efe3aa8c576d1700d5caaaff3ec7889140284176d76c"
+  }
+}
