@@ -6,6 +6,23 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-19 — Two-seed duration screen passes
+
+Second-seed duration16 is live COMPLETE. All 16 epochs, saved checkpoint and
+prediction hashes, 12 held-out expert rows, memberships, matched source/settings
+and zero prohibited overlap passed independent checks. Best checkpoint is epoch
+15: original report-validation BCE **0.447302**, versus the matched eight-epoch
+control **0.457841** (delta **-0.010538**). Runtime was 317.58 minutes for
+training/evaluation/prediction. Full second-seed image replay remains pending.
+
+Both seeds support the duration change: seed 20260917 **0.456168 → 0.448599**;
+seed 20260918 **0.457841 → 0.447302**. The frozen screening gate (both seed BCE
+improvements plus the first duration checkpoint's full replay) passes. Advance to
+five-fold OOF confirmation with both matched seeds; no expert AUC was used to
+choose this screen and no recipe is promoted or submitted yet. Evidence:
+`experiments/results/P12-duration16-f0-seed2.json` and
+`experiments/results/P12-duration-two-seed-screen.json`.
+
 ### 2026-09-19 — Second-seed duration confirmation dispatched
 
 **Subsequent status check:** duration replay COMPLETE and independently verified

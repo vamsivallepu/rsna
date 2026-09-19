@@ -1,0 +1,25 @@
+{
+  "status": "two_seed_pseudo_validation_screen_complete",
+  "seeds": [
+    20260917,
+    20260918
+  ],
+  "control_bce": [
+    0.4561678843502014,
+    0.4578405131244117
+  ],
+  "candidate_bce": [
+    0.4485985700555437,
+    0.4473024353512388
+  ],
+  "bce_deltas": [
+    -0.007569314294657681,
+    -0.010538077773172894
+  ],
+  "both_seed_bce_improvements": true,
+  "first_seed_duration_replay_passed": true,
+  "expert_auc_examined_for_screen_selection": false,
+  "promotion_eligible": false,
+  "note": "Advance to five-fold confirmation only if both seed gains and replay gate pass; not OOF AUC evidence or submission approval.",
+  "advance_to_five_fold": true
+}

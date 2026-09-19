@@ -164,11 +164,18 @@
       "note": "Live COMPLETE; full eight epochs, artifact hashes, membership and all 12 held-out expert rows checked; best epoch8 report BCE0.457841. Full image replay pending."
     },
     "P12-DURATION16-F0-SEED2": {
-      "state": "running",
-      "artifact": "kaggle/p12-duration16-f0-seed2/build.json",
-      "artifact_sha256": "ad3994c781f2af08258c23be511a2459054a020c9c7f79dccbff5190f9744e2d",
-      "updated_utc": "2026-09-19T10:35:29.388380+00:00",
-      "note": "One-shot launcher successfully accepted v1 after replay passed; live Kaggle RUNNING confirmed. Await completion for matched second-seed comparison."
+      "state": "validated",
+      "artifact": "experiments/results/P12-duration16-f0-seed2.json",
+      "artifact_sha256": "e2e4a6002014d0df24e738d041abeb050687f70224056299a48b23882a9553c6",
+      "updated_utc": "2026-09-19T14:03:26.189334+00:00",
+      "note": "Kaggle COMPLETE; artifact hashes, zero-overlap, full coverage and matched duration settings verified. Best epoch15 BCE0.447302 vs eight-epoch0.457841. Second-seed full checkpoint replay pending; no promotion."
+    },
+    "P12-DURATION-SCREEN": {
+      "state": "validated",
+      "artifact": "experiments/results/P12-duration-two-seed-screen.json",
+      "artifact_sha256": "a4e09665dc154ff91cedca75d91eeceb3b8ccdadc3ca06fb10427d43cbccbc4f",
+      "updated_utc": "2026-09-19T14:03:26.189334+00:00",
+      "note": "Both matched seeds improve unchanged report-validation BCE at 16 epochs; first-seed full replay passed. Advance to five-fold OOF confirmation; no expert-AUC selection or submission claim."
     }
   },
   "fallback_submission": "56077025"
