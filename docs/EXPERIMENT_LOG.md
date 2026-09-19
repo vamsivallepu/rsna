@@ -8,6 +8,15 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 
 ### 2026-09-19 — Full two-seed, five-fold duration confirmation launched
 
+**Queue recovery:** a temporary DNS failure during a Kaggle status request stopped
+the local dispatcher. Live checks showed the first eight-epoch fold COMPLETE and
+the paired 16-epoch fold RUNNING. Added bounded retries for transient read-only
+status/download errors, preserving stop-on-error behavior for non-transient errors
+and every uncertain push. Resume preserves the original error and accepted jobs.
+The dispatcher was restarted to retrieve/validate the completed fold and fill the
+free slot. Validation: 23 tests pass, including transient retry and permission-error
+behavior; lint clean. This interruption delays the original wall-clock estimate.
+
 Frozen queue `experiments/P12-confirmation.json` contains 16 remaining runs:
 folds 1–4, seeds 20260917/20260918, fastMRI/report at 8 and 16 epochs. The four
 completed fold-0 models are reused with pinned manifest hashes. All recipes and

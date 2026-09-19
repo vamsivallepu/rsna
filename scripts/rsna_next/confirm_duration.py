@@ -3,6 +3,7 @@ import argparse
 import fcntl
 import json
 import sys
+import subprocess
 import time
 import traceback
 from pathlib import Path
@@ -22,6 +23,22 @@ BASES = {
     'fastmri-report-20260918': 'p12-fastmri-report-f0-seed2-v1',
     'duration16-20260918': 'p12-duration16-f0-seed2-v1',
 }
+
+
+def read_command(args, timeout):
+    """Retry transient read failures only; never automatically retry a push."""
+    for attempt in range(6):
+        try:
+            return command(args, timeout=timeout)
+        except (RuntimeError, subprocess.TimeoutExpired) as error:
+            transient = isinstance(error, subprocess.TimeoutExpired) or any(
+                text in str(error) for text in ['Temporary failure in name resolution',
+                'ConnectionError', 'Connection reset', 'Read timed out',
+                '502 Server Error', '503 Server Error', '504 Server Error', '429 Client Error'])
+            if not transient or attempt == 5:
+                raise
+            print(f'Transient read failure; retry {attempt + 1}/5', flush=True)
+            time.sleep(min(10 * 2**attempt, 60))
 
 
 def prepare():
@@ -76,6 +93,10 @@ def run():
         raise ValueError('Frozen queue changed')
     if 'submitting' in state['jobs']:
         raise ValueError('Uncertain prior launch: verify remote before changing queue state')
+    if 'error' in state:
+        state.setdefault('previous_errors', []).append(state.pop('error'))
+    state['status'] = 'running'
+    write_json(STATE, state)
     for base in plan['bases'].values():
         if sha256(Path(base['root']) / 'manifest.json') != base['manifest_sha256']:
             raise ValueError('Fold0 artifact changed')
@@ -88,13 +109,13 @@ def run():
             for i, job in enumerate(plan['jobs']):
                 if state['jobs'][i] != 'running':
                     continue
-                status = command(['kaggle', 'kernels', 'status', job['slug']], timeout=120)
+                status = read_command(['kaggle', 'kernels', 'status', job['slug']], timeout=120)
                 if any(x in status for x in ['ERROR', 'CANCEL', 'FAILED']):
                     command(['kaggle', 'kernels', 'output', job['slug'], '-p', job['output']], timeout=900)
                     raise RuntimeError(status)
                 if 'COMPLETE' not in status:
                     continue
-                command(['kaggle', 'kernels', 'output', job['slug'], '-p', job['output']], timeout=900)
+                read_command(['kaggle', 'kernels', 'output', job['slug'], '-p', job['output']], timeout=900)
                 root = Path(job['output']) / 'next_run'
                 manifest, pred = validate_run(root, splits, SPLIT)
                 build = json.loads((Path(job['bundle']) / 'build.json').read_text())

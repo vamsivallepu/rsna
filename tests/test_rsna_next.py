@@ -280,6 +280,23 @@ def test_kernel_builder_is_offline_and_full_jobs_require_evidence(tmp_path):
     compile(source, 'run.py', 'exec')
 
 
+def test_confirmation_read_retry(monkeypatch):
+    from scripts.rsna_next import confirm_duration as queue
+    calls = []
+    def flaky(args, timeout):
+        calls.append(args)
+        if len(calls) == 1:
+            raise RuntimeError('Temporary failure in name resolution')
+        return 'COMPLETE'
+    monkeypatch.setattr(queue, 'command', flaky)
+    monkeypatch.setattr(queue.time, 'sleep', lambda _: None)
+    assert queue.read_command(['status'], 120) == 'COMPLETE'
+    assert len(calls) == 2
+    monkeypatch.setattr(queue, 'command', lambda *a, **k: (_ for _ in ()).throw(RuntimeError('Permission denied')))
+    with pytest.raises(RuntimeError, match='Permission denied'):
+        queue.read_command(['status'], 120)
+
+
 def test_confirmation_rejects_partial_replay(tmp_path):
     from scripts.rsna_next.confirm_duration import verify_replay
     from scripts.rsna_next.contracts import sha256, write_json
