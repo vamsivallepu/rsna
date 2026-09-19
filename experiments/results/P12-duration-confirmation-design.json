@@ -1,0 +1,16 @@
+{
+  "status": "predeclared_second_seed_screen",
+  "seed": 20260918,
+  "fold": 0,
+  "control_recipe": "fastmri-report",
+  "candidate_recipe": "duration16",
+  "comparison": "minimum original report-target pseudo-validation BCE after full respective schedules",
+  "advance_condition": "full duration checkpoint replay passes and both matched seeds show lower original report-validation BCE at 16 epochs",
+  "next_stage": "Five-fold OOF confirmation across both matched seeds, followed by paired report-group-aware promotion checks and exact offline submission runtime validation. No submission from this single-fold screen.",
+  "build_sha256": {
+    "kaggle/p12-fastmri-report-f0-seed2": "b3bd8a49b8133724961ec03fdd4d7b1839b88818c5ec2a6a2ee1969e62c05984",
+    "kaggle/p12-duration16-f0-seed2": "ad3994c781f2af08258c23be511a2459054a020c9c7f79dccbff5190f9744e2d",
+    "kaggle/rsna-p12-duration16-replay": "28b3b0befe6953531901bb35a812c7761ab61ccbec89055d8c7350b67adce7f1"
+  },
+  "paid_usd": 0
+}

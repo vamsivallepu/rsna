@@ -1,5 +1,6 @@
 """Build a pinned, full-prediction replay of the remaining P12 student screens."""
 import base64
+import argparse
 import json
 import zlib
 from pathlib import Path
@@ -8,19 +9,27 @@ from rsna_next.contracts import sha256, write_json
 
 
 def main():
-    out = Path('kaggle/rsna-p12-student-replay')
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--duration16', action='store_true', help='Replay the completed 16-epoch screen')
+    args = parser.parse_args()
+    slug = 'rsna-p12-duration16-replay' if args.duration16 else 'rsna-p12-student-replay'
+    out = Path('kaggle') / slug
     split = Path('outputs/experiments/P10-contract-v2/splits.csv')
     runs = []
-    for name, slug, weights in [
+    inputs = [
         ('p12-imagenet-report-f0-v1', 'rsna-knee-next-student-imagenet-report-0-s20260917', 'model.safetensors'),
         ('p12-fastmri-distilled-f0-v1', 'rsna-student-fastmri-distilled-0-s20260917', 'p6_localization_backbone_best.safetensors'),
-    ]:
+    ]
+    if args.duration16:
+        inputs = [('p12-duration16-f0-v1', 'rsna-knee-next-student-duration16-0-s20260917',
+                   'p6_localization_backbone_best.safetensors')]
+    for name, source_slug, weights in inputs:
         root = Path('outputs/kaggle') / name / 'next_run'
         m = json.loads((root / 'manifest.json').read_text())
         assert m['split_sha256'] == sha256(split)
         for source in ['train.py', 'models.py', 'data.py', 'contracts.py']:
             assert sha256(Path('scripts/rsna_next') / source) == m['source_sha256'][source]
-        runs.append({'slug': slug, 'weights': weights, 'manifest_sha256': sha256(root / 'manifest.json'),
+        runs.append({'slug': source_slug, 'weights': weights, 'manifest_sha256': sha256(root / 'manifest.json'),
                      'checkpoint_sha256': m['checkpoint_sha256'], 'predictions_sha256': m['predictions_sha256'],
                      'rows': len(m['prediction_ids'])})
     payload = {str(p): p.read_text() for p in Path('scripts/rsna_next').glob('*.py')}
@@ -76,12 +85,12 @@ write_json('/kaggle/working/student_replay_gate.json', {'status': 'all_student_r
     out.mkdir(parents=True, exist_ok=True)
     (out / 'run.py').write_text(program)
     write_json(out / 'kernel-metadata.json', {
-        'id': 'vallepuvamsikrishna/rsna-p12-student-replay', 'title': 'RSNA P12 Student Replay',
+        'id': 'vallepuvamsikrishna/' + slug, 'title': slug.replace('-', ' ').title(),
         'code_file': 'run.py', 'language': 'python', 'kernel_type': 'script', 'is_private': True,
         'enable_gpu': True, 'enable_tpu': False, 'enable_internet': False, 'machine_shape': 'NvidiaTeslaT4',
         'competition_sources': ['rsna-knee-abnormality-detection'],
-        'dataset_sources': ['vallepuvamsikrishna/rsna-p6-fastmri-localization-init',
-                            'vallepuvamsikrishna/rsna-coatnet-rmlp2-imagenet-init'],
+        'dataset_sources': ['vallepuvamsikrishna/rsna-p6-fastmri-localization-init'] +
+                           ([] if args.duration16 else ['vallepuvamsikrishna/rsna-coatnet-rmlp2-imagenet-init']),
         'kernel_sources': ['vallepuvamsikrishna/' + slug for slug in
                            ['rsna-knee-p2-wide-cache-a', 'rsna-knee-p2-wide-cache-b'] + [r['slug'] for r in runs]]})
     write_json(out / 'build.json', {'code_sha256': sha256(out / 'run.py'), 'expected_runs': runs,

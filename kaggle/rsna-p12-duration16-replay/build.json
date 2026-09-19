@@ -1,0 +1,14 @@
+{
+  "code_sha256": "9339e49ef4838a36d2fe6df8ca2db53d17fd7b2f75a256d0085c08a4fa0a16a9",
+  "expected_runs": [
+    {
+      "slug": "rsna-knee-next-student-duration16-0-s20260917",
+      "weights": "p6_localization_backbone_best.safetensors",
+      "manifest_sha256": "2403bb1ce14acd8b115aa2857497bbce979199ab00ceb161372e7e901d1fc9ba",
+      "checkpoint_sha256": "2c7d5bbb82bfeade44d807394e378ed6ffc0f095734ba50f54cf976521ee78bc",
+      "predictions_sha256": "d619e056c5f40d18d5faa873c2f7f9e3142326b54bbe0c1737ece6443d8964af",
+      "rows": 12
+    }
+  ],
+  "split_sha256": "777d6227fc45c3645f883c7d559013a4f7ec3487697f25ef43c1f212ef9f0740"
+}

@@ -6,6 +6,28 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-19 — Second-seed duration confirmation dispatched
+
+The existing student replay builder now accepts `--duration16`; the pinned
+duration checkpoint replay and seed 20260918 eight-epoch fastMRI/report control
+are both live RUNNING as private offline Kaggle v1 jobs. The paired 16-epoch
+seed-20260918 candidate is frozen with identical settings except duration and its
+full learning-rate schedule. Kaggle rejected its initial launch with
+`Maximum batch GPU session count of 2 reached.`
+
+A bounded one-shot local launcher waits for the replay, validates all 12 rows
+against the pinned manifest/checkpoint/prediction hashes, then pushes the candidate.
+It records errors in `experiments/results/P12-seed2-launch.json`, with a full log
+at `outputs/experiments/P12-seed2-launch.log`. The candidate is locally queued,
+not yet running on Kaggle. No paid resource was provisioned.
+
+The gate to five-fold confirmation is a passing duration replay and improved
+original report-validation BCE in both matched seeds. Full OOF, paired promotion
+checks and exact offline runtime validation still precede a new submission.
+Design: `experiments/results/P12-duration-confirmation-design.json`.
+All three bundles compile; configuration/source/manifest checks and builder lint
+pass. Generated source with embedded splits remains outside Git.
+
 ### 2026-09-19 — Duration screen improves pseudo validation; student replays pass
 
 Live Kaggle checks confirm duration16 fold 0 and both prior student replays COMPLETE.
