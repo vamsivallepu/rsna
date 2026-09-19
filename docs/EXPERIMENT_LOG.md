@@ -8,6 +8,17 @@ live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 
 ### 2026-09-19 — Second-seed duration confirmation dispatched
 
+**Subsequent status check:** duration replay COMPLETE and independently verified
+against all pinned hashes: 12 rows, maximum error 1.11e-16. The launcher then
+successfully pushed the second-seed 16-epoch candidate, now live RUNNING.
+The second-seed eight-epoch control is COMPLETE and passes artifact, membership,
+zero-overlap and prediction-coverage checks: best epoch 8, original report BCE
+**0.457841**, 148.15 minutes training/evaluation/prediction. Its full checkpoint
+image replay remains pending. No second-seed duration conclusion is possible
+until the 16-epoch candidate finishes. Evidence:
+`experiments/results/P12-report-f0-seed2.json` and
+`experiments/results/P12-duration16-replay.json`.
+
 The existing student replay builder now accepts `--duration16`; the pinned
 duration checkpoint replay and seed 20260918 eight-epoch fastMRI/report control
 are both live RUNNING as private offline Kaggle v1 jobs. The paired 16-epoch

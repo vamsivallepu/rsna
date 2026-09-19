@@ -1,0 +1,17 @@
+{
+  "status": "artifact_and_membership_validated",
+  "seed": 20260918,
+  "fold": 0,
+  "epochs_completed": 8,
+  "best_epoch": 8,
+  "original_report_validation_bce": 0.4578405131244117,
+  "heldout_expert_predictions": 12,
+  "train_studies": 3955,
+  "validation_studies": 435,
+  "prohibited_group_overlap": 0,
+  "elapsed_minutes": 148.1506975332896,
+  "manifest_sha256": "ba6751607d658333d28ea73487ce7bbb273f2510f1a43cdad9fafcaec7fc650d",
+  "independent_image_replay": false,
+  "promotion_eligible": false,
+  "note": "Second-seed 8-epoch control; paired 16-epoch candidate still running at status check."
+}

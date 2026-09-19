@@ -150,25 +150,25 @@
       "updated_utc": "2026-09-19T07:33:39.790157+00:00"
     },
     "P12-DURATION16-REPLAY": {
-      "state": "running",
-      "artifact": "kaggle/rsna-p12-duration16-replay/build.json",
-      "artifact_sha256": "28b3b0befe6953531901bb35a812c7761ab61ccbec89055d8c7350b67adce7f1",
-      "updated_utc": "2026-09-19T07:39:15.725166+00:00",
-      "note": "Kaggle v1 RUNNING; pinned 16-epoch fold0 checkpoint, all 12 predictions."
+      "state": "validated",
+      "artifact": "experiments/results/P12-duration16-replay.json",
+      "artifact_sha256": "f98c676b2c7935a13a13deadd2e4ac3a3693af8bbeeb17688153563230a6ba6b",
+      "updated_utc": "2026-09-19T10:35:29.388380+00:00",
+      "note": "Live COMPLETE; pinned full duration16 checkpoint replay passed all 12 rows, max error1.11e-16."
     },
     "P12-REPORT-F0-SEED2": {
-      "state": "running",
-      "artifact": "kaggle/p12-fastmri-report-f0-seed2/build.json",
-      "artifact_sha256": "b3bd8a49b8133724961ec03fdd4d7b1839b88818c5ec2a6a2ee1969e62c05984",
-      "updated_utc": "2026-09-19T07:39:15.725166+00:00",
-      "note": "Kaggle v1 RUNNING; fixed 8-epoch fastMRI/report control at seed20260918."
+      "state": "validated",
+      "artifact": "experiments/results/P12-report-f0-seed2.json",
+      "artifact_sha256": "238b2890191c96381d298fe7f404235ecde478dd7cdfe7df595106e6c5bb15d3",
+      "updated_utc": "2026-09-19T10:35:29.388380+00:00",
+      "note": "Live COMPLETE; full eight epochs, artifact hashes, membership and all 12 held-out expert rows checked; best epoch8 report BCE0.457841. Full image replay pending."
     },
     "P12-DURATION16-F0-SEED2": {
-      "state": "queued",
+      "state": "running",
       "artifact": "kaggle/p12-duration16-f0-seed2/build.json",
       "artifact_sha256": "ad3994c781f2af08258c23be511a2459054a020c9c7f79dccbff5190f9744e2d",
-      "updated_utc": "2026-09-19T07:39:15.725166+00:00",
-      "note": "Kaggle rejected initial launch: maximum two batch GPU sessions. Frozen job locally queued by one-shot process; launch only after duration replay completes and validates. State/errors: experiments/results/P12-seed2-launch.json; log: outputs/experiments/P12-seed2-launch.log. Not yet running."
+      "updated_utc": "2026-09-19T10:35:29.388380+00:00",
+      "note": "One-shot launcher successfully accepted v1 after replay passed; live Kaggle RUNNING confirmed. Await completion for matched second-seed comparison."
     }
   },
   "fallback_submission": "56077025"
