@@ -136,18 +136,18 @@
       "note": "Kaggle COMPLETE; checkpoint/prediction hashes, zero prohibited overlap, full fold0 coverage and teacher-label provenance verified. Original report BCE 0.455944 vs matched report control 0.456168; tiny single-fold difference, no promotion. Independent full checkpoint replay pending."
     },
     "P12-STUDENT-REPLAY": {
-      "state": "running",
-      "artifact": "kaggle/rsna-p12-student-replay/build.json",
-      "artifact_sha256": "2984fb40caa8b5f6fb2c563a23c95359d91ecdee17eba770477a533afdb713db",
-      "note": "Private offline Kaggle v1 RUNNING; pinned ImageNet and distilled fold0 checkpoints; full prediction replay (12 rows each), not a sample.",
-      "updated_utc": "2026-09-18T15:25:42.631609+00:00"
+      "state": "validated",
+      "artifact": "experiments/results/P12-student-replay.json",
+      "artifact_sha256": "328908103b61bb8a53bdc085147bd7f93ac97fd90704154273357a4baf2fb532",
+      "note": "Kaggle COMPLETE; full ImageNet and distilled checkpoint replays passed: 12 rows each, max error 1.11e-16, pinned hashes verified.",
+      "updated_utc": "2026-09-19T07:33:39.790157+00:00"
     },
     "P12-DURATION16-F0": {
-      "state": "running",
-      "artifact": "kaggle/p12-duration16-f0/build.json",
-      "artifact_sha256": "7edc5802c9780a6a462968fb0e9519e97da088d3e84041888d7dd5d4b13a0133",
-      "note": "Private offline Kaggle v1 RUNNING; 16 vs completed 8 epoch fastMRI/report control; same fold0, seed20260917, labels, sampling, optimizer and model code. Full-duration schedule; no promotion from single-fold screen.",
-      "updated_utc": "2026-09-18T15:25:42.631609+00:00"
+      "state": "validated",
+      "artifact": "experiments/results/P12-duration16-f0.json",
+      "artifact_sha256": "5903b952774632fbc1c529343fca70b1e0ffe9978485f049c421b342fb9abba5",
+      "note": "Kaggle COMPLETE; all 16 epochs, checkpoint/prediction hashes, memberships and zero prohibited overlap verified. Best epoch16 report BCE0.448599 vs 8-epoch0.456168. Single fold/seed; full checkpoint replay and confirmation pending, no promotion.",
+      "updated_utc": "2026-09-19T07:33:39.790157+00:00"
     }
   },
   "fallback_submission": "56077025"

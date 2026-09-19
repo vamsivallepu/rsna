@@ -1,10 +1,28 @@
 # Experiment log
 
-Last updated: 2026-09-18
+Last updated: 2026-09-19
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
+
+### 2026-09-19 — Duration screen improves pseudo validation; student replays pass
+
+Live Kaggle checks confirm duration16 fold 0 and both prior student replays COMPLETE.
+All downloaded hashes, training/validation memberships, 12 held-out expert rows and
+checkpoint-selection history passed independent validation, with zero prohibited
+group overlap. The 16-epoch run selected epoch 16: unchanged report-validation BCE
+**0.448599**, versus eight-epoch fastMRI/report **0.456168** (delta **-0.007569**).
+Training/evaluation/prediction took 321.35 minutes. Configuration, source hashes,
+labels, cache, seed and memberships match except the predeclared duration/schedule.
+This supports a second matched-seed duration comparison; it is not OOF AUC or
+promotion evidence. The 16-epoch checkpoint still requires independent image replay.
+
+Full ImageNet and distilled checkpoint replays passed on all 12 saved predictions
+each, maximum error 1.11e-16, with pinned manifests/checkpoint/prediction hashes.
+Evidence: `experiments/results/P12-duration16-f0.json` and
+`experiments/results/P12-student-replay.json`. No new jobs, paid compute, or
+competition submissions were launched during this status check.
 
 ### P12 — Duration screen and remaining student replays launched
 

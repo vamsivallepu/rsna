@@ -1,0 +1,21 @@
+{
+  "status": "artifact_and_membership_validated",
+  "fold": 0,
+  "best_epoch": 16,
+  "epochs_completed": 16,
+  "original_report_validation_bce": 0.4485985700555437,
+  "control_8epoch_bce": 0.4561678843502014,
+  "delta_bce": -0.007569314294657681,
+  "last_epoch_bce": 0.4485985700555437,
+  "train_studies": 3955,
+  "validation_studies": 435,
+  "heldout_expert_predictions": 12,
+  "matched_except_duration_and_schedule": true,
+  "prohibited_group_overlap": 0,
+  "training_evaluation_prediction_minutes": 321.3519667426745,
+  "peak_cuda_memory_mib": 7108.67919921875,
+  "manifest_sha256": "2403bb1ce14acd8b115aa2857497bbce979199ab00ceb161372e7e901d1fc9ba",
+  "independent_image_replay": false,
+  "promotion_eligible": false,
+  "note": "Single seed/fold pseudo-validation screen; not full OOF or promotion evidence. Full checkpoint replay pending."
+}
