@@ -6,6 +6,31 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-19 — Full two-seed, five-fold duration confirmation launched
+
+Frozen queue `experiments/P12-confirmation.json` contains 16 remaining runs:
+folds 1–4, seeds 20260917/20260918, fastMRI/report at 8 and 16 epochs. The four
+completed fold-0 models are reused with pinned manifest hashes. All recipes and
+model/data source hashes match the corresponding fold-0 run. No expert outcomes
+were used to modify these recipes.
+
+`python3 -m scripts.rsna_next.confirm_duration` runs the finite queue with a maximum
+of two active Kaggle jobs, a 72-hour limit and an exclusive local lock. Each new
+run performs full prediction replay after training. Local membership/hash/replay
+checks must pass before its queue status becomes validated. The queue stops on
+failure or uncertain launch, saving errors in
+`outputs/experiments/P12-confirmation/queue.json`; its log is
+`outputs/experiments/P12-confirmation.log`. Reruns never blindly repeat a launch
+left in `submitting` state. Local host availability is required for dispatch.
+
+The first matched pair (fold 1, seed 20260917) was accepted as Kaggle v1. The other
+14 jobs are pending and will launch as slots free. After all jobs validate, four
+five-fold OOF sets are assembled. Paired bootstrap, deployed-blend target checks,
+remaining fold-0 replays and exact final notebook/runtime validation remain before
+promotion/submission. No automatic competition submission or paid provisioning.
+Validation: 22 tests pass, lint clean, all 16 generated bundles compile and match
+the fixed recipes. Generated split-bearing source remains excluded from Git.
+
 ### 2026-09-19 — Two-seed duration screen passes
 
 Second-seed duration16 is live COMPLETE. All 16 epochs, saved checkpoint and

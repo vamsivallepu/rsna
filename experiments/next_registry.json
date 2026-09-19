@@ -176,6 +176,13 @@
       "artifact_sha256": "a4e09665dc154ff91cedca75d91eeceb3b8ccdadc3ca06fb10427d43cbccbc4f",
       "updated_utc": "2026-09-19T14:03:26.189334+00:00",
       "note": "Both matched seeds improve unchanged report-validation BCE at 16 epochs; first-seed full replay passed. Advance to five-fold OOF confirmation; no expert-AUC selection or submission claim."
+    },
+    "P12-FIVE-FOLD-CONFIRMATION": {
+      "state": "running",
+      "artifact": "experiments/P12-confirmation.json",
+      "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
+      "updated_utc": "2026-09-19T14:10:44.638848+00:00",
+      "note": "Finite 16-job queue started; first seed20260917 fold1 matched pair accepted. Max two active jobs. Every new fold has automatic full prediction replay and local artifact validation. Detailed live state outputs/experiments/P12-confirmation/queue.json. No promotion or submission."
     }
   },
   "fallback_submission": "56077025"

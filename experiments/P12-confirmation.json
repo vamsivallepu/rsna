@@ -1,0 +1,170 @@
+{
+  "jobs": [
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 1,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f1-s20260917",
+      "build_sha256": "e60524711e47a7dc5f894a3ec67da84d0516ea14769ae91a523fac0139e018a4",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-1-s20260917",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f1-s20260917-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 1,
+      "bundle": "kaggle/p12-confirm-duration16-f1-s20260917",
+      "build_sha256": "ffe9df29ed0c969d6fd1afc9d2fedd87d714d4a5eac6dac6270f023e56aa0e0b",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-1-s20260917",
+      "output": "outputs/kaggle/p12-confirm-duration16-f1-s20260917-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 1,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f1-s20260918",
+      "build_sha256": "daead2df65078e95760ceb8d6b655db21ea83dfb93fe850e9ab1051fd9d7328b",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-1-s20260918",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f1-s20260918-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 1,
+      "bundle": "kaggle/p12-confirm-duration16-f1-s20260918",
+      "build_sha256": "7777eca6841404c612f8cc103197f277a8469879aad93c9dc53f6685cb89a22b",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-1-s20260918",
+      "output": "outputs/kaggle/p12-confirm-duration16-f1-s20260918-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 2,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f2-s20260917",
+      "build_sha256": "8ac604949819ac16edce24ff9cfac14b18a7fc6fc8e6adcb090f8f6d47814b5b",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-2-s20260917",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f2-s20260917-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 2,
+      "bundle": "kaggle/p12-confirm-duration16-f2-s20260917",
+      "build_sha256": "15dbbb6de70131a4d8a75be7d5fd00719376fb15c03daaf1e5436fb8bd1fa32e",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-2-s20260917",
+      "output": "outputs/kaggle/p12-confirm-duration16-f2-s20260917-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 2,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f2-s20260918",
+      "build_sha256": "96fb4153887d2a481f7d08e17d7e59407980eb476df6ac9e872390e23c0bda78",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-2-s20260918",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f2-s20260918-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 2,
+      "bundle": "kaggle/p12-confirm-duration16-f2-s20260918",
+      "build_sha256": "94123c12a1db7ca06b1ab23532d991a8f477b3a218e0785457770a8c945b242f",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-2-s20260918",
+      "output": "outputs/kaggle/p12-confirm-duration16-f2-s20260918-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 3,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f3-s20260917",
+      "build_sha256": "810f3c86b8fbfbb9910c516b3de8d93ecf396a479ad27410d47e6d56d0f4048f",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-3-s20260917",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f3-s20260917-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 3,
+      "bundle": "kaggle/p12-confirm-duration16-f3-s20260917",
+      "build_sha256": "6d68c1a8aeb6c5f060c379ce15c07bfb1e9c17ecbd30d305a339a0df954bff32",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-3-s20260917",
+      "output": "outputs/kaggle/p12-confirm-duration16-f3-s20260917-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 3,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f3-s20260918",
+      "build_sha256": "9889d4e4b5f1e1ce388f56ec3b07fc599821015e4b609c322101460866d7d8d5",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-3-s20260918",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f3-s20260918-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 3,
+      "bundle": "kaggle/p12-confirm-duration16-f3-s20260918",
+      "build_sha256": "ed10e793551708f18127c6b2127f9bfd267289d469fff2ade42f7d47ffeb53cd",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-3-s20260918",
+      "output": "outputs/kaggle/p12-confirm-duration16-f3-s20260918-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 4,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f4-s20260917",
+      "build_sha256": "dcfcb6e05f237666f2b6e053318682f1f6f4f2f05055ca59eb10f133b589f4e6",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-4-s20260917",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f4-s20260917-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 4,
+      "bundle": "kaggle/p12-confirm-duration16-f4-s20260917",
+      "build_sha256": "e22bfe7feab2a548a1c031ab44f8b4ce40b1ed76906b420dcafcd33e42bef28d",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-4-s20260917",
+      "output": "outputs/kaggle/p12-confirm-duration16-f4-s20260917-v1"
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 4,
+      "bundle": "kaggle/p12-confirm-fastmri-report-f4-s20260918",
+      "build_sha256": "1171dc28a5eb8d511a9491481b86f36ad81676e86ee505c3f66765666b181c10",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-4-s20260918",
+      "output": "outputs/kaggle/p12-confirm-fastmri-report-f4-s20260918-v1"
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 4,
+      "bundle": "kaggle/p12-confirm-duration16-f4-s20260918",
+      "build_sha256": "9d800317dd8cf8b47a8d9d0f120a01bb156219b63e9b51872af4e1f4afe07aac",
+      "slug": "vallepuvamsikrishna/rsna-knee-next-student-duration16-4-s20260918",
+      "output": "outputs/kaggle/p12-confirm-duration16-f4-s20260918-v1"
+    }
+  ],
+  "bases": {
+    "fastmri-report-20260917": {
+      "root": "outputs/kaggle/p12-fastmri-baseline-f0-v1/next_run",
+      "manifest_sha256": "80988af192ec762c78886ca10e620dd4ccf6194efe23491a53330fc19c8b68a7"
+    },
+    "duration16-20260917": {
+      "root": "outputs/kaggle/p12-duration16-f0-v1/next_run",
+      "manifest_sha256": "2403bb1ce14acd8b115aa2857497bbce979199ab00ceb161372e7e901d1fc9ba"
+    },
+    "fastmri-report-20260918": {
+      "root": "outputs/kaggle/p12-fastmri-report-f0-seed2-v1/next_run",
+      "manifest_sha256": "ba6751607d658333d28ea73487ce7bbb273f2510f1a43cdad9fafcaec7fc650d"
+    },
+    "duration16-20260918": {
+      "root": "outputs/kaggle/p12-duration16-f0-seed2-v1/next_run",
+      "manifest_sha256": "0a6da89a02434fdc999d4c302a2d07ca894b7fa57b410a2158cb4ab115368256"
+    }
+  },
+  "split_sha256": "777d6227fc45c3645f883c7d559013a4f7ec3487697f25ef43c1f212ef9f0740",
+  "maximum_active_jobs": 2,
+  "paid_usd": 0,
+  "purpose": "Two recipes x two seeds x five folds; reuse four completed fold0 runs. No submission or automatic promotion."
+}

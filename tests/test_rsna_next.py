@@ -269,12 +269,30 @@ def test_kernel_builder_is_offline_and_full_jobs_require_evidence(tmp_path):
     write_json(replay, {'status': 'replay_validated', 'run_manifest_sha256': 'fixture'})
     distilled = subprocess.run([*command, '--recipe', 'fastmri-distilled', '--mode', 'student',
         '--seed', '20260917', '--label-source', 'fixture/labels', '--smoke-evidence', str(smoke),
-        '--replay-evidence', str(replay)], text=True, capture_output=True)
+        '--replay-evidence', str(replay), '--replay'], text=True, capture_output=True)
     assert distilled.returncode == 0, distilled.stderr
     meta = json.loads((tmp_path / 'kernel-metadata.json').read_text())
     assert len(meta['title']) <= 50
     assert meta['id'].split('/')[1] == meta['title'].lower().replace(' ', '-')
     assert meta['id'].endswith('fastmri-distilled-0-s20260917')
+    source = (tmp_path / 'run.py').read_text()
+    assert "if '--smoke' in args or True:" in source
+    compile(source, 'run.py', 'exec')
+
+
+def test_confirmation_rejects_partial_replay(tmp_path):
+    from scripts.rsna_next.confirm_duration import verify_replay
+    from scripts.rsna_next.contracts import sha256, write_json
+    manifest = {'checkpoint_sha256': 'checkpoint', 'predictions_sha256': 'predictions'}
+    write_json(tmp_path / 'manifest.json', manifest)
+    replay = {'status': 'replay_validated', 'rows': 12, 'maximum_absolute_error': 0,
+              'run_manifest_sha256': sha256(tmp_path / 'manifest.json'), **manifest}
+    write_json(tmp_path / 'replay.json', replay)
+    verify_replay(tmp_path, manifest, 12)
+    replay['rows'] = 11
+    write_json(tmp_path / 'replay.json', replay)
+    with pytest.raises(ValueError, match='Full replay failed'):
+        verify_replay(tmp_path, manifest, 12)
 
 
 def test_image_duplicate_closure_preserves_validation_and_blocks_leakage(tmp_path):

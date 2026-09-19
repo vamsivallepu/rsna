@@ -182,11 +182,12 @@ for fold in __FOLDS__:
         if __MODE__ != 'refit':
             manifest, pred = validate_run(run_root, read_splits(splits, pd.read_csv(train)), splits)
             write_json(run_root / 'membership_validation.json', {'status':'passed', 'rows':len(pred), 'fold':fold})
-if '--smoke' in args:
+if '--smoke' in args or __REPLAY__:
     import subprocess
     common = ['--train', str(train), '--splits', str(splits)]
-    subprocess.run([sys.executable, '-m', 'scripts.rsna_next.validate', '--roots', '/kaggle/working/next_run',
-                    '--smoke', '--output', '/kaggle/working/next_run/validation', *common], check=True)
+    if '--smoke' in args:
+        subprocess.run([sys.executable, '-m', 'scripts.rsna_next.validate', '--roots', '/kaggle/working/next_run',
+                        '--smoke', '--output', '/kaggle/working/next_run/validation', *common], check=True)
     cache_index = args.index('--cache-manifests')
     cache_paths = []
     for item in args[cache_index + 1:]:
@@ -205,6 +206,9 @@ if '--smoke' in args:
     labels = "args += ['--student-targets', str(find('student_targets.csv'))]" if args.label_source else ""
     program = program.replace("__PAYLOAD__", repr(payload)).replace("__ARGS__", repr(train_args)).replace("__WEIGHTS__", repr(filename)).replace("__CACHE__", cache).replace("__LABELS__", labels)
     program = program.replace("__FOLDS__", repr(args.folds or [args.fold])).replace("__BANK__", repr(bool(args.folds))).replace("__MODE__", repr(args.mode))
+    if args.replay and (args.mode != 'student' or args.folds):
+        raise ValueError('Automatic full replay requires one student fold')
+    program = program.replace('__REPLAY__', repr(args.replay))
     slug = f"rsna-knee-next-{args.mode}-{args.recipe}-{args.fold}" + (f"-{args.head}" if args.head else "")
     slug += "-smoke" if args.smoke else f"-s{args.seed}"
     if args.folds:
@@ -372,6 +376,7 @@ def main():
     p.add_argument("--axial-policy", choices=["longest", "fluid"], default="longest")
     p.add_argument("--release", type=Path)
     p.add_argument("--benchmark", action="store_true")
+    p.add_argument("--replay", action="store_true", help="Replay every saved prediction after student training")
     p.add_argument("--benchmark-studies", type=Path)
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()

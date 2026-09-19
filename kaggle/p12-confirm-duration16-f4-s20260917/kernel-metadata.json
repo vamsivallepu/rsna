@@ -1,0 +1,24 @@
+{
+  "id": "vallepuvamsikrishna/rsna-knee-next-student-duration16-4-s20260917",
+  "title": "Rsna Knee Next Student Duration16 4 S20260917",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "competition_sources": [
+    "rsna-knee-abnormality-detection"
+  ],
+  "dataset_sources": [
+    "vallepuvamsikrishna/rsna-p6-fastmri-localization-init"
+  ],
+  "kernel_sources": [
+    "vallepuvamsikrishna/rsna-knee-report-weak-supervision",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-a",
+    "vallepuvamsikrishna/rsna-knee-p2-wide-cache-b"
+  ],
+  "model_sources": []
+}
