@@ -1,10 +1,24 @@
 # Experiment log
 
-Last updated: 2026-09-19
+Last updated: 2026-09-21
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
+
+### 2026-09-21 — Confirmation dispatcher recovery
+
+Live checks found both previously active jobs COMPLETE: duration16 fold1 seed
+20260917 and report fold1 seed20260918. Together with the already validated first
+control, three of 16 new runs had finished on Kaggle, while 13 had not launched.
+The queue file had stopped advancing without a new recorded error. Resumed the
+existing queue as a detached host process; verified it alive from the host process
+context. No completed model was resubmitted. The duration fold then passed local
+artifact/replay validation; the second control was downloading at the snapshot.
+The dispatcher will refill slots after retrieval/validation. This interruption
+invalidates the original estimate measured from initial dispatch. Current snapshot:
+`experiments/results/P12-confirmation-status.json`; live queue remains under
+`outputs/experiments/P12-confirmation/queue.json`. No paid compute or submission.
 
 ### 2026-09-19 — Full two-seed, five-fold duration confirmation launched
 

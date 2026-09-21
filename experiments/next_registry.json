@@ -181,8 +181,8 @@
       "state": "running",
       "artifact": "experiments/P12-confirmation.json",
       "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
-      "updated_utc": "2026-09-19T14:10:44.638848+00:00",
-      "note": "Finite 16-job queue started; first seed20260917 fold1 matched pair accepted. Max two active jobs. Every new fold has automatic full prediction replay and local artifact validation. Detailed live state outputs/experiments/P12-confirmation/queue.json. No promotion or submission."
+      "updated_utc": "2026-09-21T14:50:31.990822+00:00",
+      "note": "Sep21: three jobs complete on Kaggle; two locally validated at snapshot and remaining download in progress. Detached dispatcher resumed; thirteen undispatched jobs. Original ETA delayed. Live state outputs/experiments/P12-confirmation/queue.json."
     }
   },
   "fallback_submission": "56077025"

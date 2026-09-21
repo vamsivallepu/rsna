@@ -1,0 +1,15 @@
+{
+  "checked_utc": "2026-09-21T14:50:31.990822+00:00",
+  "queue_status": "running",
+  "validated_jobs": [
+    "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-1-s20260917",
+    "vallepuvamsikrishna/rsna-knee-next-student-duration16-1-s20260917"
+  ],
+  "live_complete_confirmed": [
+    "vallepuvamsikrishna/rsna-knee-next-student-duration16-1-s20260917",
+    "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-1-s20260918"
+  ],
+  "pending_dispatch": 13,
+  "recovery": "Resumed with detached host process after dispatcher state stopped advancing; no model resubmissions. Host process verified alive.",
+  "paid_usd": 0
+}
