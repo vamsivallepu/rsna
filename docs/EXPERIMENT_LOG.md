@@ -1,10 +1,30 @@
 # Experiment log
 
-Last updated: 2026-09-21
+Last updated: 2026-09-22
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
+
+### 2026-09-22 — Five confirmation jobs complete; dispatcher moved to user service
+
+Live Kaggle checks confirm duration16 fold1 seed20260918 and report fold2
+seed20260917 COMPLETE. Five of 16 new jobs have now finished; three were already
+locally validated and two await retrieval/validation. Eleven had not launched.
+The detached dispatcher was absent in the host process context with no new saved
+error. It did not reliably survive between checks.
+
+Resumed the same queue under the native user service manager as
+`rsna-p12-confirmation.service`, with its working directory set to this repository
+and stdout/stderr appended to `outputs/experiments/P12-confirmation.log`.
+Verified `ActiveState=active`, `SubState=running`, `ExecMainStatus=0` in a separate
+host call. The existing exclusive lock, two-job concurrency limit, finite 72-hour
+bound, and full replay gates remain unchanged. The service does not submit to the
+competition or provision paid compute. It still requires this host to stay online;
+it is not a boot-enabled or recurring job. Do not start a competing dispatcher.
+
+Read status with `rtk systemctl --user status rsna-p12-confirmation.service` from
+the host context; the sandbox process view cannot establish whether it is alive.
 
 ### 2026-09-21 — Confirmation dispatcher recovery
 
