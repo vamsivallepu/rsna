@@ -1242,3 +1242,12 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   evidence are in the AWS runbook and `experiments/results/P12-aws-batch.json`.
   The unused Mumbai instance and disk were deleted with explicit approval; the
   temporary Kaggle token was removed from both the active host and SSM.
+
+- **2026-09-22 10:36 UTC, P12 AWS status:** First fold-3 eight-epoch control
+  (seed20260917) completed in 173.87 minutes. Local artifact/membership validation
+  and all 11 replayed predictions passed (max error 1.11e-16). Best original-report
+  BCE was 0.456939 at epoch 8; this is not an OOF promotion result. The matched
+  16-epoch run completed epoch 1 and is training epoch 2 at 100% GPU utilization.
+  Two second-seed runs remain queued within the fixed batch. Early measured
+  throughput suggests another 14-15 hours for the batch; the existing shutdown
+  deadline remains active.

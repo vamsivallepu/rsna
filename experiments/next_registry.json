@@ -187,9 +187,9 @@
     "P12-AWS-FOLD3-BATCH": {
       "state": "running",
       "artifact": "experiments/results/P12-aws-batch.json",
-      "artifact_sha256": "c3f3159e244343a46814b10161a99166d4b148ad06f2f042dc1338ca8a8e96bd",
-      "updated_utc": "2026-09-22T07:11:47.573142+00:00",
-      "note": "L4 g6.2xlarge in us-east-1c running first full fold3 control. Smoke and all 11 prediction replays independently validated; 98-100% GPU utilization measured. Four matched fold3 jobs reserved for AWS; do not duplicate on Kaggle. Temporary token removed. No full job complete or model promotion yet."
+      "artifact_sha256": "e34a5aa24a5e29b5b0aa60ec9bc1f0b7979e0660cb20b81698df988978fd930e",
+      "updated_utc": "2026-09-22T10:36:21+00:00",
+      "note": "One of four AWS jobs complete and independently validated: fold3 report seed20260917, eight epochs in173.87min, full11-row replay passed. Duration16 same seed is in epoch2; two seed2 jobs queued. GPU100%; no promotion or submission."
     }
   },
   "fallback_submission": "56077025"

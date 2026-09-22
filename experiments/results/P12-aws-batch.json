@@ -13,7 +13,7 @@
   "bucket": "rsna-p12-261513860644-ap-south-1",
   "source_sha256": "18bc188377ed4133ee138bc3f613ab90fe31cffd3a4ae31eaa60347efc569aa9",
   "status": "full_training_running",
-  "checked_utc": "2026-09-22T07:11:47.573142+00:00",
+  "checked_utc": "2026-09-22T10:36:21+00:00",
   "gpu": "NVIDIA L4 24 GB",
   "compute_ceiling_usd": 23.462400000000002,
   "jobs": [
@@ -63,10 +63,13 @@
   "smoke_passed": true,
   "full_training_started": true,
   "active_job": {
-    "recipe": "fastmri-report",
+    "recipe": "duration16",
     "fold": 3,
     "seed": 20260917,
-    "epochs": 8
+    "epochs": 16,
+    "completed_epochs": 1,
+    "in_progress_epoch": 2,
+    "first_epoch_minutes": 21.81235256989797
   },
   "smoke_validation": {
     "status": "independently_validated_smoke_and_replay",
@@ -89,14 +92,48 @@
     }
   },
   "gpu_utilization": {
-    "sample_start_utc": "2026-09-22T07:09:31Z",
-    "sample_end_utc": "2026-09-22T07:10:26Z",
-    "samples": 12,
-    "minimum_percent": 98,
-    "maximum_percent": 100,
-    "mean_percent": 99.75,
-    "memory_mib": 15480
+    "observed_utc": "2026-09-22T10:36:21+00:00",
+    "percent": 100,
+    "memory_mib": 20958,
+    "last_five_samples_percent": [
+      100,
+      100,
+      100,
+      100,
+      100
+    ]
   },
   "temporary_ssm_token_deleted": true,
-  "host_token_removed": true
+  "host_token_removed": true,
+  "completed_jobs": [
+    {
+      "recipe": "fastmri-report",
+      "fold": 3,
+      "seed": 20260917,
+      "status": "independently_validated",
+      "rows": 11,
+      "epochs": 8,
+      "best_epoch": 8,
+      "original_report_valid_bce": 0.45693917250154437,
+      "elapsed_minutes": 173.86610571543375,
+      "manifest_sha256": "b53c1c406cfbb97c960b5054bcbd2b802607ad1911dfa8af753482c0329d9442",
+      "checkpoint_sha256": "9f9f888207c75faae11ab36895f8c531bb58e1f74cc65024937c610a7a15ba59",
+      "replay": {
+        "status": "replay_validated",
+        "rows": 11,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "tolerance": 0.0005,
+        "run_manifest_sha256": "b53c1c406cfbb97c960b5054bcbd2b802607ad1911dfa8af753482c0329d9442",
+        "checkpoint_sha256": "9f9f888207c75faae11ab36895f8c531bb58e1f74cc65024937c610a7a15ba59",
+        "predictions_sha256": "4892eeb2db37742a84511f840dc129c6c080125cc2d945638d17418a4bd056a9"
+      }
+    }
+  ],
+  "completed_count": 1,
+  "queued_count": 2,
+  "remaining_hours_estimate": [
+    14,
+    15
+  ],
+  "estimate_basis": "Measured ~21.8 minutes/epoch; early projection assumes similar throughput for remaining jobs."
 }
