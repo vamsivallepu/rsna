@@ -1228,3 +1228,17 @@ The reusable token cache has shape `(4407, 6, 3, 768)`. Its independent validato
   zero failures, matching contract signatures, and finalized per-part pixel hashes.
 - **2026-09-02:** Launched private P2 CoAtNet GPU notebook version 1 without a CLI
   timeout after both cache sources completed; authoritative state reached `RUNNING`.
+
+- **2026-09-22, P12 AWS fallback:** User authorized paid compute and selected
+  `us-east-1` after Mumbai capacity failures. `g6.2xlarge` L4 instance
+  `i-0d0ec06ac8023cffe` in `us-east-1c` costs USD 0.9776/hour. Four matched
+  fold-3 jobs are reserved for AWS; the first eight-epoch control is running.
+  GPU smoke and all 11 saved predictions passed independent integrity, membership,
+  and replay checks (maximum error 9.71e-17); measured full-training GPU utilization
+  was 98-100% across a one-minute sample. Host deadline remains September 23
+  06:32 UTC. No full training job has completed and no candidate is promoted.
+  Software setup and buffered-download failures were repaired before full training;
+  they are infrastructure failures, not modelling results. Source and aggregate
+  evidence are in the AWS runbook and `experiments/results/P12-aws-batch.json`.
+  The unused Mumbai instance and disk were deleted with explicit approval; the
+  temporary Kaggle token was removed from both the active host and SSM.

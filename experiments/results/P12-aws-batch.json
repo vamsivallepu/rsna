@@ -12,8 +12,8 @@
   "batch_reserve_usd": 80,
   "bucket": "rsna-p12-261513860644-ap-south-1",
   "source_sha256": "18bc188377ed4133ee138bc3f613ab90fe31cffd3a4ae31eaa60347efc569aa9",
-  "status": "streaming_cache_downloads_running",
-  "checked_utc": "2026-09-22T07:03:06.691190+00:00",
+  "status": "full_training_running",
+  "checked_utc": "2026-09-22T07:11:47.573142+00:00",
   "gpu": "NVIDIA L4 24 GB",
   "compute_ceiling_usd": 23.462400000000002,
   "jobs": [
@@ -60,6 +60,43 @@
   "cache_storage": "local NVMe via symlinks; verified",
   "streaming_transfer_test": "Interrupted transfer resumed; exact SHA-256 verified",
   "batch_command_id": "1da87725-298d-47cd-abd8-07df3d4dce64",
-  "smoke_passed": false,
-  "full_training_started": false
+  "smoke_passed": true,
+  "full_training_started": true,
+  "active_job": {
+    "recipe": "fastmri-report",
+    "fold": 3,
+    "seed": 20260917,
+    "epochs": 8
+  },
+  "smoke_validation": {
+    "status": "independently_validated_smoke_and_replay",
+    "rows": 11,
+    "maximum_absolute_error": 9.71445146547012e-17,
+    "manifest_sha256": "2d0f7a33aa78b6b849336e9867e578b5124c25c88c5afa179a3b1e3c728d4e76",
+    "checkpoint_sha256": "e76fa64c9eb83183afe9b667a5ce8dba82d7f5b5885736cad083714fddfd4dbf",
+    "elapsed_minutes": 0.7823064049084981,
+    "peak_cuda_memory_per_worker_mib": 7095.6630859375,
+    "zero_prohibited_overlap": true,
+    "config_matches_frozen_recipe": true,
+    "environment": {
+      "python": "3.10.12",
+      "torch": "2.10.0+cu128",
+      "numpy": "2.2.6",
+      "cuda": "12.8",
+      "gpu": "NVIDIA L4",
+      "shared_gpu": true,
+      "distributed_backend": "gloo"
+    }
+  },
+  "gpu_utilization": {
+    "sample_start_utc": "2026-09-22T07:09:31Z",
+    "sample_end_utc": "2026-09-22T07:10:26Z",
+    "samples": 12,
+    "minimum_percent": 98,
+    "maximum_percent": 100,
+    "mean_percent": 99.75,
+    "memory_mib": 15480
+  },
+  "temporary_ssm_token_deleted": true,
+  "host_token_removed": true
 }

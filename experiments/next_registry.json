@@ -187,9 +187,9 @@
     "P12-AWS-FOLD3-BATCH": {
       "state": "running",
       "artifact": "experiments/results/P12-aws-batch.json",
-      "artifact_sha256": "f12fcb7b01b55b7901caf55223422fa64725253dd07a8ac2b9d0a51c32012cd8",
-      "updated_utc": "2026-09-22T07:03:06.691190+00:00",
-      "note": "User-selected us-east-1 fallback. L4 host running; corrected Python client and resumable streaming retrieval, downloads on NVMe. Four fold3 matched jobs reserved for AWS; do not duplicate on Kaggle. Smoke/replay still pending."
+      "artifact_sha256": "c3f3159e244343a46814b10161a99166d4b148ad06f2f042dc1338ca8a8e96bd",
+      "updated_utc": "2026-09-22T07:11:47.573142+00:00",
+      "note": "L4 g6.2xlarge in us-east-1c running first full fold3 control. Smoke and all 11 prediction replays independently validated; 98-100% GPU utilization measured. Four matched fold3 jobs reserved for AWS; do not duplicate on Kaggle. Temporary token removed. No full job complete or model promotion yet."
     }
   },
   "fallback_submission": "56077025"
