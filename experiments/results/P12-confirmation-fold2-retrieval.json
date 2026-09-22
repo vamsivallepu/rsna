@@ -1,0 +1,53 @@
+{
+  "checked_utc": "2026-09-22T13:42:58.209001+00:00",
+  "runs": [
+    {
+      "recipe": "duration16",
+      "fold": 2,
+      "seed": 20260917,
+      "status": "artifact_membership_and_replay_validated",
+      "rows": 12,
+      "epochs": 16,
+      "best_epoch": 15,
+      "original_report_valid_bce": 0.4472157793186439,
+      "elapsed_minutes": 288.03373347918193,
+      "manifest_sha256": "bfd16ef83b0957b80a4e9abc40b0efec32946f1d17b647c4450ae01db617ea2b",
+      "checkpoint_sha256": "d9317cd09c032521404c7f2d7619164fc291facbf8c8aebc72929a3c0e604dd4",
+      "predictions_sha256": "13cfff529ad794ded7e116555c23681bba76c4c19257ae62564fec616a14a95a",
+      "replay": {
+        "status": "replay_validated",
+        "rows": 12,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "tolerance": 0.0005,
+        "run_manifest_sha256": "bfd16ef83b0957b80a4e9abc40b0efec32946f1d17b647c4450ae01db617ea2b",
+        "checkpoint_sha256": "d9317cd09c032521404c7f2d7619164fc291facbf8c8aebc72929a3c0e604dd4",
+        "predictions_sha256": "13cfff529ad794ded7e116555c23681bba76c4c19257ae62564fec616a14a95a"
+      }
+    },
+    {
+      "recipe": "fastmri-report",
+      "fold": 2,
+      "seed": 20260918,
+      "status": "artifact_membership_and_replay_validated",
+      "rows": 12,
+      "epochs": 8,
+      "best_epoch": 8,
+      "original_report_valid_bce": 0.4555179275486374,
+      "elapsed_minutes": 150.2949962735176,
+      "manifest_sha256": "ceb0d730fd0619c082b08d7fb4aa54581421fff3ff56ac15d0092e28b4635f94",
+      "checkpoint_sha256": "d4a0659ff38345c23bcc54641991cabfc374ff2370b27cd5570608c0a120a224",
+      "predictions_sha256": "e33e648de68a5f5881de8f9d077e7c97670e85961db5f15f2b061c7642d77a2e",
+      "replay": {
+        "status": "replay_validated",
+        "rows": 12,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "tolerance": 0.0005,
+        "run_manifest_sha256": "ceb0d730fd0619c082b08d7fb4aa54581421fff3ff56ac15d0092e28b4635f94",
+        "checkpoint_sha256": "d4a0659ff38345c23bcc54641991cabfc374ff2370b27cd5570608c0a120a224",
+        "predictions_sha256": "e33e648de68a5f5881de8f9d077e7c97670e85961db5f15f2b061c7642d77a2e"
+      }
+    }
+  ],
+  "promotion_eligible": false,
+  "note": "Full saved replay evidence verified locally; no new local GPU replay. No expert AUC selection before complete matched five-fold sets."
+}

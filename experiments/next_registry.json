@@ -181,8 +181,8 @@
       "state": "running",
       "artifact": "experiments/P12-confirmation.json",
       "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
-      "updated_utc": "2026-09-22T05:53:31.161479+00:00",
-      "note": "Manual batches per user request. Dispatcher service stopped and no process remains. Five jobs validated; duration16 fold2 seed20260917 and report fold2 seed20260918 confirmed RUNNING; nine unlaunched. User returns after runs complete; no automatic dispatch."
+      "updated_utc": "2026-09-22T13:42:58.209001+00:00",
+      "note": "Seven of sixteen new confirmation runs validated on Kaggle. Both previously active fold2 runs retrieved and passed artifact, membership, exact frozen recipe, coverage and saved replay checks. Four fold3 jobs are handled by the separate AWS batch; five jobs remain unlaunched. Manual dispatch; no promotion or submission."
     },
     "P12-AWS-FOLD3-BATCH": {
       "state": "running",
@@ -190,6 +190,13 @@
       "artifact_sha256": "e34a5aa24a5e29b5b0aa60ec9bc1f0b7979e0660cb20b81698df988978fd930e",
       "updated_utc": "2026-09-22T10:36:21+00:00",
       "note": "One of four AWS jobs complete and independently validated: fold3 report seed20260917, eight epochs in173.87min, full11-row replay passed. Duration16 same seed is in epoch2; two seed2 jobs queued. GPU100%; no promotion or submission."
+    },
+    "P12-FOLD2-RETRIEVAL": {
+      "state": "validated",
+      "artifact": "experiments/results/P12-confirmation-fold2-retrieval.json",
+      "artifact_sha256": "eb1d7ec95677c1410230297f9544cd6e1a64ce4be3328a5fcbbcb2b8bd302806",
+      "updated_utc": "2026-09-22T13:42:58.209001+00:00",
+      "note": "Both completed fold2 runs validated: 12 held-out rows each; saved replay max error1.11e-16. Duration16 seed20260917 best epoch15 BCE0.447216; report seed20260918 best epoch8 BCE0.455518. Different seeds: these two values are not a matched duration comparison."
     }
   },
   "fallback_submission": "56077025"

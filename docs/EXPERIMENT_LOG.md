@@ -6,6 +6,25 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-22 13:43 UTC — Two completed Kaggle fold-2 runs validated
+
+Downloaded duration16 seed20260917 and eight-epoch report seed20260918.
+Both passed local checkpoint/prediction hashes, frozen recipe and split checks,
+zero prohibited group overlap, complete 12-study held-out coverage, and original
+report-target checkpoint selection. Their saved full image replays cover all
+12 rows each with maximum absolute error 1.11e-16; no new local GPU replay ran.
+Duration16 selected epoch15 with report BCE0.447216 (288.03 minutes total);
+the eight-epoch control selected epoch8 with BCE0.455518 (150.29 minutes).
+These are different seeds and must not be treated as a matched duration comparison.
+
+Seven of the sixteen new confirmation jobs are now validated on Kaggle. Four
+fold-3 jobs are assigned to the existing AWS batch, whose live status was not
+refreshed here; five additional jobs remain unlaunched. No jobs were launched,
+no dispatcher restarted, and no promotion or competition submission occurred.
+Aggregate evidence and artifact hashes are recorded in
+`experiments/results/P12-confirmation-fold2-retrieval.json`. Complete matched
+five-fold OOF, promotion checks, and final deployment runtime validation remain.
+
 ### 2026-09-22 — Switch to manual Kaggle batches at user request
 
 Stopped `rsna-p12-confirmation.service`; host verification confirms the service
