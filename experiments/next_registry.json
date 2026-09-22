@@ -181,8 +181,8 @@
       "state": "running",
       "artifact": "experiments/P12-confirmation.json",
       "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
-      "updated_utc": "2026-09-22T05:49:29.258111+00:00",
-      "note": "Sep22: five jobs COMPLETE on Kaggle, three validated at initial check and two downloading. Eleven unlaunched. Queue moved to active native user service rsna-p12-confirmation.service after detached dispatcher exited. Live state in outputs/experiments/P12-confirmation/queue.json."
+      "updated_utc": "2026-09-22T05:53:31.161479+00:00",
+      "note": "Manual batches per user request. Dispatcher service stopped and no process remains. Five jobs validated; duration16 fold2 seed20260917 and report fold2 seed20260918 confirmed RUNNING; nine unlaunched. User returns after runs complete; no automatic dispatch."
     }
   },
   "fallback_submission": "56077025"

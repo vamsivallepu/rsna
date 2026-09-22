@@ -1,16 +1,13 @@
 {
-  "checked_utc": "2026-09-22T05:49:29.258111+00:00",
-  "queue_status": "running",
-  "validated_jobs": [
-    "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-1-s20260917",
-    "vallepuvamsikrishna/rsna-knee-next-student-duration16-1-s20260917",
-    "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-1-s20260918",
-    "vallepuvamsikrishna/rsna-knee-next-student-duration16-1-s20260918"
+  "checked_utc": "2026-09-22T05:53:31.161479+00:00",
+  "dispatch_mode": "manual",
+  "dispatcher_service": "inactive",
+  "dispatcher_processes": 0,
+  "validated_count": 5,
+  "remote_running": [
+    "vallepuvamsikrishna/rsna-knee-next-student-duration16-2-s20260917",
+    "vallepuvamsikrishna/rsna-knee-next-student-fastmri-report-2-s20260918"
   ],
-  "remote_completed_count": 5,
-  "pending_dispatch": 11,
-  "service": "rsna-p12-confirmation.service",
-  "service_verified": "active/running, ExecMainStatus=0",
-  "note": "Detached dispatcher exited without recorded error; native user service now retrieving completed outputs and refilling slots. Host must remain online.",
+  "unlaunched_count": 9,
   "paid_usd": 0
 }

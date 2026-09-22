@@ -6,6 +6,17 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-22 — Switch to manual Kaggle batches at user request
+
+Stopped `rsna-p12-confirmation.service`; host verification confirms the service
+inactive and no dispatcher process. Existing remote jobs remain live RUNNING:
+duration16 fold2 seed20260917 and report fold2 seed20260918. Five of 16 new runs
+are locally validated, two run remotely, and nine are unlaunched. The queue state
+is retained for bookkeeping, with dispatch mode marked manual. No new job was
+launched during this switch. Future batches are launched manually when the user
+returns after completion; do not restart automatic dispatch or provision a cloud
+dispatcher. This preference is recorded in `AGENTS.md`.
+
 ### 2026-09-22 — Five confirmation jobs complete; dispatcher moved to user service
 
 Live Kaggle checks confirm duration16 fold1 seed20260918 and report fold2

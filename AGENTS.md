@@ -1,5 +1,12 @@
 @/home/vamsik/.codex/RTK.md
 
+## Kaggle execution
+
+Launch Kaggle jobs manually during user-requested work. The user will report when
+jobs finish; check and validate them, then launch the next agreed batch. Do not
+start dispatchers, queue daemons, user services, or automatic follow-up launchers.
+Existing remote Kaggle jobs may continue when the local machine is off.
+
 ## Version control
 
 The user requests a commit and push to the configured Git remote after every
