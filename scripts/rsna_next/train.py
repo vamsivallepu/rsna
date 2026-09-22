@@ -96,13 +96,16 @@ def main():
                                 "scripts.rsna_next.train", *sys.argv[1:]])
     cfg = json.loads(args.config.read_text())
     rank, world = int(os.getenv("RANK", 0)), int(os.getenv("WORLD_SIZE", 1))
-    local = int(os.getenv("LOCAL_RANK", 0))
+    shared_gpu = os.getenv("RSNA_SHARED_GPU") == "1"
+    local = 0 if shared_gpu else int(os.getenv("LOCAL_RANK", 0))
+    if shared_gpu and (world != 2 or torch.cuda.device_count() != 1):
+        raise ValueError("Shared GPU mode requires exactly two ranks and one visible GPU")
     if not torch.cuda.is_available():
         raise RuntimeError("Image training requires a GPU; use P11 for CPU experiments")
     torch.cuda.set_device(local)
     device = torch.device("cuda", local)
     if world > 1:
-        dist.init_process_group("nccl")
+        dist.init_process_group("gloo" if shared_gpu else "nccl")
     torch.set_num_threads(2)
     seed = int(cfg.get("seed", 20260917)) + (args.fold if args.mode == "student" else 0)
     torch.manual_seed(seed)
@@ -288,7 +291,8 @@ def main():
                     "source_sha256": {p.name: sha256(p) for p in Path(__file__).parent.glob("*.py")},
                     "environment": {"python": platform.python_version(), "torch": torch.__version__,
                                     "numpy": np.__version__, "cuda": torch.version.cuda,
-                                    "gpu": torch.cuda.get_device_name(local)},
+                                    "gpu": torch.cuda.get_device_name(local),
+                                    "shared_gpu": shared_gpu, "distributed_backend": dist.get_backend() if world > 1 else None},
                     "promotion_eligible": False, "refit_is_not_oof": args.mode == "refit"}
         write_json(args.output / "manifest.json", manifest)
         print(json.dumps({k: manifest[k] for k in ("status", "best_epoch", "elapsed_minutes")}), flush=True)
