@@ -37,7 +37,8 @@ def main():
                ('cache-b', 'vallepuvamsikrishna/rsna-knee-p2-wide-cache-b')]
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-            futures = [pool.submit(run, ['kaggle', 'kernels', 'output', slug, '-p', str(ROOT / name)])
+            futures = [pool.submit(run, [str(ROOT / 'kaggle-env/bin/python'),
+                       str(ROOT / 'scripts/download_kernel_stream.py'), slug, str(ROOT / name)])
                        for name, slug in sources]
             for future in futures:
                 future.result()

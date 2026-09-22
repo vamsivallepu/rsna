@@ -183,6 +183,13 @@
       "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
       "updated_utc": "2026-09-22T05:53:31.161479+00:00",
       "note": "Manual batches per user request. Dispatcher service stopped and no process remains. Five jobs validated; duration16 fold2 seed20260917 and report fold2 seed20260918 confirmed RUNNING; nine unlaunched. User returns after runs complete; no automatic dispatch."
+    },
+    "P12-AWS-FOLD3-BATCH": {
+      "state": "running",
+      "artifact": "experiments/results/P12-aws-batch.json",
+      "artifact_sha256": "f12fcb7b01b55b7901caf55223422fa64725253dd07a8ac2b9d0a51c32012cd8",
+      "updated_utc": "2026-09-22T07:03:06.691190+00:00",
+      "note": "User-selected us-east-1 fallback. L4 host running; corrected Python client and resumable streaming retrieval, downloads on NVMe. Four fold3 matched jobs reserved for AWS; do not duplicate on Kaggle. Smoke/replay still pending."
     }
   },
   "fallback_submission": "56077025"

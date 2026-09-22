@@ -1,0 +1,65 @@
+{
+  "instance_id": "i-0d0ec06ac8023cffe",
+  "instance_type": "g6.2xlarge",
+  "region": "us-east-1",
+  "availability_zone": "us-east-1c",
+  "profile": "personal",
+  "account": "261513860644",
+  "launch_time": "2026-09-22T06:50:46+00:00",
+  "state": "running",
+  "hourly_compute_usd": 0.9776,
+  "maximum_hours": 24,
+  "batch_reserve_usd": 80,
+  "bucket": "rsna-p12-261513860644-ap-south-1",
+  "source_sha256": "18bc188377ed4133ee138bc3f613ab90fe31cffd3a4ae31eaa60347efc569aa9",
+  "status": "streaming_cache_downloads_running",
+  "checked_utc": "2026-09-22T07:03:06.691190+00:00",
+  "gpu": "NVIDIA L4 24 GB",
+  "compute_ceiling_usd": 23.462400000000002,
+  "jobs": [
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 3
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 3
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 3
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 3
+    }
+  ],
+  "capacity_failures": [
+    "g6e.2xlarge ap-south-1b",
+    "g6e.2xlarge ap-south-1a",
+    "g6e.xlarge ap-south-1b",
+    "g6e.xlarge ap-south-1a"
+  ],
+  "promotion_eligible": false,
+  "storage_gib": 200,
+  "encrypted": true,
+  "storage_throughput_mib_s": 500,
+  "shutdown_deadline_utc": "2026-09-23T06:32:00+00:00",
+  "bucket_region": "ap-south-1",
+  "previous_instance": "i-0186081c12610ea5f",
+  "security_group": "sg-05096916741b41ba2",
+  "initial_setup_failure": "Kaggle 2.2.4 requires Python >=3.11; fixed with separate Python 3.12 CLI environment",
+  "mumbai_cleanup": "instance terminated and EBS deletion verified after explicit user approval",
+  "bootstrap_sha256": "93edd35ee50db26ed73d294e309b07c9d909bb1d93951defecf5bbf98c81f485",
+  "gpu_verified": "NVIDIA L4, 23034 MiB, driver 595.91.07",
+  "shutdown_utc": "2026-09-23T06:31:14.317011+00:00",
+  "cache_storage": "local NVMe via symlinks; verified",
+  "streaming_transfer_test": "Interrupted transfer resumed; exact SHA-256 verified",
+  "batch_command_id": "1da87725-298d-47cd-abd8-07df3d4dce64",
+  "smoke_passed": false,
+  "full_training_started": false
+}
