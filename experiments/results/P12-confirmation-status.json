@@ -1,12 +1,14 @@
 {
-  "checked_utc": "2026-09-22T13:42:58.209001+00:00",
+  "checked_utc": "2026-09-23T05:55:57.034242+00:00",
   "dispatch_mode": "manual",
   "dispatcher_service": "inactive",
   "dispatcher_processes": 0,
   "validated_count": 7,
   "remote_running": [],
-  "unlaunched_count": 5,
-  "aws_reserved_count": 4,
-  "aws_snapshot_artifact": "experiments/results/P12-aws-batch.json",
-  "note": "Kaggle-only validated count; AWS status is tracked separately and was not refreshed in this retrieval. Four fold3 jobs reserved for AWS; five jobs remain unlaunched. No automatic dispatch."
+  "unlaunched_count": 0,
+  "aws_reserved_count": 5,
+  "aws_snapshot_artifact": "experiments/results/P12-aws-final-batch.json",
+  "note": "Seven Kaggle and four AWS jobs validated; five remaining configurations plus one matched control assigned to fixed AWS continuation. GPU host is in setup, not full training yet.",
+  "aws_validated_count": 4,
+  "aws_extra_matched_controls": 1
 }

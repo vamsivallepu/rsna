@@ -6,14 +6,14 @@
   "profile": "personal",
   "account": "261513860644",
   "launch_time": "2026-09-22T06:50:46+00:00",
-  "state": "running",
+  "state": "stopped",
   "hourly_compute_usd": 0.9776,
   "maximum_hours": 24,
   "batch_reserve_usd": 80,
   "bucket": "rsna-p12-261513860644-ap-south-1",
   "source_sha256": "18bc188377ed4133ee138bc3f613ab90fe31cffd3a4ae31eaa60347efc569aa9",
-  "status": "full_training_running",
-  "checked_utc": "2026-09-22T10:36:21+00:00",
+  "status": "all_four_jobs_independently_validated",
+  "checked_utc": "2026-09-23T05:39:15.541538+00:00",
   "gpu": "NVIDIA L4 24 GB",
   "compute_ceiling_usd": 23.462400000000002,
   "jobs": [
@@ -62,15 +62,7 @@
   "batch_command_id": "1da87725-298d-47cd-abd8-07df3d4dce64",
   "smoke_passed": true,
   "full_training_started": true,
-  "active_job": {
-    "recipe": "duration16",
-    "fold": 3,
-    "seed": 20260917,
-    "epochs": 16,
-    "completed_epochs": 1,
-    "in_progress_epoch": 2,
-    "first_epoch_minutes": 21.81235256989797
-  },
+  "active_job": null,
   "smoke_validation": {
     "status": "independently_validated_smoke_and_replay",
     "rows": 11,
@@ -114,7 +106,7 @@
       "rows": 11,
       "epochs": 8,
       "best_epoch": 8,
-      "original_report_valid_bce": 0.45693917250154437,
+      "original_report_valid_bce": 0.4569391725015443,
       "elapsed_minutes": 173.86610571543375,
       "manifest_sha256": "b53c1c406cfbb97c960b5054bcbd2b802607ad1911dfa8af753482c0329d9442",
       "checkpoint_sha256": "9f9f888207c75faae11ab36895f8c531bb58e1f74cc65024937c610a7a15ba59",
@@ -127,13 +119,78 @@
         "checkpoint_sha256": "9f9f888207c75faae11ab36895f8c531bb58e1f74cc65024937c610a7a15ba59",
         "predictions_sha256": "4892eeb2db37742a84511f840dc129c6c080125cc2d945638d17418a4bd056a9"
       }
+    },
+    {
+      "recipe": "duration16",
+      "fold": 3,
+      "seed": 20260917,
+      "status": "independently_validated",
+      "rows": 11,
+      "epochs": 16,
+      "best_epoch": 16,
+      "original_report_valid_bce": 0.4480322472637647,
+      "elapsed_minutes": 348.4216560999552,
+      "manifest_sha256": "0768488bfde3cbe9b76afd223d7527645a06cff2e3748607bae5524a8c7878ca",
+      "checkpoint_sha256": "32d76ab2f70dbfe6cfb6b0e643c662343bc3d16171f26160e78b5ac51bd68bc5",
+      "replay": {
+        "status": "replay_validated",
+        "rows": 11,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "tolerance": 0.0005,
+        "run_manifest_sha256": "0768488bfde3cbe9b76afd223d7527645a06cff2e3748607bae5524a8c7878ca",
+        "checkpoint_sha256": "32d76ab2f70dbfe6cfb6b0e643c662343bc3d16171f26160e78b5ac51bd68bc5",
+        "predictions_sha256": "c8d0476b550270a4822a8f61e1d1fd075f01ed082528d2f891f5ca9f933a4000"
+      }
+    },
+    {
+      "recipe": "fastmri-report",
+      "fold": 3,
+      "seed": 20260918,
+      "status": "independently_validated",
+      "rows": 11,
+      "epochs": 8,
+      "best_epoch": 8,
+      "original_report_valid_bce": 0.4556685025827311,
+      "elapsed_minutes": 174.09152036507925,
+      "manifest_sha256": "c12bd9ce4069700efa67e975a6254abfd627744aaa72d5dd4b89052e301e0295",
+      "checkpoint_sha256": "b832594bfd54dd87d7b5135e041de5ca5091dad154034cca82b601675a95b5a1",
+      "replay": {
+        "status": "replay_validated",
+        "rows": 11,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "tolerance": 0.0005,
+        "run_manifest_sha256": "c12bd9ce4069700efa67e975a6254abfd627744aaa72d5dd4b89052e301e0295",
+        "checkpoint_sha256": "b832594bfd54dd87d7b5135e041de5ca5091dad154034cca82b601675a95b5a1",
+        "predictions_sha256": "05717fd292f28bfa96056c70a819e65cadbbd4aeff4674cee65790bf335fe60e"
+      }
+    },
+    {
+      "recipe": "duration16",
+      "fold": 3,
+      "seed": 20260918,
+      "status": "independently_validated",
+      "rows": 11,
+      "epochs": 16,
+      "best_epoch": 16,
+      "original_report_valid_bce": 0.4479496599390911,
+      "elapsed_minutes": 348.31565403938293,
+      "manifest_sha256": "796c2e4f632af95fa8b254bdc607ae713d62db4113f715c36c6fe6ca21187e41",
+      "checkpoint_sha256": "54d4f70d6e5cb333b9c1807a507d6d9b18d449980b0785ebfd2a5d198ce4a9df",
+      "replay": {
+        "status": "replay_validated",
+        "rows": 11,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "tolerance": 0.0005,
+        "run_manifest_sha256": "796c2e4f632af95fa8b254bdc607ae713d62db4113f715c36c6fe6ca21187e41",
+        "checkpoint_sha256": "54d4f70d6e5cb333b9c1807a507d6d9b18d449980b0785ebfd2a5d198ce4a9df",
+        "predictions_sha256": "51cf8a55213981e9aaf901060f9b50baaa6574ee9ebefaa8a98544b0dcff1924"
+      }
     }
   ],
-  "completed_count": 1,
-  "queued_count": 2,
+  "completed_count": 4,
+  "queued_count": 0,
   "remaining_hours_estimate": [
-    14,
-    15
-  ],
-  "estimate_basis": "Measured ~21.8 minutes/epoch; early projection assumes similar throughput for remaining jobs."
+    0,
+    0
+  ]
 }

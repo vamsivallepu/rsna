@@ -181,15 +181,15 @@
       "state": "running",
       "artifact": "experiments/P12-confirmation.json",
       "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
-      "updated_utc": "2026-09-22T13:42:58.209001+00:00",
-      "note": "Seven of sixteen new confirmation runs validated on Kaggle. Both previously active fold2 runs retrieved and passed artifact, membership, exact frozen recipe, coverage and saved replay checks. Four fold3 jobs are handled by the separate AWS batch; five jobs remain unlaunched. Manual dispatch; no promotion or submission."
+      "updated_utc": "2026-09-23T05:55:57.034242+00:00",
+      "note": "Seven Kaggle and four AWS new runs independently validated. All five remaining configurations assigned to the active bounded AWS continuation, plus same-backend fold2 control repeat. Manual Kaggle mode; no unassigned runs. Full confirmation/promotion pending."
     },
     "P12-AWS-FOLD3-BATCH": {
-      "state": "running",
+      "state": "validated",
       "artifact": "experiments/results/P12-aws-batch.json",
-      "artifact_sha256": "e34a5aa24a5e29b5b0aa60ec9bc1f0b7979e0660cb20b81698df988978fd930e",
-      "updated_utc": "2026-09-22T10:36:21+00:00",
-      "note": "One of four AWS jobs complete and independently validated: fold3 report seed20260917, eight epochs in173.87min, full11-row replay passed. Duration16 same seed is in epoch2; two seed2 jobs queued. GPU100%; no promotion or submission."
+      "artifact_sha256": "17130c9fd41e290d0a8c0e9c215536bd341c7a16569927b7b9f22089c09c821b",
+      "updated_utc": "2026-09-23T05:50:56.479178+00:00",
+      "note": "All four fold3 jobs completed, downloaded and independently validated locally: exact frozen configs, hashes, membership, full11-row coverage and saved image replay passed. Host stopped after completion. No promotion."
     },
     "P12-FOLD2-RETRIEVAL": {
       "state": "validated",
@@ -197,6 +197,13 @@
       "artifact_sha256": "eb1d7ec95677c1410230297f9544cd6e1a64ce4be3328a5fcbbcb2b8bd302806",
       "updated_utc": "2026-09-22T13:42:58.209001+00:00",
       "note": "Both completed fold2 runs validated: 12 held-out rows each; saved replay max error1.11e-16. Duration16 seed20260917 best epoch15 BCE0.447216; report seed20260918 best epoch8 BCE0.455518. Different seeds: these two values are not a matched duration comparison."
+    },
+    "P12-AWS-FINAL-BATCH": {
+      "state": "running",
+      "artifact": "experiments/results/P12-aws-final-batch.json",
+      "artifact_sha256": "f35be4417588370bd072accfc2af04c503c16edc9f3b77354db0cdb5c6bd1fff",
+      "updated_utc": "2026-09-23T05:55:57.034242+00:00",
+      "note": "Host online; A10G24GB,412GB cache disk and36-hour shutdown timer verified. Software setup underway; cache staging and fresh smoke precede full training. Six fixed jobs only."
     }
   },
   "fallback_submission": "56077025"

@@ -79,3 +79,22 @@ policy after the batch. Do not delete the pre-existing P6 role/profile.
 Use `experiments/results/P12-aws-batch.json` and `experiments/next_registry.json`
 for the latest verified stage. A running instance or completed setup is not proof
 of a trained model. Smoke, full-run validation, and promotion are separate gates.
+
+## September 23 continuation
+
+The initial four jobs are complete and independently validated. User authorized
+continuation; Kaggle reset is still 66 hours away. New host:
+`i-0f1a75d1094f23f27`, `g5.2xlarge` A10G, us-east-1f, same profile and region.
+The old host remains stopped. G6 capacity and larger-instance vCPU quota blocked
+reuse. The continuation runs five remaining configurations plus the fold2 seed2
+eight-epoch control again, ensuring each duration pair shares its compute backend.
+Preserve the original Kaggle control as a separate artifact.
+
+Six fixed jobs only: fold2 seed20260918 and fold4 both seeds, each at 8/16 epochs.
+The source and configuration are hashed in `P12-aws-final-batch.json`.
+Outputs are under S3 `results/final/`; staging uses `source-final.tar.gz`.
+The host schedules shutdown 36 hours after bootstrap starts and stops on success
+or failure. Verified on-demand rate USD 1.212/hour; maximum compute USD 43.632.
+A fresh two-worker smoke and replay must pass before full training. The L4 ETA
+is not a measured A10G ETA. The temporary encrypted parameter is restored only
+for staging and must be deleted once cache download finishes.

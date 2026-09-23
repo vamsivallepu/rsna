@@ -27,7 +27,7 @@ if bucket:
     for name in ['bootstrap.log', 'environment.txt']:
         path = pathlib.Path('/opt/rsna') / name
         if path.exists():
-            s.upload_file(str(path), bucket, 'results/' + name)
+            s.upload_file(str(path), bucket, os.environ.get('RSNA_RESULTS_PREFIX', 'results') + '/' + name)
 INNER
   fi
   shutdown -h now
@@ -45,7 +45,7 @@ pip install boto3
 python - <<'INNER'
 import boto3,hashlib,tarfile,os
 p='/opt/rsna/source.tar.gz'
-boto3.client('s3',region_name='ap-south-1').download_file(os.environ['RSNA_BUCKET'],'staging/source.tar.gz',p)
+boto3.client('s3',region_name='ap-south-1').download_file(os.environ['RSNA_BUCKET'],os.environ.get('RSNA_SOURCE_KEY','staging/source.tar.gz'),p)
 assert hashlib.sha256(open(p,'rb').read()).hexdigest() == os.environ['RSNA_SOURCE_SHA256']
 with tarfile.open(p) as t: t.extractall('/opt/rsna',filter='data')
 INNER

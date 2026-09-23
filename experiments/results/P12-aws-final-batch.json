@@ -1,0 +1,68 @@
+{
+  "instance_id": "i-0f1a75d1094f23f27",
+  "instance_type": "g5.2xlarge",
+  "region": "us-east-1",
+  "availability_zone": "us-east-1f",
+  "state": "running",
+  "status": "software_setup",
+  "started_utc": "2026-09-23T05:52:57.182350+00:00",
+  "maximum_hours": 36,
+  "hourly_compute_usd": 1.212,
+  "compute_ceiling_usd": 43.632,
+  "source_sha256": "99f8eac6b3e66890f1ccd2fafebe79701c30294300181aa268f86351f1996094",
+  "bootstrap_sha256": "6bb98f673ee903038f5d3a8d9b4ae9b998e82418ee8480e29ea02fed4f708500",
+  "jobs": [
+    {
+      "recipe": "fastmri-report",
+      "fold": 2,
+      "seed": 20260918
+    },
+    {
+      "recipe": "duration16",
+      "fold": 2,
+      "seed": 20260918
+    },
+    {
+      "recipe": "fastmri-report",
+      "fold": 4,
+      "seed": 20260917
+    },
+    {
+      "recipe": "duration16",
+      "fold": 4,
+      "seed": 20260917
+    },
+    {
+      "recipe": "fastmri-report",
+      "fold": 4,
+      "seed": 20260918
+    },
+    {
+      "recipe": "duration16",
+      "fold": 4,
+      "seed": 20260918
+    }
+  ],
+  "capacity_failures": [
+    {
+      "zone": "us-east-1b",
+      "error": "InsufficientInstanceCapacity"
+    },
+    {
+      "zone": "us-east-1a",
+      "error": "InsufficientInstanceCapacity"
+    },
+    {
+      "zone": "us-east-1d",
+      "error": "InsufficientInstanceCapacity"
+    }
+  ],
+  "previous_host": "i-0d0ec06ac8023cffe",
+  "promotion_eligible": false,
+  "checked_utc": "2026-09-23T05:55:57.034242+00:00",
+  "gpu": "NVIDIA A10G 24GB",
+  "shutdown_deadline_utc": "2026-09-24T17:53:43.234666+00:00",
+  "smoke_passed": false,
+  "full_training_started": false,
+  "temporary_ssm_token": "present_for_active_cache_staging"
+}

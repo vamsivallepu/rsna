@@ -15,19 +15,31 @@ def run(args, **kwargs):
     subprocess.run(args, check=True, **kwargs)
 
 
+def validate_batch(batch):
+    final = batch.get('batch_id') == 'remaining-confirmation'
+    expected = ({(r, s, 4) for r in ('fastmri-report', 'duration16')
+                 for s in (20260917, 20260918)} |
+                {(r, 20260918, 2) for r in ('fastmri-report', 'duration16')}) if final else {
+                    (r, s, 3) for r in ('fastmri-report', 'duration16') for s in (20260917, 20260918)}
+    if len(batch['jobs']) != len(expected) or {
+            (j['recipe'], j['seed'], j['fold']) for j in batch['jobs']} != expected:
+        raise ValueError('Batch does not match the fixed approved jobs')
+    hours = 36 if final else 24
+    ceiling = 36 * 1.212 + .001 if final else 65
+    if batch['maximum_hours'] != hours or not 0 < batch['compute_ceiling_usd'] <= ceiling:
+        raise ValueError('Batch exceeds its compute limit')
+    return 'results/final' if final else 'results'
+
+
 def main():
     import boto3
     os.chdir(ROOT)
     batch = json.loads((ROOT / 'batch.json').read_text())
-    expected = {(r, s, 3) for r in ('fastmri-report', 'duration16') for s in (20260917, 20260918)}
-    if len(batch['jobs']) != 4 or {(j['recipe'], j['seed'], j['fold']) for j in batch['jobs']} != expected:
-        raise ValueError('Only the approved four matched fold-3 jobs may run')
-    if batch['maximum_hours'] != 24 or batch['compute_ceiling_usd'] > 65:
-        raise ValueError('Batch exceeds its compute limit')
+    result_name = validate_batch(batch)
     bucket = os.environ['RSNA_BUCKET']
     s3 = boto3.client('s3', region_name='ap-south-1')
-    result = ROOT / 'results'
-    result.mkdir(exist_ok=True)
+    result = ROOT / result_name
+    result.mkdir(parents=True, exist_ok=True)
     token = Path.home() / '.kaggle/access_token'
     token.parent.mkdir(mode=0o700, exist_ok=True)
     token.write_text(boto3.client('ssm', region_name='ap-south-1').get_parameter(
@@ -60,7 +72,7 @@ def main():
     def upload():
         for path in result.rglob('*'):
             if path.is_file():
-                s3.upload_file(str(path), bucket, 'results/' + str(path.relative_to(result)))
+                s3.upload_file(str(path), bucket, result_name + '/' + str(path.relative_to(result)))
 
     try:
         for index, job in enumerate([batch['jobs'][0], *batch['jobs']]):
@@ -87,7 +99,7 @@ def main():
                 assert manifest['peak_cuda_memory_mib'] < 20000
                 assert time.monotonic() - started < 1800
             upload()
-        (result / 'batch-complete.json').write_text(json.dumps({'status': 'complete', 'jobs': 4}))
+        (result / 'batch-complete.json').write_text(json.dumps({'status': 'complete', 'jobs': len(batch['jobs'])}))
     finally:
         monitor.terminate()
         monitor.wait()

@@ -6,6 +6,28 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-23 — AWS fold-3 batch independently validated
+
+All four runs completed around 06:12 IST; the host stopped automatically.
+Downloaded all checkpoints and predictions and independently verified their hashes,
+exact frozen configurations, exclusion memberships, full 11-study held-out coverage,
+original-report checkpoint selection and saved replay evidence (max error1.11e-16).
+Eight versus sixteen epochs improved report-validation BCE in both seeds:
+0.456939 to 0.448032 and 0.455669 to 0.447950. This is not expert OOF promotion evidence.
+Seven new Kaggle runs plus four AWS runs are validated; five configurations remain.
+
+Kaggle quota resets in 66 hours per the user. The continuation includes those five
+configurations plus an AWS repeat of the fold2 seed20260918 eight-epoch control,
+so its duration comparison uses the same execution backend. The original Kaggle
+control is preserved. The fixed continuation permits no additional configurations,
+uses separate `results/final/` storage, and stops after 36 hours or success/failure.
+The original g6.2xlarge had no capacity across five supported zones; us-east-1e
+returned Unsupported. A g6.4xlarge fallback hit the eight-vCPU account quota. The quota-compatible
+g5.2xlarge (A10G) launched in us-east-1f after three further capacity failures.
+Verified pricing is USD 1.212/hour, maximum 36-hour compute USD 43.632, within the
+existing USD 80 reserve. Host i-0f1a75d1094f23f27 is setting up; full training is
+not yet confirmed. The previous host remains stopped.
+
 ### 2026-09-22 13:43 UTC — Two completed Kaggle fold-2 runs validated
 
 Downloaded duration16 seed20260917 and eight-epoch report seed20260918.
