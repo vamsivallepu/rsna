@@ -201,9 +201,9 @@
     "P12-AWS-FINAL-BATCH": {
       "state": "running",
       "artifact": "experiments/results/P12-aws-final-batch.json",
-      "artifact_sha256": "f35be4417588370bd072accfc2af04c503c16edc9f3b77354db0cdb5c6bd1fff",
-      "updated_utc": "2026-09-23T05:55:57.034242+00:00",
-      "note": "Host online; A10G24GB,412GB cache disk and36-hour shutdown timer verified. Software setup underway; cache staging and fresh smoke precede full training. Six fixed jobs only."
+      "artifact_sha256": "75872db5b93a6694af4838528a547c7f5a8e2a8c982a0751190204afdecd938a",
+      "updated_utc": "2026-09-23T06:03:33.846958+00:00",
+      "note": "A10G smoke trained in33sec and full12-row saved replay passed (9.19e-17). First full eight-epoch fold2 seed2 control has started; five jobs follow in fixed batch. Host and SSM tokens removed;36-hour automatic stop verified. Local smoke artifacts independently validated."
     }
   },
   "fallback_submission": "56077025"

@@ -25,8 +25,11 @@ The original g6.2xlarge had no capacity across five supported zones; us-east-1e
 returned Unsupported. A g6.4xlarge fallback hit the eight-vCPU account quota. The quota-compatible
 g5.2xlarge (A10G) launched in us-east-1f after three further capacity failures.
 Verified pricing is USD 1.212/hour, maximum 36-hour compute USD 43.632, within the
-existing USD 80 reserve. Host i-0f1a75d1094f23f27 is setting up; full training is
-not yet confirmed. The previous host remains stopped.
+existing USD 80 reserve. Host i-0f1a75d1094f23f27 passed its fresh A10G smoke (33 seconds) and all
+12 replay predictions (maximum error9.19e-17); the first full eight-epoch fold2
+seed2 control started. The previous host remains stopped. Temporary Kaggle
+credentials were removed from both the host and SSM after cache staging.
+Verified automatic shutdown: September24 17:53:43 UTC (23:23 IST).
 
 ### 2026-09-22 13:43 UTC — Two completed Kaggle fold-2 runs validated
 

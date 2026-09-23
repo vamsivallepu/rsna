@@ -4,7 +4,7 @@
   "region": "us-east-1",
   "availability_zone": "us-east-1f",
   "state": "running",
-  "status": "software_setup",
+  "status": "full_training_started",
   "started_utc": "2026-09-23T05:52:57.182350+00:00",
   "maximum_hours": 36,
   "hourly_compute_usd": 1.212,
@@ -59,10 +59,30 @@
   ],
   "previous_host": "i-0d0ec06ac8023cffe",
   "promotion_eligible": false,
-  "checked_utc": "2026-09-23T05:55:57.034242+00:00",
+  "checked_utc": "2026-09-23T06:03:33.846958+00:00",
   "gpu": "NVIDIA A10G 24GB",
   "shutdown_deadline_utc": "2026-09-24T17:53:43.234666+00:00",
-  "smoke_passed": false,
-  "full_training_started": false,
-  "temporary_ssm_token": "present_for_active_cache_staging"
+  "smoke_passed": true,
+  "full_training_started": true,
+  "temporary_ssm_token": "deleted_and_absence_verified",
+  "host_token_removed": true,
+  "active_job": {
+    "recipe": "fastmri-report",
+    "fold": 2,
+    "seed": 20260918,
+    "epochs": 8
+  },
+  "smoke_replay": {
+    "rows": 12,
+    "maximum_absolute_error": 9.194034422677078e-17,
+    "manifest_sha256": "da7aa1cf90ba3545d365a9912e4bf34c9da38678c17e3d07ae8653a61ea88f9b"
+  },
+  "smoke_elapsed_minutes": 0.5546659429868063,
+  "smoke_local_validation": {
+    "status": "independently_validated",
+    "rows": 12,
+    "peak_cuda_memory_per_worker_mib": 7099.69287109375,
+    "manifest_sha256": "da7aa1cf90ba3545d365a9912e4bf34c9da38678c17e3d07ae8653a61ea88f9b",
+    "checkpoint_sha256": "05ec9c299fe1f20f2f70e8c2f33417d757115747ae8cd3c8507c1c8d0eab0daa"
+  }
 }

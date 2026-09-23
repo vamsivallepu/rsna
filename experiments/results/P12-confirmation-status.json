@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-09-23T05:55:57.034242+00:00",
+  "checked_utc": "2026-09-23T06:03:33.846958+00:00",
   "dispatch_mode": "manual",
   "dispatcher_service": "inactive",
   "dispatcher_processes": 0,
@@ -8,7 +8,7 @@
   "unlaunched_count": 0,
   "aws_reserved_count": 5,
   "aws_snapshot_artifact": "experiments/results/P12-aws-final-batch.json",
-  "note": "Seven Kaggle and four AWS jobs validated; five remaining configurations plus one matched control assigned to fixed AWS continuation. GPU host is in setup, not full training yet.",
+  "note": "Seven Kaggle and four AWS jobs validated; five remaining configurations plus one matched control assigned to fixed AWS continuation. Fresh A10G smoke/replay passed; first full run started.",
   "aws_validated_count": 4,
   "aws_extra_matched_controls": 1
 }
