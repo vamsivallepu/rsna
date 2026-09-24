@@ -6,6 +6,22 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-24 — Exploratory release ready; Kaggle GPU save blocked
+
+Private model dataset `vallepuvamsikrishna/rsna-p12-exploratory-duration-models`
+finished processing and reports ready. Kaggle expands the uploaded archive;
+the loader now reads the verified dataset layout and pins each manifest/checkpoint.
+Fixed-blend unit checks, row alignment, ties, and float-boundary handling passed.
+
+Manual benchmark push was rejected with the exact message:
+`Kernel push error: Maximum weekly GPU quota of 30.00 hours reached.`
+A subsequent status check returned404; no runnable benchmark version exists.
+The hidden scoring run is distinct from this saved-notebook execution. No scoring
+submission was sent, no weights were changed, and the P8 fallback remains intact.
+Resume with the prepared benchmark when development GPU quota is available,
+then validate its outputs, run the canary, and submit its exact version manually.
+No dispatcher or recurring launch automation was created.
+
 ### 2026-09-24 — User-authorized exploratory public-score test
 
 User requested one Kaggle score despite failed duration promotion gates, then

@@ -3,7 +3,6 @@ import argparse
 import json
 import subprocess
 import sys
-import tarfile
 import time
 from pathlib import Path
 
@@ -37,12 +36,10 @@ def main():
         if len(paths) != 1:
             raise ValueError(f'Expected one {name}, found {len(paths)}')
         return paths[0]
-    archive = find('p12-exploratory-models.tar')
-    assert sha256(archive) == spec['archive_sha256']
-    models = root / 'models'
-    models.mkdir(exist_ok=True)
-    with tarfile.open(archive) as t:
-        t.extractall(models, filter='data')
+    # Kaggle expands uploaded tar archives into the read-only dataset mount.
+    models = find('seed20260917-fold0/manifest.json').parent.parent
+    for model in spec['models']:
+        assert sha256(models/model['name']/'manifest.json') == model['manifest_sha256']
     weights = find('p6_localization_backbone_best.safetensors')
     entries = [dict(run=str(models/m['name']), weights=str(weights),
                     manifest_sha256=m['manifest_sha256'], checkpoint_sha256=m['checkpoint_sha256'],

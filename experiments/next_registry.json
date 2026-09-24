@@ -204,6 +204,13 @@
       "artifact_sha256": "20f630464f651b56cf9704d27ab5e672865795879f371f28197955d8c5338b7e",
       "updated_utc": "2026-09-24T05:36:23.513440+00:00",
       "note": "All six final AWS jobs downloaded and independently validated: exact configs, hashes, exclusions, coverage and saved replays. Host stopped; temporary access policy removed."
+    },
+    "P12-EXPLORATORY-SUBMISSION": {
+      "state": "blocked",
+      "artifact": "experiments/results/P12-exploratory-launch.json",
+      "artifact_sha256": "39a941cffaa782b30e68eb301b7caf5118d75df382e4d91ba4fd9ca47856f3ce",
+      "updated_utc": "2026-09-24T05:57:23.836624+00:00",
+      "note": "User-approved fixed80/20 P8/P12 exploratory release. Private dataset ready. Local blend tests pass; diagnostic OOF0.911249. Kaggle rejected benchmark push: weekly30h GPU quota reached. No runnable version created and no competition submission sent. P8 retained."
     }
   },
   "fallback_submission": "56077025"
