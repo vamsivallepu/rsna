@@ -3,8 +3,8 @@
   "instance_type": "g5.2xlarge",
   "region": "us-east-1",
   "availability_zone": "us-east-1f",
-  "state": "running",
-  "status": "full_training_started",
+  "state": "stopped",
+  "status": "six_runs_independently_validated",
   "started_utc": "2026-09-23T05:52:57.182350+00:00",
   "maximum_hours": 36,
   "hourly_compute_usd": 1.212,
@@ -59,19 +59,14 @@
   ],
   "previous_host": "i-0d0ec06ac8023cffe",
   "promotion_eligible": false,
-  "checked_utc": "2026-09-23T06:03:33.846958+00:00",
+  "checked_utc": "2026-09-24T05:36:23.513440+00:00",
   "gpu": "NVIDIA A10G 24GB",
   "shutdown_deadline_utc": "2026-09-24T17:53:43.234666+00:00",
   "smoke_passed": true,
   "full_training_started": true,
   "temporary_ssm_token": "deleted_and_absence_verified",
   "host_token_removed": true,
-  "active_job": {
-    "recipe": "fastmri-report",
-    "fold": 2,
-    "seed": 20260918,
-    "epochs": 8
-  },
+  "active_job": null,
   "smoke_replay": {
     "rows": 12,
     "maximum_absolute_error": 9.194034422677078e-17,
@@ -84,5 +79,136 @@
     "peak_cuda_memory_per_worker_mib": 7099.69287109375,
     "manifest_sha256": "da7aa1cf90ba3545d365a9912e4bf34c9da38678c17e3d07ae8653a61ea88f9b",
     "checkpoint_sha256": "05ec9c299fe1f20f2f70e8c2f33417d757115747ae8cd3c8507c1c8d0eab0daa"
-  }
+  },
+  "completed_count": 6,
+  "batch_completed_ist": "2026-09-24T06:39:05+05:30",
+  "temporary_role_policy_removed": true,
+  "completed_runs": [
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/fastmri-report-f4-s20260917",
+      "manifest_sha256": "793051bedfc430a6d02e048634591de154ee3a6408fcc3db3c41997821ae8695",
+      "checkpoint_sha256": "1923e87cfa341f9177cc1c6e462cec01897ac13347676ad11bf92d3dfc177bfe",
+      "rows": 11,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4553830569718232
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/duration16-f4-s20260917",
+      "manifest_sha256": "62ce1d629c44792d58bb5e1a7d5554a788eeee6103daae6f204c16cd429c5fc5",
+      "checkpoint_sha256": "d7d0354780c363ed7ee11514b7ae6d83b331028a430677276de07ab6e68aa409",
+      "rows": 11,
+      "best_epoch": 16,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4463536712482557
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 2,
+      "root": "outputs/aws/p12-final/fastmri-report-f2-s20260918",
+      "manifest_sha256": "5b7b2f6f6786a568c50b0088174d9186723e3b24259baeb4eac1530c85409d6a",
+      "checkpoint_sha256": "06c6df8808098f300f2d70c2ba06ad66fc823bb565c89cc2231fcc1a8fc3ec17",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4566289579442682
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/fastmri-report-f4-s20260918",
+      "manifest_sha256": "2f40843cbecbc65ea860f57714ba9b572be98076ec745d796247b9dc8b412df0",
+      "checkpoint_sha256": "e34a13005ab0dbcc7f4f2b5ff8a14795eba0429535f29472b71fb4129c781130",
+      "rows": 11,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.45619340469134
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 2,
+      "root": "outputs/aws/p12-final/duration16-f2-s20260918",
+      "manifest_sha256": "28a2c379aa87ebb2f23a3516bbc349094350b2c7d3eb9e6760c5f1ba0ea789dd",
+      "checkpoint_sha256": "2c4d550072b7f3b057df5928e63990d53da240a80cf20d4f2f9fb569fbf9a3bf",
+      "rows": 12,
+      "best_epoch": 15,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4472447858695325
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/duration16-f4-s20260918",
+      "manifest_sha256": "2818ff4875e923f60514803b3eea808353e24a2352b4d928ad6605ae69494d23",
+      "checkpoint_sha256": "37575f717fef7c2fa030c73f010879129af6e9ef1edb34a04dfc8d51676cb610",
+      "rows": 11,
+      "best_epoch": 15,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4464547083431618
+    }
+  ]
 }

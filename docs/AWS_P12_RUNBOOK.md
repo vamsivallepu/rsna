@@ -98,3 +98,12 @@ or failure. Verified on-demand rate USD 1.212/hour; maximum compute USD 43.632.
 A fresh two-worker smoke and replay must pass before full training. The L4 ETA
 is not a measured A10G ETA. The temporary encrypted parameter is restored only
 for staging and must be deleted once cache download finishes.
+
+## September 24 closeout
+
+The final six runs completed and all artifacts/replays passed local validation.
+Both hosts are stopped; retained storage remains billable. Temporary batch role
+policy removed and verified absent; temporary credential also absent. Duration16
+failed statistical promotion; see `P12-confirmation-oof.json`. No submission or
+new paid run was launched. Two reused seed2 fold0 replay reports and exact-release
+runtime evidence remain missing and are not represented as passed.

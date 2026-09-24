@@ -1,14 +1,16 @@
 {
-  "checked_utc": "2026-09-23T06:03:33.846958+00:00",
+  "checked_utc": "2026-09-24T05:36:23.513440+00:00",
   "dispatch_mode": "manual",
   "dispatcher_service": "inactive",
   "dispatcher_processes": 0,
   "validated_count": 7,
   "remote_running": [],
   "unlaunched_count": 0,
-  "aws_reserved_count": 5,
+  "aws_reserved_count": 0,
   "aws_snapshot_artifact": "experiments/results/P12-aws-final-batch.json",
-  "note": "Seven Kaggle and four AWS jobs validated; five remaining configurations plus one matched control assigned to fixed AWS continuation. Fresh A10G smoke/replay passed; first full run started.",
-  "aws_validated_count": 4,
-  "aws_extra_matched_controls": 1
+  "note": "All16 new configurations complete plus AWS matched control repeat. Four matched five-fold OOF sets integrity-validated. Duration16 fails both-seed and bootstrap gates. Two reused seed2 fold0 image replays remain missing; exact candidate runtime not run. P8 retained.",
+  "aws_validated_count": 9,
+  "aws_extra_matched_controls": 1,
+  "status": "training_complete_duration_not_promoted",
+  "aws_extra_matched_controls_validated": 1
 }

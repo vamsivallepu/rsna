@@ -1,0 +1,564 @@
+{
+  "checked_utc": "2026-09-24T05:34:31.298699+00:00",
+  "status": "four_oof_sets_integrity_validated",
+  "results": {
+    "fastmri-report-20260917": {
+      "metrics": {
+        "ACL": 0.9607843137254902,
+        "MCL": 0.8299319727891157,
+        "Medial Meniscus": 0.96875,
+        "Lateral Meniscus": 0.8956521739130435,
+        "Medial OA": 0.9705426356589146,
+        "Lateral OA": 0.8413926499032882,
+        "PF OA": 0.8211068211068211,
+        "Effusion": 0.9590062111801243,
+        "Synovitis": 0.7956989247311828,
+        "Baker's": 0.9601449275362319,
+        "Contusion": 0.9338731443994602,
+        "Fracture": 0.9541666666666666,
+        "MACRO": 0.9075875368008616
+      },
+      "rows": 58,
+      "oof_sha256": "8d96d41ddc53e0866c52b89bdeaf5c5ba8fdd20022946bc4062130437c0d8b89"
+    },
+    "duration16-20260917": {
+      "metrics": {
+        "ACL": 0.9828431372549019,
+        "MCL": 0.9546485260770975,
+        "Medial Meniscus": 0.9435096153846154,
+        "Lateral Meniscus": 0.9043478260869565,
+        "Medial OA": 0.9813953488372094,
+        "Lateral OA": 0.8375241779497098,
+        "PF OA": 0.8391248391248392,
+        "Effusion": 0.8981366459627329,
+        "Synovitis": 0.7204301075268819,
+        "Baker's": 0.963768115942029,
+        "Contusion": 0.9595141700404859,
+        "Fracture": 0.8847222222222222,
+        "MACRO": 0.9058303943674734
+      },
+      "rows": 58,
+      "oof_sha256": "263aada2ce10675c52f3d66e3ff3eed7cc7e27305d97e3d4e604a713e6d98699"
+    },
+    "fastmri-report-20260918": {
+      "metrics": {
+        "ACL": 0.9497549019607843,
+        "MCL": 0.8435374149659864,
+        "Medial Meniscus": 0.9543269230769231,
+        "Lateral Meniscus": 0.8621118012422361,
+        "Medial OA": 0.9829457364341085,
+        "Lateral OA": 0.8336557059961315,
+        "PF OA": 0.8352638352638352,
+        "Effusion": 0.9366459627329193,
+        "Synovitis": 0.8160095579450418,
+        "Baker's": 0.9510869565217391,
+        "Contusion": 0.9257759784075574,
+        "Fracture": 0.9472222222222222,
+        "MACRO": 0.9031947497307904
+      },
+      "rows": 58,
+      "oof_sha256": "23789eda8a317f0fc4cf59f840321cf9648e3dd470964baa2a82262972df6230"
+    },
+    "duration16-20260918": {
+      "metrics": {
+        "ACL": 0.9693627450980391,
+        "MCL": 0.945578231292517,
+        "Medial Meniscus": 0.9459134615384616,
+        "Lateral Meniscus": 0.8881987577639752,
+        "Medial OA": 0.9782945736434108,
+        "Lateral OA": 0.8491295938104448,
+        "PF OA": 0.8391248391248392,
+        "Effusion": 0.8993788819875776,
+        "Synovitis": 0.7622461170848268,
+        "Baker's": 0.9565217391304348,
+        "Contusion": 0.9487179487179488,
+        "Fracture": 0.9180555555555556,
+        "MACRO": 0.9083768703956694
+      },
+      "rows": 58,
+      "oof_sha256": "203dab66ef6440301a993807b134b3623d11c50107b819ab46ae1391a7f6a1cd"
+    }
+  },
+  "two_seed_mean_metrics": {
+    "control": {
+      "ACL": 0.9558823529411764,
+      "MCL": 0.8344671201814059,
+      "Medial Meniscus": 0.9651442307692308,
+      "Lateral Meniscus": 0.8832298136645963,
+      "Medial OA": 0.9813953488372094,
+      "Lateral OA": 0.8433268858800773,
+      "PF OA": 0.8288288288288288,
+      "Effusion": 0.9565217391304348,
+      "Synovitis": 0.8088410991636797,
+      "Baker's": 0.9601449275362319,
+      "Contusion": 0.9298245614035088,
+      "Fracture": 0.9569444444444444,
+      "MACRO": 0.9087126127317354
+    },
+    "duration16": {
+      "ACL": 0.9742647058823528,
+      "MCL": 0.9546485260770974,
+      "Medial Meniscus": 0.9447115384615384,
+      "Lateral Meniscus": 0.9043478260869565,
+      "Medial OA": 0.9829457364341085,
+      "Lateral OA": 0.8452611218568665,
+      "PF OA": 0.833976833976834,
+      "Effusion": 0.915527950310559,
+      "Synovitis": 0.7419354838709679,
+      "Baker's": 0.9692028985507246,
+      "Contusion": 0.9554655870445344,
+      "Fracture": 0.9083333333333332,
+      "MACRO": 0.9108851284904894
+    }
+  },
+  "statistical_comparison": {
+    "seed_deltas": [
+      -0.0017571424333882035,
+      0.0051821206648789975
+    ],
+    "target_deltas": {
+      "ACL": 0.018382352941176405,
+      "MCL": 0.12018140589569148,
+      "Medial Meniscus": -0.0204326923076924,
+      "Lateral Meniscus": 0.02111801242236022,
+      "Medial OA": 0.0015503875968991832,
+      "Lateral OA": 0.0019342359767892114,
+      "PF OA": 0.005148005148005175,
+      "Effusion": -0.04099378881987581,
+      "Synovitis": -0.06690561529271188,
+      "Baker's": 0.009057971014492683,
+      "Contusion": 0.02564102564102566,
+      "Fracture": -0.04861111111111116
+    },
+    "paired_bootstrap": {
+      "valid_repeats": 4999,
+      "ci95": [
+        -0.011340264889512126,
+        0.016727100900330888
+      ],
+      "probability_positive": 0.6233246649329865
+    },
+    "gates": {
+      "both_seed_wins": false,
+      "mean_gain_positive": true,
+      "seed_ensemble_gain_positive": true,
+      "bootstrap": false,
+      "target_floor": false,
+      "runtime": false
+    },
+    "passed": false
+  },
+  "missing_replays": [
+    "outputs/kaggle/p12-fastmri-report-f0-seed2-v1/next_run",
+    "outputs/kaggle/p12-duration16-f0-seed2-v1/next_run"
+  ],
+  "runs": [
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 0,
+      "root": "outputs/kaggle/p12-fastmri-baseline-f0-v1/next_run",
+      "manifest_sha256": "80988af192ec762c78886ca10e620dd4ccf6194efe23491a53330fc19c8b68a7",
+      "checkpoint_sha256": "12d3a4ad64ece3b4dfa453b44ad627fa13b8473b1075d90c3a48bd47b48b192f",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": "prior_pinned_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4561678843502014
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 1,
+      "root": "outputs/kaggle/p12-confirm-fastmri-report-f1-s20260917-v1/next_run",
+      "manifest_sha256": "dd09af7b097ef929f874d495a942aa0f13a96246a440d1a37ee28440b8071531",
+      "checkpoint_sha256": "dbb9b59b180ff5d7de2cd09049fa99fe90ef432354a34e14b4c15ad67a06e489",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4554200612597663
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 2,
+      "root": "outputs/kaggle/p12-confirm-fastmri-report-f2-s20260917-v1/next_run",
+      "manifest_sha256": "e78f87f28d8c9fc5ef2b3e105b1d77d4326856c46d826c86344269d53f1d20c2",
+      "checkpoint_sha256": "06f1d7d37ee4a57929bee437b1aef2d25b22a238582ebe2467001f5901329e5b",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4552703014908565
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 3,
+      "root": "outputs/aws/p12/fastmri-report-f3-s20260917",
+      "manifest_sha256": "b53c1c406cfbb97c960b5054bcbd2b802607ad1911dfa8af753482c0329d9442",
+      "checkpoint_sha256": "9f9f888207c75faae11ab36895f8c531bb58e1f74cc65024937c610a7a15ba59",
+      "rows": 11,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA L4",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4569391725015443
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260917,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/fastmri-report-f4-s20260917",
+      "manifest_sha256": "793051bedfc430a6d02e048634591de154ee3a6408fcc3db3c41997821ae8695",
+      "checkpoint_sha256": "1923e87cfa341f9177cc1c6e462cec01897ac13347676ad11bf92d3dfc177bfe",
+      "rows": 11,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4553830569718232
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 0,
+      "root": "outputs/kaggle/p12-duration16-f0-v1/next_run",
+      "manifest_sha256": "2403bb1ce14acd8b115aa2857497bbce979199ab00ceb161372e7e901d1fc9ba",
+      "checkpoint_sha256": "2c7d5bbb82bfeade44d807394e378ed6ffc0f095734ba50f54cf976521ee78bc",
+      "rows": 12,
+      "best_epoch": 16,
+      "replay": "prior_pinned_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4485985700555437
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 1,
+      "root": "outputs/kaggle/p12-confirm-duration16-f1-s20260917-v1/next_run",
+      "manifest_sha256": "8d2ae121f75f0b1f588cb75dc6f39b20f1ec9e8af933debaa7bb642eb81f8f27",
+      "checkpoint_sha256": "37adca0259642a29a10553af4dfda0f191b2124fd3a6aeecffd13611ad03b9df",
+      "rows": 12,
+      "best_epoch": 15,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4460662133244862
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 2,
+      "root": "outputs/kaggle/p12-confirm-duration16-f2-s20260917-v1/next_run",
+      "manifest_sha256": "bfd16ef83b0957b80a4e9abc40b0efec32946f1d17b647c4450ae01db617ea2b",
+      "checkpoint_sha256": "d9317cd09c032521404c7f2d7619164fc291facbf8c8aebc72929a3c0e604dd4",
+      "rows": 12,
+      "best_epoch": 15,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4472157793186439
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 3,
+      "root": "outputs/aws/p12/duration16-f3-s20260917",
+      "manifest_sha256": "0768488bfde3cbe9b76afd223d7527645a06cff2e3748607bae5524a8c7878ca",
+      "checkpoint_sha256": "32d76ab2f70dbfe6cfb6b0e643c662343bc3d16171f26160e78b5ac51bd68bc5",
+      "rows": 11,
+      "best_epoch": 16,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA L4",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4480322472637647
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260917,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/duration16-f4-s20260917",
+      "manifest_sha256": "62ce1d629c44792d58bb5e1a7d5554a788eeee6103daae6f204c16cd429c5fc5",
+      "checkpoint_sha256": "d7d0354780c363ed7ee11514b7ae6d83b331028a430677276de07ab6e68aa409",
+      "rows": 11,
+      "best_epoch": 16,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4463536712482557
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 0,
+      "root": "outputs/kaggle/p12-fastmri-report-f0-seed2-v1/next_run",
+      "manifest_sha256": "ba6751607d658333d28ea73487ce7bbb273f2510f1a43cdad9fafcaec7fc650d",
+      "checkpoint_sha256": "46f186ad10e93802a4f1df6db520e947c65cef874091dcd21c06818cd68dc83e",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": null,
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4578405131244117
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 1,
+      "root": "outputs/kaggle/p12-confirm-fastmri-report-f1-s20260918-v1/next_run",
+      "manifest_sha256": "75f3bdffcf31040d0d993ebf1450e330cef22a175d5fd81e06ecb193ec24e599",
+      "checkpoint_sha256": "c4495baea86765c9e8486e949968f4f925a72c511f34dfab4897eb4a64cb385c",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4543929003815544
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 2,
+      "root": "outputs/aws/p12-final/fastmri-report-f2-s20260918",
+      "manifest_sha256": "5b7b2f6f6786a568c50b0088174d9186723e3b24259baeb4eac1530c85409d6a",
+      "checkpoint_sha256": "06c6df8808098f300f2d70c2ba06ad66fc823bb565c89cc2231fcc1a8fc3ec17",
+      "rows": 12,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4566289579442682
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 3,
+      "root": "outputs/aws/p12/fastmri-report-f3-s20260918",
+      "manifest_sha256": "c12bd9ce4069700efa67e975a6254abfd627744aaa72d5dd4b89052e301e0295",
+      "checkpoint_sha256": "b832594bfd54dd87d7b5135e041de5ca5091dad154034cca82b601675a95b5a1",
+      "rows": 11,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA L4",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4556685025827311
+    },
+    {
+      "recipe": "fastmri-report",
+      "seed": 20260918,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/fastmri-report-f4-s20260918",
+      "manifest_sha256": "2f40843cbecbc65ea860f57714ba9b572be98076ec745d796247b9dc8b412df0",
+      "checkpoint_sha256": "e34a13005ab0dbcc7f4f2b5ff8a14795eba0429535f29472b71fb4129c781130",
+      "rows": 11,
+      "best_epoch": 8,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.45619340469134
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 0,
+      "root": "outputs/kaggle/p12-duration16-f0-seed2-v1/next_run",
+      "manifest_sha256": "0a6da89a02434fdc999d4c302a2d07ca894b7fa57b410a2158cb4ab115368256",
+      "checkpoint_sha256": "9bc8fdddc9b2687e812c1a67dc7edf1f117f8594f608a3d7a47512360c87f771",
+      "rows": 12,
+      "best_epoch": 15,
+      "replay": null,
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4473024353512388
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 1,
+      "root": "outputs/kaggle/p12-confirm-duration16-f1-s20260918-v1/next_run",
+      "manifest_sha256": "7fbdc89a49b82cb3ab77ef34ab338cf18b97e430d58ef5f8760185d0a1279743",
+      "checkpoint_sha256": "d2c0fdba072c28390da9036eff2111a5e3f8434e35b6f7e6a496eedbe3669d21",
+      "rows": 12,
+      "best_epoch": 16,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.12.13",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.0.2",
+        "cuda": "12.8",
+        "gpu": "Tesla T4"
+      },
+      "report_bce": 0.4444893268111256
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 2,
+      "root": "outputs/aws/p12-final/duration16-f2-s20260918",
+      "manifest_sha256": "28a2c379aa87ebb2f23a3516bbc349094350b2c7d3eb9e6760c5f1ba0ea789dd",
+      "checkpoint_sha256": "2c4d550072b7f3b057df5928e63990d53da240a80cf20d4f2f9fb569fbf9a3bf",
+      "rows": 12,
+      "best_epoch": 15,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4472447858695325
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 3,
+      "root": "outputs/aws/p12/duration16-f3-s20260918",
+      "manifest_sha256": "796c2e4f632af95fa8b254bdc607ae713d62db4113f715c36c6fe6ca21187e41",
+      "checkpoint_sha256": "54d4f70d6e5cb333b9c1807a507d6d9b18d449980b0785ebfd2a5d198ce4a9df",
+      "rows": 11,
+      "best_epoch": 16,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA L4",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4479496599390911
+    },
+    {
+      "recipe": "duration16",
+      "seed": 20260918,
+      "fold": 4,
+      "root": "outputs/aws/p12-final/duration16-f4-s20260918",
+      "manifest_sha256": "2818ff4875e923f60514803b3eea808353e24a2352b4d928ad6605ae69494d23",
+      "checkpoint_sha256": "37575f717fef7c2fa030c73f010879129af6e9ef1edb34a04dfc8d51676cb610",
+      "rows": 11,
+      "best_epoch": 15,
+      "replay": "saved_replay_verified",
+      "environment": {
+        "python": "3.10.12",
+        "torch": "2.10.0+cu128",
+        "numpy": "2.2.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA A10G",
+        "shared_gpu": true,
+        "distributed_backend": "gloo"
+      },
+      "report_bce": 0.4464547083431618
+    }
+  ],
+  "promotion_eligible": false,
+  "runtime_status": "not_benchmarked_for_this_release",
+  "note": "Runtime gate deliberately false until exact release benchmark. Target floor is for the standalone two-seed mean; no deployed blend defined or searched. AWS fold2 seed2 control replaces Kaggle control by pre-result backend matching decision; original retained.",
+  "independent_pairwise_auc_replay": "passed_all_48_target_scores",
+  "matched_backend_checks": "all_ten_duration_pairs_passed",
+  "decision": "do_not_promote_duration16",
+  "decision_reason": "Fails both-seed improvement and predeclared bootstrap probability; standalone target regressions also exceed0.02. No deployed blend tested."
+}

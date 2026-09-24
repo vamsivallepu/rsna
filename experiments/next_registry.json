@@ -178,11 +178,11 @@
       "note": "Both matched seeds improve unchanged report-validation BCE at 16 epochs; first-seed full replay passed. Advance to five-fold OOF confirmation; no expert-AUC selection or submission claim."
     },
     "P12-FIVE-FOLD-CONFIRMATION": {
-      "state": "running",
-      "artifact": "experiments/P12-confirmation.json",
-      "artifact_sha256": "058582a53d970ca42b0e89447c26954ecfb4539e17830b999fcb03855da74c26",
-      "updated_utc": "2026-09-23T05:55:57.034242+00:00",
-      "note": "Seven Kaggle and four AWS new runs independently validated. All five remaining configurations assigned to the active bounded AWS continuation, plus same-backend fold2 control repeat. Manual Kaggle mode; no unassigned runs. Full confirmation/promotion pending."
+      "state": "rejected",
+      "artifact": "experiments/results/P12-confirmation-oof.json",
+      "artifact_sha256": "c51c9bd967f46c2b71b3252f36b3bd25f7ad8ed956358d7f13c880af63ce61e7",
+      "updated_utc": "2026-09-24T05:36:23.513440+00:00",
+      "note": "Duration16 not promoted: seed deltas -0.001757/+0.005182; two-seed AUC0.908713 to0.910885; bootstrap probability0.6233. Complete integrity-validated OOF; missing two reused fold0 seed2 replay reports explicitly retained. No exact runtime benchmark or deployed blend test. P8 fallback unchanged."
     },
     "P12-AWS-FOLD3-BATCH": {
       "state": "validated",
@@ -199,11 +199,11 @@
       "note": "Both completed fold2 runs validated: 12 held-out rows each; saved replay max error1.11e-16. Duration16 seed20260917 best epoch15 BCE0.447216; report seed20260918 best epoch8 BCE0.455518. Different seeds: these two values are not a matched duration comparison."
     },
     "P12-AWS-FINAL-BATCH": {
-      "state": "running",
+      "state": "validated",
       "artifact": "experiments/results/P12-aws-final-batch.json",
-      "artifact_sha256": "75872db5b93a6694af4838528a547c7f5a8e2a8c982a0751190204afdecd938a",
-      "updated_utc": "2026-09-23T06:03:33.846958+00:00",
-      "note": "A10G smoke trained in33sec and full12-row saved replay passed (9.19e-17). First full eight-epoch fold2 seed2 control has started; five jobs follow in fixed batch. Host and SSM tokens removed;36-hour automatic stop verified. Local smoke artifacts independently validated."
+      "artifact_sha256": "20f630464f651b56cf9704d27ab5e672865795879f371f28197955d8c5338b7e",
+      "updated_utc": "2026-09-24T05:36:23.513440+00:00",
+      "note": "All six final AWS jobs downloaded and independently validated: exact configs, hashes, exclusions, coverage and saved replays. Host stopped; temporary access policy removed."
     }
   },
   "fallback_submission": "56077025"

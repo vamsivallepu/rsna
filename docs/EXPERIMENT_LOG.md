@@ -1,10 +1,46 @@
 # Experiment log
 
-Last updated: 2026-09-22
+Last updated: 2026-09-24
 
 This is the durable run and decision record. The ordered plan and acceptance rules
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
+
+### 2026-09-24 — P12 duration confirmation complete; do not promote
+
+The six-run final AWS batch completed at 06:39 IST and stopped automatically.
+All six checkpoints were downloaded and independently passed frozen-config,
+artifact-hash, exclusion, epoch-count, held-out coverage and saved replay checks.
+All four five-fold OOF sets contain exactly one prediction for each of 58 experts.
+Independent pairwise ranking reproduced all 48 target AUCs; all ten matched
+control/candidate pairs have identical recorded hardware/software environments.
+The predeclared AWS fold2 seed2 control is used; the original Kaggle control remains.
+
+| Seed | Eight epochs | Sixteen epochs | Difference |
+|---|---:|---:|---:|
+| 20260917 | 0.907588 | 0.905830 | -0.001757 |
+| 20260918 | 0.903195 | 0.908377 | +0.005182 |
+| Mean predictions across seeds | 0.908713 | 0.910885 | +0.002173 |
+
+The grouped paired bootstrap gives probability of improvement 0.6233 (required
+0.90), with 95% interval [-0.011340, 0.016727] from 4,999 valid replicates.
+The both-seeds gate fails. Standalone mean-prediction target regressions include
+synovitis -0.066906, fracture -0.048611, effusion -0.040994 and medial meniscus
+-0.020433. This target diagnostic is not a deployed-blend assessment; no blend
+weights were searched. Duration16 is not promoted and P8 remains the fallback.
+
+Two reused seed2 fold0 models still lack pinned full-image replay evidence locally.
+Their checkpoint hashes and memberships passed; the gap is not called a replay
+success. An exact-release runtime benchmark is also absent. Statistical failure
+already prevents promotion, so no additional paid replay or runtime job was launched.
+Results and all selected source hashes: `experiments/results/P12-confirmation-oof.json`.
+Private OOF rows remain outside Git in `outputs/experiments/P12-confirmation/`.
+
+Both AWS hosts are stopped; retained disks/S3 still incur storage charges.
+The temporary `rsna-p12-batch` role policy was removed and absence verified;
+the original role remains. The temporary encrypted Kaggle parameter is absent.
+The next planned training hypothesis is slot-balanced coverage at eight epochs;
+this decision does not authorize an unrecorded recipe change or automatic launch.
 
 ### 2026-09-23 — AWS fold-3 batch independently validated
 
