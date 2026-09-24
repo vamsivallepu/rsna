@@ -1,0 +1,33 @@
+{
+  "champion": {
+    "ACL": 0.9558823529411764,
+    "MCL": 0.9138321995464852,
+    "Medial Meniscus": 0.9627403846153846,
+    "Lateral Meniscus": 0.8695652173913043,
+    "Medial OA": 0.9736434108527131,
+    "Lateral OA": 0.8123791102514506,
+    "PF OA": 0.8198198198198199,
+    "Effusion": 0.9540372670807453,
+    "Synovitis": 0.7909199522102747,
+    "Baker's": 0.9673913043478262,
+    "Contusion": 0.9473684210526315,
+    "Fracture": 0.9500000000000001,
+    "MACRO": 0.9097982866758175
+  },
+  "fixed_80_20": {
+    "ACL": 0.9613970588235294,
+    "MCL": 0.9229024943310657,
+    "Medial Meniscus": 0.9603365384615385,
+    "Lateral Meniscus": 0.8832298136645963,
+    "Medial OA": 0.9736434108527131,
+    "Lateral OA": 0.8152804642166345,
+    "PF OA": 0.824967824967825,
+    "Effusion": 0.9503105590062112,
+    "Synovitis": 0.7819593787335724,
+    "Baker's": 0.9692028985507247,
+    "Contusion": 0.9493927125506072,
+    "Fracture": 0.9423611111111112,
+    "MACRO": 0.9112486887725108
+  },
+  "note": "One frozen exploratory blend; no weight search. Historical P8 representation exclusions differ from P10, so this is screening evidence only."
+}

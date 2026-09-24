@@ -1,0 +1,83 @@
+{
+  "status": "frozen_before_public_score",
+  "champion_weight": 0.8,
+  "candidate_weight": 0.2,
+  "candidate": "equal probability mean of all ten duration16 fold/seed checkpoints",
+  "final_blend": "0.8 rank(P8 champion output) +0.2 rank(P12 mean probabilities)",
+  "models": [
+    {
+      "name": "seed20260917-fold0",
+      "fold": 0,
+      "seed": 20260917,
+      "manifest_sha256": "2403bb1ce14acd8b115aa2857497bbce979199ab00ceb161372e7e901d1fc9ba",
+      "checkpoint_sha256": "2c7d5bbb82bfeade44d807394e378ed6ffc0f095734ba50f54cf976521ee78bc"
+    },
+    {
+      "name": "seed20260917-fold1",
+      "fold": 1,
+      "seed": 20260917,
+      "manifest_sha256": "8d2ae121f75f0b1f588cb75dc6f39b20f1ec9e8af933debaa7bb642eb81f8f27",
+      "checkpoint_sha256": "37adca0259642a29a10553af4dfda0f191b2124fd3a6aeecffd13611ad03b9df"
+    },
+    {
+      "name": "seed20260917-fold2",
+      "fold": 2,
+      "seed": 20260917,
+      "manifest_sha256": "bfd16ef83b0957b80a4e9abc40b0efec32946f1d17b647c4450ae01db617ea2b",
+      "checkpoint_sha256": "d9317cd09c032521404c7f2d7619164fc291facbf8c8aebc72929a3c0e604dd4"
+    },
+    {
+      "name": "seed20260917-fold3",
+      "fold": 3,
+      "seed": 20260917,
+      "manifest_sha256": "0768488bfde3cbe9b76afd223d7527645a06cff2e3748607bae5524a8c7878ca",
+      "checkpoint_sha256": "32d76ab2f70dbfe6cfb6b0e643c662343bc3d16171f26160e78b5ac51bd68bc5"
+    },
+    {
+      "name": "seed20260917-fold4",
+      "fold": 4,
+      "seed": 20260917,
+      "manifest_sha256": "62ce1d629c44792d58bb5e1a7d5554a788eeee6103daae6f204c16cd429c5fc5",
+      "checkpoint_sha256": "d7d0354780c363ed7ee11514b7ae6d83b331028a430677276de07ab6e68aa409"
+    },
+    {
+      "name": "seed20260918-fold0",
+      "fold": 0,
+      "seed": 20260918,
+      "manifest_sha256": "0a6da89a02434fdc999d4c302a2d07ca894b7fa57b410a2158cb4ab115368256",
+      "checkpoint_sha256": "9bc8fdddc9b2687e812c1a67dc7edf1f117f8594f608a3d7a47512360c87f771"
+    },
+    {
+      "name": "seed20260918-fold1",
+      "fold": 1,
+      "seed": 20260918,
+      "manifest_sha256": "7fbdc89a49b82cb3ab77ef34ab338cf18b97e430d58ef5f8760185d0a1279743",
+      "checkpoint_sha256": "d2c0fdba072c28390da9036eff2111a5e3f8434e35b6f7e6a496eedbe3669d21"
+    },
+    {
+      "name": "seed20260918-fold2",
+      "fold": 2,
+      "seed": 20260918,
+      "manifest_sha256": "28a2c379aa87ebb2f23a3516bbc349094350b2c7d3eb9e6760c5f1ba0ea789dd",
+      "checkpoint_sha256": "2c4d550072b7f3b057df5928e63990d53da240a80cf20d4f2f9fb569fbf9a3bf"
+    },
+    {
+      "name": "seed20260918-fold3",
+      "fold": 3,
+      "seed": 20260918,
+      "manifest_sha256": "796c2e4f632af95fa8b254bdc607ae713d62db4113f715c36c6fe6ca21187e41",
+      "checkpoint_sha256": "54d4f70d6e5cb333b9c1807a507d6d9b18d449980b0785ebfd2a5d198ce4a9df"
+    },
+    {
+      "name": "seed20260918-fold4",
+      "fold": 4,
+      "seed": 20260918,
+      "manifest_sha256": "2818ff4875e923f60514803b3eea808353e24a2352b4d928ad6605ae69494d23",
+      "checkpoint_sha256": "37575f717fef7c2fa030c73f010879129af6e9ef1edb34a04dfc8d51676cb610"
+    }
+  ],
+  "archive_sha256": "c6a134b693acfc3117c5faa7ed9a2d25739b3fa91dc6ee4456671e24a019d583",
+  "statistically_promoted": false,
+  "user_authorized_exploratory_submission": true,
+  "fallback_submission": "56077025"
+}

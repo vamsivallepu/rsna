@@ -98,3 +98,7 @@ temp/
 *.swo
 experiments/*.lock
 *~
+
+# Exploratory release bundles embed private benchmark study IDs.
+kaggle/rsna-p12-exploratory-benchmark/
+kaggle/rsna-p12-exploratory-submission/

@@ -6,6 +6,25 @@ This is the durable run and decision record. The ordered plan and acceptance rul
 live in [`EXPERIMENT_ROADMAP.md`](EXPERIMENT_ROADMAP.md). Status values are
 `queued`, `running`, `validated`, `repeat`, `rejected`, or `blocked`.
 
+### 2026-09-24 — User-authorized exploratory public-score test
+
+User requested one Kaggle score despite failed duration promotion gates, then
+explicitly approved the private upload of ten checkpoints and validation artifacts.
+Before checking blend outcomes, froze 80% rank(P8 champion output) plus20% rank
+of the equal-probability mean of all ten duration16 models. No weight search.
+The one diagnostic gives champion OOF0.909798 and fixed-blend OOF0.911249.
+Historical P8 representations have different exclusions; this remains exploratory.
+
+Reuse the immutable P8 source and existing next-model inference. The benchmark
+checks the missing selected fold0 seed2 replay, raw-DICOM/cache window agreement
+on all58 experts, and the exact combined pipeline on240 label-blind studies.
+A conservative projection must be at most7.5 hours. A separate offline saved
+submission notebook must finish successfully before submitting its pinned version.
+The original P8 submission56077025 remains available; no final-selection change.
+Source builders and aggregate hashes are committed; generated bundles and all
+model/split artifacts remain outside Git. Launch and submission status are in
+`experiments/results/P12-exploratory-launch.json`.
+
 ### 2026-09-24 — P12 duration confirmation complete; do not promote
 
 The six-run final AWS batch completed at 06:39 IST and stopped automatically.
